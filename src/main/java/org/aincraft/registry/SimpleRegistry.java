@@ -1,31 +1,36 @@
 package org.aincraft.registry;
 
+import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
-import org.aincraft.registry.IRegistry.IRegisterable;
+import java.util.HashSet;
+import java.util.Set;
+import net.kyori.adventure.key.Key;
+import net.kyori.adventure.key.Keyed;
+import org.jetbrains.annotations.Nullable;
 
-public class SimpleRegistry<K, T extends IRegisterable<K>> implements IRegistry<K, T> {
+public class SimpleRegistry<T extends Keyed> implements IRegistry<T> {
 
-  private final Map<K, T> registry = new HashMap<>();
+  private final Set<T> registry = new HashSet<>();
+
 
   @Override
-  public IRegistry<K, T> register(T object) {
-    registry.putIfAbsent(object.getKey(), object);
+  public IRegistry<T> register(T object) {
+    registry.add(object);
     return this;
   }
 
-  public T get(K key) {
-    return registry.get(key);
+  @Override
+  public @Nullable T get(Key key) {
+    return registry.stream().filter(item -> item.key().equals(key)).findFirst().orElse(null);
   }
 
   @Override
-  public boolean isRegistered(K key) {
-    return registry.containsKey(key);
+  public boolean isRegistered(Key key) {
+    return get(key) != null;
   }
 
   @Override
   public Collection<T> values() {
-    return registry.values();
+    return new ArrayList<>(registry);
   }
 }

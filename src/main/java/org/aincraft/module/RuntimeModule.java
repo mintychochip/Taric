@@ -7,7 +7,8 @@ import com.google.inject.AbstractModule;
 import com.google.inject.Singleton;
 import com.google.inject.TypeLiteral;
 import java.time.Duration;
-import org.aincraft.container.GemInventory;
+import org.aincraft.api.container.gem.IGemInventory;
+import org.aincraft.container.gem.GemInventory;
 import org.aincraft.database.Extractor;
 import org.aincraft.database.Extractor.ResourceExtractor;
 import org.aincraft.database.IDatabase;
@@ -15,20 +16,20 @@ import org.aincraft.effects.EffectQueuePool;
 import org.aincraft.effects.IGemEffect;
 import org.aincraft.registry.IRegistry;
 import org.aincraft.registry.SimpleRegistry;
-import org.bukkit.entity.Entity;
+import org.bukkit.entity.LivingEntity;
 
 public class RuntimeModule extends AbstractModule {
 
-  private static LoadingCache<Entity, GemInventory> createPlayerCache() {
+  private static LoadingCache<LivingEntity, IGemInventory> createPlayerCache() {
     return CacheBuilder.newBuilder().expireAfterWrite(
         Duration.ofMinutes(5)).build(CacheLoader.from(GemInventory::from));
   }
 
   @Override
   protected void configure() {
-    bind(new TypeLiteral<IRegistry<String, IGemEffect>>() {
+    bind(new TypeLiteral<IRegistry<IGemEffect>>() {
     }).toInstance(new SimpleRegistry<>());
-    bind(new TypeLiteral<LoadingCache<Entity, GemInventory>>() {
+    bind(new TypeLiteral<LoadingCache<LivingEntity, IGemInventory>>() {
     }).toInstance(createPlayerCache());
     bind(EffectQueuePool.class).toInstance(new EffectQueuePool<>());
     bind(IDatabase.class).toProvider(StorageProvider.class).in(Singleton.class);

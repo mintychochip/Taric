@@ -1,6 +1,7 @@
-package org.aincraft.container.gem.exceptions;
+package org.aincraft.api.exceptions;
 
-public class CapacityException extends RuntimeException {
+public final class CapacityException extends RuntimeException {
+
   private final int currentCapacity;
   private final int requestedCapacity;
 

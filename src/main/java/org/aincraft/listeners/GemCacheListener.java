@@ -2,8 +2,9 @@ package org.aincraft.listeners;
 
 import com.google.common.cache.LoadingCache;
 import com.google.inject.Inject;
-import org.aincraft.container.GemInventory;
+import org.aincraft.api.container.gem.IGemInventory;
 import org.bukkit.entity.Entity;
+import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -18,10 +19,10 @@ import org.jetbrains.annotations.NotNull;
 
 public class GemCacheListener implements Listener {
 
-  private final LoadingCache<Entity, GemInventory> inventoryCache;
+  private final LoadingCache<LivingEntity, IGemInventory> inventoryCache;
 
   @Inject
-  public GemCacheListener(LoadingCache<Entity, GemInventory> inventoryCache) {
+  public GemCacheListener(LoadingCache<LivingEntity, IGemInventory> inventoryCache) {
     this.inventoryCache = inventoryCache;
   }
 

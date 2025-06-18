@@ -49,21 +49,21 @@ public final class Settings {
     ITEM_TAKES_DAMAGE_IN_CREATIVE = loadBoolean(settings, "item-takes-damage-in-creative");
 
     IConfiguration gemConfig = Taric.getConfiguration("gems");
-    IRegistry<String, IGemEffect> effects = Taric.getEffects();
-    if (effects.isRegistered(GemEffects.VAMPIRISM.getKey())) {
+    IRegistry<IGemEffect> effects = Taric.getEffects();
+    if (effects.isRegistered(GemEffects.VAMPIRISM.key())) {
       VAMPIRIC_FACTOR = GemEffects.VAMPIRISM.loadDouble(gemConfig, "factor", 1);
     }
-    if (effects.isRegistered(GemEffects.ECHOS_OF_INSIGHT.getKey())) {
+    if (effects.isRegistered(GemEffects.ECHOS_OF_INSIGHT.key())) {
       KNOWLEDGE_ORBS_MIN = GemEffects.ECHOS_OF_INSIGHT.loadInt(gemConfig, "orbs-min", 1);
       KNOWLEDGE_ORBS_MAX = GemEffects.ECHOS_OF_INSIGHT.loadInt(gemConfig, "orbs-max", 1);
     }
-    if (effects.isRegistered(GemEffects.SCAVENGE.getKey())) {
+    if (effects.isRegistered(GemEffects.SCAVENGE.key())) {
       SCAVENGE_BLACK_LIST = GemEffects.SCAVENGE.loadStringList(gemConfig, "black-list",
               new ArrayList<>()).stream().map(material -> Material.valueOf(material.toUpperCase()))
           .collect(
               Collectors.toSet());
     }
-    if (effects.isRegistered(GemEffects.NETHER_SCOURGE.getKey())) {
+    if (effects.isRegistered(GemEffects.NETHER_SCOURGE.key())) {
       NETHER_SCOURGE_DAMAGE_RANK_MIN = GemEffects.NETHER_SCOURGE.loadInt(gemConfig,
           "damage-rank-min", 1);
       NETHER_SCOURGE_DAMAGE_RANK_MAX = GemEffects.NETHER_SCOURGE.loadInt(gemConfig,
@@ -72,20 +72,20 @@ public final class Settings {
               "affected-types", new ArrayList<>()).stream()
           .map(type -> EntityType.valueOf(type.toUpperCase())).collect(Collectors.toSet());
     }
-    if (effects.isRegistered(GemEffects.VEIN_MINER.getKey())) {
+    if (effects.isRegistered(GemEffects.VEIN_MINER.key())) {
       VEIN_MINER_MAX_BLOCKS = GemEffects.VEIN_MINER.loadInt(gemConfig, "max-blocks", 1);
       VEIN_MINER_DEPTH_RANK = GemEffects.VEIN_MINER.loadInt(gemConfig, "depth-rank", 1);
     }
-    if (effects.isRegistered(GemEffects.VORPAL.getKey())) {
+    if (effects.isRegistered(GemEffects.VORPAL.key())) {
       VORPAL_CHANCE_RANK = GemEffects.VORPAL.loadDouble(gemConfig, "chance-rank", 1);
     }
-    if (effects.isRegistered(GemEffects.COLD_ASPECT.getKey())) {
+    if (effects.isRegistered(GemEffects.COLD_ASPECT.key())) {
       COLD_ASPECT_FREEZE_TICKS_RANK = GemEffects.COLD_ASPECT.loadInt(gemConfig,
           "freeze-ticks-rank", 1);
       COLD_ASPECT_MAX_FREEZE_TICKS = GemEffects.COLD_ASPECT.loadInt(gemConfig, "max-freeze-ticks",
           1);
     }
-    if (effects.isRegistered(GemEffects.MULTISHOT.getKey())) {
+    if (effects.isRegistered(GemEffects.MULTISHOT.key())) {
       MULTISHOT_PROJECTILES_RANK = GemEffects.MULTISHOT.loadInt(gemConfig,"arrows-rank",1);
     }
   }

@@ -1,40 +1,46 @@
 package org.aincraft.effects.gems;
 
-import com.google.common.base.Preconditions;
+import com.google.common.base.Supplier;
+import com.google.common.base.Suppliers;
 import java.util.Map;
 import java.util.Set;
 import net.kyori.adventure.text.Component;
 import org.aincraft.container.Rarity;
 import org.aincraft.effects.IGemEffect;
 import org.aincraft.effects.triggers.TriggerType;
-import org.aincraft.util.Roman;
 import org.bukkit.Material;
+import org.bukkit.NamespacedKey;
 import org.bukkit.inventory.EquipmentSlot;
-import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 
 abstract class AbstractGemEffect implements IGemEffect {
 
   private static TriggerType[] TRIGGER_TYPES;
 
-  private final String key;
-
   private GemEffectMeta meta;
 
-  private Map<TriggerType, Set<Material>> builtTargets = null;
+  private final Supplier<Map<TriggerType, Set<Material>>> targetSupplier = Suppliers.memoize(
+      this::buildValidTargets);
 
-  AbstractGemEffect(String key) {
-    this.key = key;
+  private final Supplier<NamespacedKey> keySupplier = Suppliers.memoize(this::buildKey);
+
+  private final Supplier<String> nameSupplier = Suppliers.memoize(this::buildName);
+
+  protected String buildName() {
+    Class<? extends AbstractGemEffect> clazz = this.getClass();
+    return clazz.getSimpleName().replaceAll("(?<!^)([A-Z])", " $1");
+  }
+
+  protected NamespacedKey buildKey() {
+    Class<? extends AbstractGemEffect> clazz = this.getClass();
+    String key = clazz.getSimpleName().replaceAll("(?<!^)([A-Z])", "-$1");
+    return new NamespacedKey("taric", key.toLowerCase());
   }
 
   protected abstract Map<TriggerType, Set<Material>> buildValidTargets();
 
-
   private Map<TriggerType, Set<Material>> getValidTargets() {
-    if (builtTargets == null) {
-      builtTargets = buildValidTargets();
-    }
-    return builtTargets;
+    return targetSupplier.get();
   }
 
   public void setMeta(GemEffectMeta meta) {
@@ -46,12 +52,12 @@ abstract class AbstractGemEffect implements IGemEffect {
   }
 
   @Override
-  public String getKey() {
-    return key;
+  public @NotNull NamespacedKey getKey() {
+    return keySupplier.get();
   }
 
   @Override
-  public int getMaxLevel() {
+  public int getMaxRank() {
     return meta.maxLevel();
   }
 
@@ -66,16 +72,29 @@ abstract class AbstractGemEffect implements IGemEffect {
   }
 
   @Override
-  public boolean isValidTarget(TriggerType triggerType, ItemStack itemStack) {
-    Map<TriggerType, Set<Material>> targets = this.getValidTargets();
-    if (!targets.containsKey(triggerType)) {
-      return false;
-    }
-    Material material = itemStack.getType();
+  public boolean isValidTarget(TriggerType triggerType, Material material) {
     if (material.isAir()) {
       return false;
     }
-    return targets.get(triggerType).contains(material);
+    Map<TriggerType, Set<Material>> validTargets = this.getValidTargets();
+    if (!validTargets.containsKey(triggerType)) {
+      return false;
+    }
+    return validTargets.get(triggerType).contains(material);
+  }
+
+  @Override
+  public boolean isValidTarget(Material material) {
+    if (material.isAir()) {
+      return false;
+    }
+    Map<TriggerType, Set<Material>> validTargets = this.getValidTargets();
+    for (Set<Material> materials : validTargets.values()) {
+      if (materials.contains(material)) {
+        return true;
+      }
+    }
+    return false;
   }
 
   @Override
@@ -99,19 +118,8 @@ abstract class AbstractGemEffect implements IGemEffect {
   }
 
   @Override
-  public Component getLabel(int rank) {
-    Preconditions.checkArgument(rank > 0);
-    return Component.empty()
-        .append(Component.text(this.getName()))
-        .append(Component.space())
-        .append(Component.text(
-            Roman.fromInteger(rank)));
-  }
-
-  @Override
   public String getName() {
-    Class<? extends AbstractGemEffect> clazz = this.getClass();
-    return clazz.getSimpleName().replaceAll("(?<!^)([A-Z])", " $1");
+    return nameSupplier.get();
   }
 
   @Override
@@ -123,6 +131,11 @@ abstract class AbstractGemEffect implements IGemEffect {
   @Override
   public Set<EquipmentSlot> getRequiredActiveSlots() {
     return meta.requiredActiveSlots();
+  }
+
+  @Override
+  public boolean isValidSlot(EquipmentSlot slot) {
+    return meta.requiredActiveSlots.contains(slot);
   }
 
   public record GemEffectMeta(int maxLevel,

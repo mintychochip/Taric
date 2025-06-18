@@ -2,7 +2,6 @@ package org.aincraft.effects.triggers;
 
 import java.util.List;
 import org.bukkit.entity.LivingEntity;
-import org.bukkit.entity.Projectile;
 import org.bukkit.inventory.meta.FireworkMeta;
 import org.bukkit.util.Vector;
 

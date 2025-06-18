@@ -1,9 +1,10 @@
 package org.aincraft.container.equipment;
 
+import org.aincraft.api.container.IEquipment;
 import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
 
-public class EntityEquipment extends ForwardingEquipment {
+class EntityEquipment extends ForwardingEquipment {
 
   private final org.bukkit.inventory.EntityEquipment entityEquipment;
 

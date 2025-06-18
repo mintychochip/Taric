@@ -1,6 +1,6 @@
 package org.aincraft.effects.triggers;
 
-import org.aincraft.util.Mutable;
+import org.aincraft.container.Mutable;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.entity.Player;

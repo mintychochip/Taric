@@ -1,14 +1,16 @@
 package org.aincraft.container.equipment;
 
+import org.aincraft.api.container.IEquipment;
 import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
 
 abstract class ForwardingEquipment implements IEquipment {
+
   protected abstract IEquipment delegate();
 
   @Override
-  public void setItem(EquipmentSlot slot, ItemStack item) {
-    delegate().setItem(slot,item);
+  public void setItem(EquipmentSlot slot, ItemStack item) throws IllegalArgumentException {
+    delegate().setItem(slot, item);
   }
 
   @Override

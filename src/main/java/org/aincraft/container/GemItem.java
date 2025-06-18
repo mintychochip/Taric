@@ -176,8 +176,8 @@ public final class GemItem implements IQueueLoaderHolder<EffectInstance> {
       if (effect == null) {
         return this;
       }
-      level = Math.min(effect.getMaxLevel(), level);
-      effects.put(effect.getKey(), level);
+      level = Math.min(effect.getMaxRank(), level);
+      effects.put(effect.key().value(), level);
       return this;
     }
 

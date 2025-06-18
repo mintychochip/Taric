@@ -3,17 +3,18 @@ package org.aincraft.registry;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.stream.Stream;
-import org.aincraft.registry.IRegistry.IRegisterable;
+import net.kyori.adventure.key.Key;
+import net.kyori.adventure.key.Keyed;
 import org.jetbrains.annotations.Nullable;
 
-public interface IRegistry<K, T extends IRegisterable<K>> {
+public interface IRegistry<T extends Keyed> {
 
-  IRegistry<K, T> register(T object);
+  IRegistry<T> register(T object);
 
   @Nullable
-  T get(K key);
+  T get(Key key);
 
-  boolean isRegistered(K key);
+  boolean isRegistered(Key key);
 
   default Iterator<T> iterator() {
     return values().iterator();
@@ -27,6 +28,6 @@ public interface IRegistry<K, T extends IRegisterable<K>> {
 
   interface IRegisterable<K> {
 
-    K getKey();
+    Key getKey();
   }
 }

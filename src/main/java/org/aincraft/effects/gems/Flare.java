@@ -21,8 +21,7 @@ final class Flare extends AbstractGemEffect implements IOnShootBow {
 
   private static CircularFireworkPool FIREWORK_POOL;
 
-  Flare(String key) {
-    super(key);
+  Flare() {
     FIREWORK_POOL = new CircularFireworkPool(32);
   }
 

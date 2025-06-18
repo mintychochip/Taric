@@ -5,11 +5,11 @@ import java.util.Map;
 import java.util.Set;
 import org.aincraft.Settings;
 import org.aincraft.Taric;
+import org.aincraft.container.Mutable;
 import org.aincraft.container.TargetType;
 import org.aincraft.effects.triggers.IOnBlockBreak;
 import org.aincraft.effects.triggers.IOnKillEntity;
 import org.aincraft.effects.triggers.TriggerType;
-import org.aincraft.util.Mutable;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
@@ -19,10 +19,6 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
 final class Insight extends AbstractGemEffect implements IOnKillEntity, IOnBlockBreak {
-
-  public Insight(String key) {
-    super(key);
-  }
 
   @Override
   protected Map<TriggerType, Set<Material>> buildValidTargets() {

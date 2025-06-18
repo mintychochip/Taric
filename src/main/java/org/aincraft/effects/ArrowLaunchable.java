@@ -1,16 +1,13 @@
 package org.aincraft.effects;
 
-import org.aincraft.container.equipment.EntityEquipment;
-import org.aincraft.container.equipment.IEquipment;
-import org.aincraft.container.equipment.PlayerEquipment;
-import org.aincraft.effects.triggers.IOnShootBow;
+import org.aincraft.api.container.IEquipment;
+import org.aincraft.container.equipment.EquipmentFactory;
 import org.aincraft.effects.triggers.IOnShootBow.IArrowLaunchable;
 import org.aincraft.effects.triggers.IOnShootBow.ILaunchable;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.AbstractArrow.PickupStatus;
 import org.bukkit.entity.Arrow;
 import org.bukkit.entity.LivingEntity;
-import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.Vector;
 
@@ -32,9 +29,7 @@ public class ArrowLaunchable extends AbstractLaunchable implements IArrowLauncha
   @Override
   public void launch(LivingEntity shooter) {
     shooter.launchProjectile(Arrow.class, velocity, a -> {
-      IEquipment equipment =
-          shooter instanceof Player player ? new PlayerEquipment(player.getInventory())
-              : new EntityEquipment(shooter.getEquipment());
+      IEquipment equipment = EquipmentFactory.equipmentFromEntity(shooter);
       ItemStack bow = equipment.getItemInMainHand();
       if (bow.getEnchantmentLevel(Enchantment.INFINITY) > 0) {
         a.setPickupStatus(PickupStatus.DISALLOWED);

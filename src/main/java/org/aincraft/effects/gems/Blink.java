@@ -16,10 +16,6 @@ import org.bukkit.util.RayTraceResult;
 
 final class Blink extends AbstractGemEffect implements IOnActivate {
 
-  Blink(String key) {
-    super(key);
-  }
-
   @Override
   protected Map<TriggerType, Set<Material>> buildValidTargets() {
     return Map.of(

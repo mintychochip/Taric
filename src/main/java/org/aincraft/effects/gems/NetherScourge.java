@@ -13,10 +13,6 @@ import org.bukkit.event.entity.EntityDamageEvent.DamageModifier;
 
 final class NetherScourge extends AbstractGemEffect implements IOnEntityHitEntity {
 
-  NetherScourge(String key) {
-    super(key);
-  }
-
   @Override
   protected Map<TriggerType, Set<Material>> buildValidTargets() {
     return Map.ofEntries(

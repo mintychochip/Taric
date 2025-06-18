@@ -76,15 +76,10 @@ public class Taric {
     return instance.injector.getInstance(Plugin.class);
   }
 
-  public static IRegistry<String, IGemEffect> getEffects() {
+  public static IRegistry<IGemEffect> getEffects() {
     return instance.injector.getInstance(new Key<>() {
     });
   }
-
-//  public static IRegistry<String, Gem> getGems() {
-//    return instance.injector.getInstance(new Key<>() {
-//    });
-//  }
 
   public static Gson getGson() {
     return instance.injector.getInstance(Gson.class);

@@ -13,10 +13,6 @@ import org.bukkit.util.Vector;
 
 final class Multishot extends AbstractGemEffect implements IOnShootBow {
 
-  Multishot(String key) {
-    super(key);
-  }
-
   @Override
   protected Map<TriggerType, Set<Material>> buildValidTargets() {
     return Map.ofEntries(

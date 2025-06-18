@@ -16,10 +16,6 @@ import org.bukkit.inventory.ItemStack;
 
 final class Prismatic extends AbstractGemEffect implements IOnPlayerShear {
 
-  Prismatic(String key) {
-    super(key);
-  }
-
   @Override
   protected Map<TriggerType, Set<Material>> buildValidTargets() {
     return Map.of(TriggerType.PLAYER_SHEAR, TypeSet.single(Material.SHEARS));

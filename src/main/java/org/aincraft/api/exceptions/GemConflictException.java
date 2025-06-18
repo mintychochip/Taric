@@ -1,8 +1,9 @@
-package org.aincraft.container.gem.exceptions;
+package org.aincraft.api.exceptions;
 
 import org.aincraft.effects.IGemEffect;
 
-public class GemConflictException extends RuntimeException {
+//TODO: make conflict API
+public final class GemConflictException extends RuntimeException {
 
   private final IGemEffect conflicting;
   private final IGemEffect conflicted;

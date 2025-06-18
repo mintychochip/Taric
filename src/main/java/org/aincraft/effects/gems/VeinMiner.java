@@ -6,11 +6,11 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 import org.aincraft.Settings;
+import org.aincraft.container.Mutable;
 import org.aincraft.container.TargetType;
 import org.aincraft.effects.triggers.IOnBlockBreak;
 import org.aincraft.effects.triggers.TriggerType;
 import org.aincraft.events.FakeBlockBreakEvent;
-import org.aincraft.util.Mutable;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
@@ -26,11 +26,6 @@ final class VeinMiner extends AbstractGemEffect implements IOnBlockBreak {
 
   private static final Set<Block> VISITED = new HashSet<>();
   private static final Deque<BlockVisit> STACK = new ArrayDeque<>();
-
-  VeinMiner(String key) {
-    super(key);
-  }
-
 
   @Override
   public void onBlockBreak(int rank, Player player, ItemStack tool, BlockFace hitFace,

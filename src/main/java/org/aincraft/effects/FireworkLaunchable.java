@@ -1,6 +1,5 @@
 package org.aincraft.effects;
 
-import org.aincraft.effects.triggers.IOnShootBow;
 import org.aincraft.effects.triggers.IOnShootBow.IFireworkLaunchable;
 import org.aincraft.effects.triggers.IOnShootBow.ILaunchable;
 import org.bukkit.entity.Firework;

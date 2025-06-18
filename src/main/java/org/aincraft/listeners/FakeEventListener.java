@@ -6,7 +6,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 import org.aincraft.Settings;
-import org.aincraft.container.GemInventory;
+import org.aincraft.api.container.gem.IGemInventory;
+import org.aincraft.container.Mutable;
 import org.aincraft.effects.EffectQueuePool;
 import org.aincraft.effects.EffectQueuePool.EffectInstance;
 import org.aincraft.effects.EffectQueuePool.EffectQueue;
@@ -14,18 +15,16 @@ import org.aincraft.effects.triggers.IOnBlockDrop;
 import org.aincraft.effects.triggers.TriggerType;
 import org.aincraft.events.FakeBlockBreakEvent;
 import org.aincraft.events.FakeBlockDropItemEvent;
-import org.aincraft.util.Mutable;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.Particle;
-import org.bukkit.Sound;
 import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.enchantments.Enchantment;
-import org.bukkit.entity.Entity;
 import org.bukkit.entity.ExperienceOrb;
 import org.bukkit.entity.Item;
+import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -35,13 +34,13 @@ import org.bukkit.inventory.PlayerInventory;
 
 public class FakeEventListener implements Listener {
 
-  private final LoadingCache<Entity, GemInventory> inventoryCache;
+  private final LoadingCache<LivingEntity, IGemInventory> inventoryCache;
   private final EffectQueuePool<EffectInstance> queuePool;
 
   private static final List<ItemStack> FAKE_DROP_LIST = new ArrayList<>();
   private static final Mutable<Integer> EXPERIENCE_MUTABLE = new Mutable<>(0);
   @Inject
-  public FakeEventListener(LoadingCache<Entity, GemInventory> inventoryCache,
+  public FakeEventListener(LoadingCache<LivingEntity, IGemInventory> inventoryCache,
       EffectQueuePool<EffectInstance> queuePool) {
     this.inventoryCache = inventoryCache;
     this.queuePool = queuePool;

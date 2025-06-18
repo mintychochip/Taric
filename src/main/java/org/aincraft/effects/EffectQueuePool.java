@@ -11,7 +11,6 @@ import org.aincraft.container.IQueueLoader;
 import org.aincraft.container.IQueueLoader.IQueueLoaderHolder;
 import org.aincraft.effects.EffectQueuePool.EffectInstance;
 import org.aincraft.effects.triggers.TriggerType;
-import org.bukkit.Bukkit;
 
 public final class EffectQueuePool<T extends EffectInstance> {
 

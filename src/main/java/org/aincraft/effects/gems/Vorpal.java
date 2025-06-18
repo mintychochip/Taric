@@ -5,10 +5,10 @@ import java.util.Map;
 import java.util.Set;
 import org.aincraft.Settings;
 import org.aincraft.Taric;
+import org.aincraft.container.Mutable;
 import org.aincraft.container.TargetType;
 import org.aincraft.effects.triggers.IOnKillEntity;
 import org.aincraft.effects.triggers.TriggerType;
-import org.aincraft.util.Mutable;
 import org.bukkit.Material;
 import org.bukkit.damage.DamageSource;
 import org.bukkit.entity.EntityType;
@@ -17,10 +17,6 @@ import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.Nullable;
 
 final class Vorpal extends AbstractGemEffect implements IOnKillEntity {
-
-  Vorpal(String key) {
-    super(key);
-  }
 
   @Override
   public void onKillEntity(int rank, DamageSource damageSource, LivingEntity entity,

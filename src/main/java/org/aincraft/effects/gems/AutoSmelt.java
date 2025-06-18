@@ -9,7 +9,6 @@ import org.aincraft.Settings;
 import org.aincraft.Taric;
 import org.aincraft.config.IConfiguration;
 import org.aincraft.container.TargetType;
-import org.aincraft.effects.IGemEffect;
 import org.aincraft.effects.triggers.IOnBlockDrop;
 import org.aincraft.effects.triggers.TriggerType;
 import org.bukkit.Location;
@@ -27,12 +26,8 @@ final class AutoSmelt extends AbstractGemEffect implements IOnBlockDrop {
 
   private final Map<Material, ItemStack> conversions = new HashMap<>();
 
-  AutoSmelt(String key) {
-    super(key);
-  }
-
-  public static @NotNull AutoSmelt create(@NotNull IConfiguration gemConfiguration, String key) {
-    AutoSmelt as = new AutoSmelt(key);
+  public static @NotNull AutoSmelt create(@NotNull IConfiguration gemConfiguration) {
+    AutoSmelt as = new AutoSmelt();
 
     String path = "auto-smelt.conversions";
 
@@ -76,7 +71,7 @@ final class AutoSmelt extends AbstractGemEffect implements IOnBlockDrop {
   }
 
   private boolean smelt(int level) {
-    return level >= this.getMaxLevel() || Taric.getRandom().nextInt(level + 1) != 0;
+    return level >= this.getMaxRank() || Taric.getRandom().nextInt(level + 1) != 0;
   }
 
   private static void playSmeltEffects(@NotNull Block block) {

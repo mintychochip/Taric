@@ -1,7 +1,7 @@
 package org.aincraft.listeners;
 
+import org.aincraft.container.Mutable;
 import org.aincraft.container.SharedList;
-import org.aincraft.util.Mutable;
 import org.bukkit.inventory.ItemStack;
 
 /**
@@ -11,6 +11,7 @@ import org.bukkit.inventory.ItemStack;
  * Bukkit's environment is single-threaded, and events are fired in a synchronous context.
  * Access or modification outside the main thread may lead to unexpected behavior.
  */
+
 public class Shared {
 
   private final SharedList<ItemStack> drops = new SharedList<>();

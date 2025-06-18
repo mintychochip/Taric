@@ -21,13 +21,8 @@ import org.jetbrains.annotations.NotNull;
 
 public final class Vampirism extends AbstractGemEffect implements IOnEntityHitEntity {
 
-
   private static final Particle.DustTransition TRANSITION = new DustTransition(Color.RED, Color.MAROON,
       1.5f);
-
-  Vampirism(String key) {
-    super(key);
-  }
 
   private static void playEffects(@NotNull Location location) {
     World world = location.getWorld();

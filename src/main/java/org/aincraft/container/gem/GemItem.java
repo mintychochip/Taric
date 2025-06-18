@@ -1,15 +1,20 @@
 package org.aincraft.container.gem;
 
+import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
 import java.util.function.Supplier;
+import net.kyori.adventure.key.Key;
 import org.aincraft.Taric;
-import org.aincraft.container.gem.exceptions.CapacityException;
-import org.aincraft.container.gem.exceptions.GemConflictException;
-import org.aincraft.container.gem.IGemItem.IView;
+import org.aincraft.api.container.gem.IEffectContainerHolder;
+import org.aincraft.api.container.gem.IGemItem;
+import org.aincraft.api.container.gem.IGemItem.IContainer;
+import org.aincraft.api.container.gem.IGemItem.IView;
+import org.aincraft.api.exceptions.CapacityException;
+import org.aincraft.api.exceptions.TargetTypeException;
 import org.aincraft.effects.IGemEffect;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
@@ -17,70 +22,57 @@ import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-public final class GemItem extends AbstractEffectContainerHolder<IGemItem, IView> implements
+public final class GemItem extends AbstractEffectContainerHolder<IView, IContainer> implements
     IGemItem {
 
-  private static final Supplier<Map<String, Integer>> MAP_SUPPLIER = LinkedHashMap::new;
+  private static final Supplier<Map<Key, Integer>> MAP_SUPPLIER = LinkedHashMap::new;
   private static final NamespacedKey GEM_ITEM_KEY = new NamespacedKey(Taric.getPlugin(), "item");
 
-  GemItem(ItemStack stack, IEffectContainer<IView> container) {
+  GemItem(ItemStack stack, IContainer container) {
     super(stack, container);
   }
 
-  @Override
-  public IEffectContainerHolder.Builder<IGemItem, IView> toBuilder() {
-    return new Builder(stack.clone(), container.clone());
-  }
-
   @Nullable
-  public static GemItem fromIfExists(ItemStack stack) {
-    Material material = stack.getType();
-    if (material.isAir() || !IEffectContainer.hasContainer(GEM_ITEM_KEY, stack)) {
-      return null;
-    }
-    Container container = IEffectContainer.from(GEM_ITEM_KEY, stack, Container.class);
-    return new GemItem(stack, container);
+  public static IGemItem fromIfExists(ItemStack stack) {
+    return GemItemFactory.holderFromIfExists(stack, GEM_ITEM_KEY, Container.class,
+        container -> new GemItem(stack,container));
   }
 
   @NotNull
-  public static GemItem from(ItemStack stack, Callable<? extends GemItem> loader)
-      throws ExecutionException, IllegalArgumentException {
-    Material material = stack.getType();
-    if (material.isAir()) {
-      throw new IllegalArgumentException("stack cannot be air!");
-    }
-    if (!IEffectContainer.hasContainer(GEM_ITEM_KEY, stack)) {
-      try {
-        return loader.call();
-      } catch (Exception e) {
-        throw new ExecutionException(e);
-      }
-    }
-    GemItem gemItem = fromIfExists(stack);
-    assert gemItem != null;
-    return gemItem;
+  public static IGemItem from(ItemStack stack, Callable<? extends IGemItem> loader)
+      throws ExecutionException {
+    return GemItemFactory.holderFrom(stack, GEM_ITEM_KEY, loader,
+        GemItem.Container.class,
+        container -> new GemItem(stack, container));
   }
 
   @Nullable
-  public static GemItem create(ItemStack stack, int sockets) {
-    if (IEffectContainer.hasContainer(GEM_ITEM_KEY, stack)) {
+  public static IGemItem create(ItemStack stack, int sockets) {
+    if (GemItemFactory.hasContainer(GEM_ITEM_KEY, stack)) {
       return null;
     }
-    return new GemItem(stack, new Container(MAP_SUPPLIER.get(), sockets));
+    return new GemItem(stack, new Container(MAP_SUPPLIER.get(), sockets, stack.getType()));
+  }
+
+  public static boolean is(ItemStack stack) {
+    return GemItemFactory.hasContainer(GEM_ITEM_KEY, stack);
   }
 
   @NotNull
-  public static IEffectContainerHolder.Builder<IGemItem, IView> builder(Material material,
+  public static IEffectContainerHolder.Builder<IGemItem, IContainer, IView> builder(
+      Material material,
       int sockets) {
-    return new Builder(new ItemStack(material), new Container(MAP_SUPPLIER.get(), sockets));
+    return new Builder(new ItemStack(material),
+        new Container(MAP_SUPPLIER.get(), sockets, material));
   }
 
   private static final class Builder extends
-      AbstractEffectContainerHolder.Builder<IGemItem, IView> {
+      AbstractEffectContainerHolder.Builder<IGemItem, IContainer, IView> {
 
-    Builder(ItemStack stack, IEffectContainer<IView> container) {
+    Builder(ItemStack stack, IContainer container) {
       super(stack, container);
     }
+
 
     @Override
     public IGemItem build() {
@@ -88,14 +80,17 @@ public final class GemItem extends AbstractEffectContainerHolder<IGemItem, IView
     }
   }
 
-  private static final class View extends AbstractEffectContainerView implements IView {
+  private static final class View extends
+      AbstractEffectContainerView<Container, IContainer, IView> implements
+      IView {
 
     private final int sockets;
 
-    View(Map<String, Integer> effects, NamespacedKey key, int sockets) {
-      super(effects, key);
+    View(Map<Key, Integer> effects, NamespacedKey key, int sockets, Container container) {
+      super(effects, key, container);
       this.sockets = sockets;
     }
+
 
     @Override
     public int getMaxSockets() {
@@ -108,32 +103,43 @@ public final class GemItem extends AbstractEffectContainerHolder<IGemItem, IView
     }
   }
 
-  private static final class Container extends AbstractEffectContainer<IView> implements
+  private static final class Container extends AbstractEffectContainer<IContainer, IView> implements
       IContainer {
 
+    @Expose
     @SerializedName("effects")
-    private final Map<String, Integer> effects;
+    private final Map<Key, Integer> effects;
 
+    @Expose
     @SerializedName("sockets")
     private final int sockets;
 
-    private Container(Map<String, Integer> effects, int sockets) {
+    @Expose
+    @SerializedName("material")
+    private final Material material;
+
+    private Container(Map<Key, Integer> effects, int sockets, Material material) {
       this.effects = effects;
       this.sockets = sockets;
+      this.material = material;
     }
 
     @Override
-    protected Map<String, Integer> delegate() {
+    protected Map<Key, Integer> delegate() {
       return effects;
     }
 
     @Override
     protected IView buildView() {
-      return new View(effects, GEM_ITEM_KEY, sockets);
+      return new View(effects, GEM_ITEM_KEY, sockets, this);
     }
+
 
     @Override
     public void addEffect(IGemEffect effect, int rank, boolean force) {
+      if (!effect.isValidTarget(material) && !force) {
+        throw new TargetTypeException(effect, material);
+      }
       if (this.getSocketsUsed() >= this.getMaxSockets() && !force && !has(effect)) {
         throw new CapacityException(this.getSocketsUsed(), this.getMaxSockets());
       }
@@ -141,10 +147,15 @@ public final class GemItem extends AbstractEffectContainerHolder<IGemItem, IView
     }
 
     @Override
-    public IEffectContainer<IView> clone() {
-      Container container = new Container(MAP_SUPPLIER.get(), sockets);
+    public IContainer clone() {
+      Container container = new Container(MAP_SUPPLIER.get(), sockets, material);
       this.copy(container, true);
       return container;
+    }
+
+    @Override
+    public String toString() {
+      return super.toString();
     }
   }
 }

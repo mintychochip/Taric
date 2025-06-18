@@ -93,7 +93,7 @@ public final class SQLDatabase implements IDatabase {
   @Override
   public EffectCooldown createCooldown(Player player, IGemEffect effect) {
     Object uuid = getDatabaseUUID(player.getUniqueId(), source.getType());
-    String effectKey = effect.getKey();
+    String effectKey = effect.key().value();
     Timestamp now = Timestamp.valueOf(LocalDateTime.now());
     executor.executeUpdate(CREATE_COOLDOWN, uuid, effectKey, now);
     return new EffectCooldown(player.getUniqueId(), effectKey, now);
@@ -102,7 +102,7 @@ public final class SQLDatabase implements IDatabase {
   @Override
   public EffectCooldown getCooldown(Player player, IGemEffect effect) {
     Object uuid = getDatabaseUUID(player.getUniqueId(), source.getType());
-    String effectKey = effect.getKey();
+    String effectKey = effect.key().value();
     return executor.queryRow(scanner -> {
       try {
         Timestamp lastUsed = scanner.getTimestamp("last_used");
@@ -117,14 +117,14 @@ public final class SQLDatabase implements IDatabase {
   public boolean updateCooldown(Player player, IGemEffect effect) {
     Timestamp now = Timestamp.valueOf(LocalDateTime.now());
     Object uuid = getDatabaseUUID(player.getUniqueId(), source.getType());
-    String effectKey = effect.getKey();
+    String effectKey = effect.key().value();
     return executor.executeUpdate(UPDATE_COOLDOWN, now, uuid, effectKey);
   }
 
   @Override
   public boolean hasCooldown(Player player, IGemEffect effect) {
     Object uuid = getDatabaseUUID(player.getUniqueId(), source.getType());
-    String effectKey = effect.getKey();
+    String effectKey = effect.key().value();
     return executor.queryRow(scanner -> {
       try {
         return scanner.getBoolean(1);

@@ -15,11 +15,9 @@ import java.util.Map.Entry;
 import java.util.Set;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
-import java.util.stream.Stream;
 import net.kyori.adventure.text.Component;
+import org.aincraft.api.container.gem.IGemInventory;
 import org.aincraft.container.EffectCooldown;
-import org.aincraft.container.GemInventory;
-import org.aincraft.container.SharedList;
 import org.aincraft.container.TargetType;
 import org.aincraft.database.IDatabase;
 import org.aincraft.effects.ArrowLaunchable;
@@ -37,7 +35,6 @@ import org.aincraft.effects.triggers.IOnShootBow.ILaunchable;
 import org.aincraft.effects.triggers.TriggerType;
 import org.aincraft.events.FakeBlockBreakEvent;
 import org.aincraft.events.FakeBlockDropItemEvent;
-import org.aincraft.util.Mutable;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -76,7 +73,7 @@ public class EffectListener implements Listener {
   private final Plugin plugin;
   private final EffectQueuePool<EffectInstance> effectQueuePool;
   private final Map<Player, BlockFace> lastClickedFace = new HashMap<>();
-  private final LoadingCache<Entity, GemInventory> inventoryCache;
+  private final LoadingCache<LivingEntity, IGemInventory> inventoryCache;
   private final Set<Location> blocksDestroyed = new HashSet<>();
   private final IDatabase cooldownDatabase;
 
@@ -84,7 +81,7 @@ public class EffectListener implements Listener {
   @Inject
   public EffectListener(Shared shared, Plugin plugin,
       EffectQueuePool<EffectInstance> effectQueuePool,
-      LoadingCache<Entity, GemInventory> inventoryCache, IDatabase cooldownDatabase) {
+      LoadingCache<LivingEntity, IGemInventory> inventoryCache, IDatabase cooldownDatabase) {
     this.shared = shared;
     this.plugin = plugin;
     this.effectQueuePool = effectQueuePool;
@@ -173,7 +170,7 @@ public class EffectListener implements Listener {
     }
     try {
       EffectQueue<EffectInstance> queue = effectQueuePool.acquireAndFill(
-          TriggerType.ENTITY_HIT_ENTITY, inventoryCache.get(event.getDamager()));
+          TriggerType.ENTITY_HIT_ENTITY, inventoryCache.get((LivingEntity) event.getDamager()));
       if (queue.isEmpty()) {
         effectQueuePool.release(queue);
         return;
@@ -272,8 +269,13 @@ public class EffectListener implements Listener {
     PlayerInventory inventory = player.getInventory();
     ItemStack tool = inventory.getItemInMainHand();
     Block block = event.getBlock();
-    EffectQueue<EffectInstance> queue = effectQueuePool.acquireAndFill(TriggerType.BLOCK_BREAK,
-        GemInventory.from(player));
+    EffectQueue<EffectInstance> queue;
+    try {
+      queue = effectQueuePool.acquireAndFill(TriggerType.BLOCK_BREAK,
+          inventoryCache.get(player));
+    } catch (ExecutionException e) {
+      throw new RuntimeException(e);
+    }
     shared.getExperience().set(event.getExpToDrop());
     for (EffectInstance instance : queue) {
       if (instance.getEffect() instanceof IOnBlockBreak trigger) {

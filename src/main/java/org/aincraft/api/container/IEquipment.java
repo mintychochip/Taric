@@ -1,11 +1,11 @@
-package org.aincraft.container.equipment;
+package org.aincraft.api.container;
 
 import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
 
 public interface IEquipment {
 
-  void setItem(EquipmentSlot slot, ItemStack item);
+  void setItem(EquipmentSlot slot, ItemStack item) throws IllegalArgumentException;
 
   ItemStack getItem(EquipmentSlot slot) throws IllegalArgumentException;
 
@@ -32,4 +32,5 @@ public interface IEquipment {
   void setBoots(ItemStack item);
 
   ItemStack getBoots();
+
 }

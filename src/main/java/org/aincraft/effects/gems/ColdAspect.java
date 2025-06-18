@@ -17,11 +17,6 @@ import org.jetbrains.annotations.NotNull;
 
 final class ColdAspect extends AbstractGemEffect implements IOnEntityHitEntity {
 
-
-  ColdAspect(String key) {
-    super(key);
-  }
-
   private static void playEffects(@NotNull Location location) {
     World world = location.getWorld();
     if (world == null) {

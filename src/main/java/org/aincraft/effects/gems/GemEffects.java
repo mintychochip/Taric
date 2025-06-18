@@ -60,25 +60,25 @@ public final class GemEffects {
   public static IGemEffect PRISMATIC;
 
   public static void registerEffects() {
-    IRegistry<String, IGemEffect> effects = Taric.getEffects();
+    IRegistry<IGemEffect> effects = Taric.getEffects();
     if (effects == null) {
       return;
     }
     IConfiguration gemConfiguration = Taric.getConfiguration("gems");
-    AUTO_SMELT = AutoSmelt.create(gemConfiguration, "auto-smelt");
-    BURROWING = new Burrowing("burrowing");
-    VAMPIRISM = new Vampirism("vampirism");
-    ECHOS_OF_INSIGHT = new Insight("echoes-of-insight");
-    SCAVENGE = new Scavenge("scavenge");
-    NETHER_SCOURGE = new NetherScourge("nether-scourge");
-    VEIN_MINER = new VeinMiner("vein-miner");
-    VORPAL = new Vorpal("vorpal");
-    BLINK = new Blink("blink");
-    COLD_ASPECT = new ColdAspect("cold-aspect");
+    AUTO_SMELT = AutoSmelt.create(gemConfiguration);
+    BURROWING = new Burrowing();
+    VAMPIRISM = new Vampirism();
+    ECHOS_OF_INSIGHT = new Insight();
+    SCAVENGE = new Scavenge();
+    NETHER_SCOURGE = new NetherScourge();
+    VEIN_MINER = new VeinMiner();
+    VORPAL = new Vorpal();
+    BLINK = new Blink();
+    COLD_ASPECT = new ColdAspect();
 //    MIND_CONTROL = new MindControl("mind-control");
-    MULTISHOT = new Multishot("multishot");
-    FLARE = new Flare("flare");
-    PRISMATIC = new Prismatic("prismatic");
+    MULTISHOT = new Multishot();
+    FLARE = new Flare();
+    PRISMATIC = new Prismatic();
     effects.register(AUTO_SMELT)
         .register(BURROWING)
         .register(FLARE)
@@ -102,10 +102,10 @@ public final class GemEffects {
 
   private static void initializeCommonFields(AbstractGemEffect gemEffect,
       IConfiguration gemConfiguration) {
-    ConfigurationSection section = gemConfiguration.getSection(gemEffect.getKey());
+    ConfigurationSection section = gemConfiguration.getSection(gemEffect.key().value());
     if (section == null) {
       throw new IllegalStateException(
-          "missing configuration section for gem effect: " + gemEffect.getKey());
+          "missing configuration section for gem effect: " + gemEffect.key().value());
     }
 
     List<String> missingFields = new ArrayList<>();
@@ -116,7 +116,7 @@ public final class GemEffects {
     }
     if (!missingFields.isEmpty()) {
       throw new IllegalStateException(
-          "missing fields for gem effect: " + gemEffect.getKey() + " : " + missingFields);
+          "missing fields for gem effect: " + gemEffect.key().value() + " : " + missingFields);
     }
 
     Set<EquipmentSlot> requiredActiveSlots = section.getStringList("required-active-slots")
@@ -124,7 +124,7 @@ public final class GemEffects {
 
     ConfigurationSection priority = section.getConfigurationSection("priority");
     if (priority == null) {
-      Taric.getLogger().info("initializing gem: " + gemEffect.getKey()
+      Taric.getLogger().info("initializing gem: " + gemEffect.key().value()
           + " with an empty priority map, consider initializing it manually to prevent undefined behavior.");
     }
     gemEffect.setMeta(new GemEffectMeta(section.getInt("max-rank"),
