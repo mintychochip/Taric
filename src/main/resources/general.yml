@@ -1,0 +1,4 @@
+settings:
+  enable-item-drops-in-creative: true
+  enable-break-effects-in-creative: true
+  enable-item-break-in-creative: true

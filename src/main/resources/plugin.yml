@@ -1,0 +1,10 @@
+name: Taric
+version: '1.1'
+main: org.aincraft.TaricBootstrap
+api-version: '1.21'
+authors: [ mintychochip ]
+commands:
+  item:
+    description: test
+  gem:
+    description: creates a gem

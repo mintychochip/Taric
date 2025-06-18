@@ -1,0 +1,35 @@
+auto-smelt:
+  conversions:
+    # Stone and building materials
+    cobblestone: stone
+    stone: smooth_stone
+    sandstone: smooth_sandstone
+    red_sandstone: smooth_red_sandstone
+    clay: terracotta
+    clay_ball: brick
+    netherrack: nether_brick
+    basalt: smooth_basalt
+
+    # Glass and dyes
+    sand: glass
+    red_sand: glass
+    cactus: green_dye
+    sea_pickle: lime_dye
+
+    # Ores (vanilla)
+    raw_iron: iron_ingot
+    raw_gold: gold_ingot
+    raw_copper: copper_ingot
+    nether_gold_ore: gold_ingot
+    ancient_debris: netherite_scrap
+
+    # Logs to charcoal (optional)
+    oak_log: charcoal
+    spruce_log: charcoal
+    birch_log: charcoal
+    jungle_log: charcoal
+    acacia_log: charcoal
+    dark_oak_log: charcoal
+    mangrove_log: charcoal
+    cherry_log: charcoal
+    bamboo_block: charcoal
