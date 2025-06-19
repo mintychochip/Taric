@@ -10,11 +10,9 @@ import java.sql.SQLException;
 import java.util.Random;
 import java.util.logging.Logger;
 import org.aincraft.commands.GemCommand;
-import org.aincraft.commands.ToItem;
-import org.aincraft.config.IConfiguration;
+import org.aincraft.api.config.IConfiguration;
 import org.aincraft.database.IDatabase;
 import org.aincraft.effects.IGemEffect;
-import org.aincraft.effects.gems.GemEffects;
 import org.aincraft.listeners.EffectListener;
 import org.aincraft.listeners.FakeEventListener;
 import org.aincraft.listeners.GemCacheListener;
@@ -45,9 +43,7 @@ public class Taric {
     Bukkit.getPluginManager()
         .registerEvents(injector.getInstance(FakeEventListener.class), Taric.getPlugin());
     //temporary
-    Bukkit.getPluginCommand("item").setExecutor(new ToItem());
-    Bukkit.getPluginCommand("gem").setExecutor(new GemCommand());
-    GemEffects.registerEffects();
+    Bukkit.getPluginCommand("gem").setExecutor(injector.getInstance(GemCommand.class));
     Settings.initialize();
   }
 
@@ -58,14 +54,6 @@ public class Taric {
     } catch (SQLException e) {
       throw new RuntimeException(e);
     }
-  }
-
-  void registerDefaults() {
-    Taric.getEffects()
-        .register(GemEffects.BURROWING)
-        .register(GemEffects.AUTO_SMELT)
-        .register(GemEffects.VAMPIRISM);
-
   }
 
   public static Taric getInstance() {

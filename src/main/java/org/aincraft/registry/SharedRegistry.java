@@ -1,43 +1,42 @@
 package org.aincraft.registry;
 
-import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashSet;
 import java.util.Iterator;
-import java.util.Set;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 import net.kyori.adventure.key.Key;
 import net.kyori.adventure.key.Keyed;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-public class SimpleRegistry<T extends Keyed> implements IRegistry<T> {
+public class SharedRegistry<T extends Keyed> implements IRegistry<T> {
 
-  private final Set<T> registry = new HashSet<>();
+  private final Map<Key, T> registry = new ConcurrentHashMap<>();
 
   @Override
-  public IRegistry<T> register(T object) {
-    registry.add(object);
+  public synchronized IRegistry<T> register(T object) {
+    registry.put(object.key(), object);
     return this;
   }
 
   @Override
   public @Nullable T get(Key key) {
-    return registry.stream().filter(item -> item.key().equals(key)).findFirst().orElse(null);
+    return registry.get(key);
   }
 
   @Override
   public boolean isRegistered(Key key) {
-    return get(key) != null;
+    return registry.containsKey(key);
   }
 
   @Override
   public Collection<T> values() {
-    return new ArrayList<>(registry);
+    return registry.values();
   }
 
   @NotNull
   @Override
   public Iterator<T> iterator() {
-    return registry.iterator();
+    return registry.values().iterator();
   }
 }

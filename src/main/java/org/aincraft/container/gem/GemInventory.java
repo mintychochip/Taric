@@ -12,7 +12,7 @@ import org.aincraft.api.container.gem.IGemItem;
 import org.aincraft.container.IQueueLoader;
 import org.aincraft.effects.EffectQueuePool.EffectInstance;
 import org.aincraft.effects.IGemEffect;
-import org.aincraft.effects.triggers.TriggerType;
+import org.aincraft.api.effects.triggers.TriggerType;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.inventory.EquipmentSlot;
 import org.jetbrains.annotations.NotNull;

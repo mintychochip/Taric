@@ -6,7 +6,7 @@ import com.google.inject.name.Named;
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
 import java.util.logging.Logger;
-import org.aincraft.config.IConfiguration;
+import org.aincraft.api.config.IConfiguration;
 import org.aincraft.database.DatabaseType;
 import org.aincraft.database.Extractor;
 import org.aincraft.database.IDatabase;

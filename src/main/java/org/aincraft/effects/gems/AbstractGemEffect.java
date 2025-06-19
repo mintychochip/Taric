@@ -4,10 +4,9 @@ import com.google.common.base.Supplier;
 import com.google.common.base.Suppliers;
 import java.util.Map;
 import java.util.Set;
-import net.kyori.adventure.text.Component;
-import org.aincraft.container.Rarity;
+import org.aincraft.api.container.IRarity;
 import org.aincraft.effects.IGemEffect;
-import org.aincraft.effects.triggers.TriggerType;
+import org.aincraft.api.effects.triggers.TriggerType;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.inventory.EquipmentSlot;
@@ -62,7 +61,7 @@ abstract class AbstractGemEffect implements IGemEffect {
   }
 
   @Override
-  public Component getDescription() {
+  public String getDescription() {
     return meta.description();
   }
 
@@ -123,7 +122,7 @@ abstract class AbstractGemEffect implements IGemEffect {
   }
 
   @Override
-  public Rarity getRarity() {
+  public IRarity getRarity() {
     return meta.rarity;
   }
 
@@ -139,9 +138,9 @@ abstract class AbstractGemEffect implements IGemEffect {
   }
 
   public record GemEffectMeta(int maxLevel,
-                              Rarity rarity,
+                              IRarity rarity,
                               Map<TriggerType, Integer> priority,
-                              Component description,
+                              String description,
                               Set<EquipmentSlot> requiredActiveSlots) {
 
   }

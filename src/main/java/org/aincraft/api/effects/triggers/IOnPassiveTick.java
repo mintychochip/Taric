@@ -1,4 +1,4 @@
-package org.aincraft.effects.triggers;
+package org.aincraft.api.effects.triggers;
 
 public interface IOnPassiveTick {
   int getPeriod();

@@ -1,4 +1,4 @@
-package org.aincraft.effects.triggers;
+package org.aincraft.api.effects.triggers;
 
 import java.util.List;
 import org.bukkit.entity.LivingEntity;

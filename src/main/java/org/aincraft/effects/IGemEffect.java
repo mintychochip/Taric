@@ -2,11 +2,10 @@ package org.aincraft.effects;
 
 import java.util.List;
 import java.util.Set;
-import net.kyori.adventure.text.Component;
 import org.aincraft.Taric;
-import org.aincraft.config.IConfiguration;
-import org.aincraft.container.Rarity;
-import org.aincraft.effects.triggers.TriggerType;
+import org.aincraft.api.container.IRarity;
+import org.aincraft.api.config.IConfiguration;
+import org.aincraft.api.effects.triggers.TriggerType;
 import org.bukkit.Keyed;
 import org.bukkit.Material;
 import org.bukkit.inventory.EquipmentSlot;
@@ -16,7 +15,7 @@ public interface IGemEffect extends Keyed {
 
   int getPriority(TriggerType triggerType);
 
-  Rarity getRarity();
+  IRarity getRarity();
 
   boolean isValidTarget(TriggerType triggerType, Material material);
 
@@ -35,7 +34,7 @@ public interface IGemEffect extends Keyed {
 
   TriggerType[] getTriggerTypes();
 
-  Component getDescription();
+  String getDescription();
 
   String getName();
 

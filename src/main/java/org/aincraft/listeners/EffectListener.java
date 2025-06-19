@@ -18,21 +18,21 @@ import java.util.concurrent.ExecutionException;
 import net.kyori.adventure.text.Component;
 import org.aincraft.api.container.gem.IGemInventory;
 import org.aincraft.container.EffectCooldown;
-import org.aincraft.container.TargetType;
+import org.aincraft.api.container.TargetType;
 import org.aincraft.database.IDatabase;
-import org.aincraft.effects.ArrowLaunchable;
 import org.aincraft.effects.EffectQueuePool;
 import org.aincraft.effects.EffectQueuePool.EffectInstance;
 import org.aincraft.effects.EffectQueuePool.EffectQueue;
-import org.aincraft.effects.triggers.IOnActivate;
-import org.aincraft.effects.triggers.IOnBlockBreak;
-import org.aincraft.effects.triggers.IOnBlockDrop;
-import org.aincraft.effects.triggers.IOnEntityHitEntity;
-import org.aincraft.effects.triggers.IOnKillEntity;
-import org.aincraft.effects.triggers.IOnPlayerShear;
-import org.aincraft.effects.triggers.IOnShootBow;
-import org.aincraft.effects.triggers.IOnShootBow.ILaunchable;
-import org.aincraft.effects.triggers.TriggerType;
+import org.aincraft.api.effects.triggers.IOnActivate;
+import org.aincraft.api.effects.triggers.IOnBlockBreak;
+import org.aincraft.api.effects.triggers.IOnBlockDrop;
+import org.aincraft.api.effects.triggers.IOnEntityHitEntity;
+import org.aincraft.api.effects.triggers.IOnKillEntity;
+import org.aincraft.api.effects.triggers.IOnPlayerShear;
+import org.aincraft.api.effects.triggers.IOnShootBow;
+import org.aincraft.api.effects.triggers.IOnShootBow.ILaunchable;
+import org.aincraft.api.effects.triggers.TriggerType;
+import org.aincraft.effects.launchable.LaunchableFactory;
 import org.aincraft.events.FakeBlockBreakEvent;
 import org.aincraft.events.FakeBlockDropItemEvent;
 import org.bukkit.Bukkit;
@@ -145,7 +145,7 @@ public class EffectListener implements Listener {
         return;
       }
       List<ILaunchable> launchables = new ArrayList<>();
-      launchables.add(new ArrowLaunchable((Arrow) projectile));
+      launchables.add(LaunchableFactory.create(projectile));
       projectile.remove();
       for (EffectInstance instance : queue) {
         if (instance.getEffect() instanceof IOnShootBow trigger) {

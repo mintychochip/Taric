@@ -14,7 +14,7 @@ import java.util.Map.Entry;
 import net.kyori.adventure.key.Key;
 import org.aincraft.Taric;
 import org.aincraft.config.ConfigurationFactory;
-import org.aincraft.config.IConfiguration;
+import org.aincraft.api.config.IConfiguration;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.plugin.Plugin;

@@ -4,10 +4,11 @@ import java.io.File;
 import java.io.IOException;
 import java.util.List;
 import java.util.Set;
+import org.aincraft.api.config.IConfiguration;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.plugin.Plugin;
 
-public class YamlConfiguration implements IConfiguration{
+public class YamlConfiguration implements IConfiguration {
 
   private final String path;
   private final Plugin plugin;
@@ -101,7 +102,7 @@ public class YamlConfiguration implements IConfiguration{
   }
 
   @Override
-  public ConfigurationSection getSection(String path) {
+  public ConfigurationSection getConfigurationSection(String path) {
     return config.getConfigurationSection(path);
   }
 }

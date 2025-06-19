@@ -6,10 +6,10 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 import org.aincraft.Settings;
-import org.aincraft.container.Mutable;
-import org.aincraft.container.TargetType;
-import org.aincraft.effects.triggers.IOnBlockBreak;
-import org.aincraft.effects.triggers.TriggerType;
+import org.aincraft.api.container.Mutable;
+import org.aincraft.api.container.TargetType;
+import org.aincraft.api.effects.triggers.IOnBlockBreak;
+import org.aincraft.api.effects.triggers.TriggerType;
 import org.aincraft.events.FakeBlockBreakEvent;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -62,9 +62,8 @@ final class VeinMiner extends AbstractGemEffect implements IOnBlockBreak {
       if (!visited.add(block)) {
         continue; // Already visited
       }
-
       for (BlockFace face : BlockFace.values()) {
-        if (face == BlockFace.SELF) {
+        if (!face.isCartesian()) {
           continue;
         }
         stack.push(new BlockVisit(block.getRelative(face), depth + 1));

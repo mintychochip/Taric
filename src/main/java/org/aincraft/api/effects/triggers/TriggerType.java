@@ -1,4 +1,4 @@
-package org.aincraft.effects.triggers;
+package org.aincraft.api.effects.triggers;
 
 import org.aincraft.effects.IGemEffect;
 import org.jetbrains.annotations.Nullable;

@@ -1,20 +1,20 @@
-package org.aincraft.effects;
+package org.aincraft.effects.launchable;
 
-import org.aincraft.effects.triggers.IOnShootBow.IFireworkLaunchable;
-import org.aincraft.effects.triggers.IOnShootBow.ILaunchable;
+import org.aincraft.api.effects.triggers.IOnShootBow.IFireworkLaunchable;
+import org.aincraft.api.effects.triggers.IOnShootBow.ILaunchable;
 import org.bukkit.entity.Firework;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.inventory.meta.FireworkMeta;
 import org.bukkit.util.Vector;
 
-public final class FireworkLaunchable extends AbstractLaunchable implements IFireworkLaunchable {
+final class FireworkLaunchable extends Launchable implements IFireworkLaunchable {
 
   private boolean shotAtAngle;
   private int ticksToDetonate;
   private int ticksFlown;
   private FireworkMeta meta;
 
-  public FireworkLaunchable(
+  FireworkLaunchable(
       Vector velocity, boolean shotAtAngle, int ticksToDetonate, int ticksFlown,
       FireworkMeta meta) {
     super(Firework.class, velocity);
@@ -24,13 +24,17 @@ public final class FireworkLaunchable extends AbstractLaunchable implements IFir
     this.meta = meta;
   }
 
-  public FireworkLaunchable(
+  FireworkLaunchable(Vector velocity) {
+    super(Firework.class,velocity);
+  }
+
+  FireworkLaunchable(
       Vector velocity, boolean shotAtAngle, int ticksToDetonate,
       FireworkMeta meta) {
     this(velocity, shotAtAngle, ticksToDetonate, 0, meta);
   }
 
-  public FireworkLaunchable(Firework firework) {
+  FireworkLaunchable(Firework firework) {
     this(firework.getVelocity(), firework.isShotAtAngle(), firework.getTicksFlown(),
         firework.getTicksToDetonate(), firework.getFireworkMeta());
   }

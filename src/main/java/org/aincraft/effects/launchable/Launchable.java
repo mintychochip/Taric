@@ -1,16 +1,26 @@
-package org.aincraft.effects;
+package org.aincraft.effects.launchable;
 
-import org.aincraft.effects.triggers.IOnShootBow.ILaunchable;
+import org.aincraft.api.container.IEquipment;
+import org.aincraft.api.effects.triggers.IOnShootBow.IArrowLaunchable;
+import org.aincraft.api.effects.triggers.IOnShootBow.IFireworkLaunchable;
+import org.aincraft.api.effects.triggers.IOnShootBow.ILaunchable;
+import org.aincraft.container.equipment.EquipmentFactory;
+import org.bukkit.enchantments.Enchantment;
+import org.bukkit.entity.AbstractArrow.PickupStatus;
+import org.bukkit.entity.Arrow;
+import org.bukkit.entity.Firework;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Projectile;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.FireworkMeta;
 import org.bukkit.util.Vector;
 
-abstract class AbstractLaunchable implements ILaunchable {
+class Launchable implements ILaunchable {
 
   protected final Class<? extends Projectile> projectileClazz;
   protected Vector velocity;
 
-  AbstractLaunchable(Class<? extends Projectile> projectileClazz, Vector velocity) {
+  Launchable(Class<? extends Projectile> projectileClazz, Vector velocity) {
     this.projectileClazz = projectileClazz;
     this.velocity = velocity;
   }
@@ -37,7 +47,7 @@ abstract class AbstractLaunchable implements ILaunchable {
   @Override
   public ILaunchable clone() {
     try {
-      return (AbstractLaunchable) super.clone();
+      return (Launchable) super.clone();
     } catch (CloneNotSupportedException e) {
       return null;
     }

@@ -1,9 +1,13 @@
 package org.aincraft.commands;
 
+import com.google.inject.Inject;
 import java.util.concurrent.ExecutionException;
+import org.aincraft.api.container.IRarity;
 import org.aincraft.api.container.gem.IGemItem;
 import org.aincraft.container.gem.GemItem;
-import org.aincraft.effects.gems.GemEffects;
+import org.aincraft.effects.gems.Effects;
+import org.aincraft.registry.IRegistry;
+import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -11,6 +15,13 @@ import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
 public class GemCommand implements CommandExecutor {
+
+  private final IRegistry<IRarity> rarityIRegistry;
+
+  @Inject
+  public GemCommand(IRegistry<IRarity> rarityIRegistry) {
+    this.rarityIRegistry = rarityIRegistry;
+  }
 
   @Override
   public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command,
@@ -20,14 +31,16 @@ public class GemCommand implements CommandExecutor {
         IGemItem item = GemItem.from(player.getInventory().getItemInMainHand(),
             () -> GemItem.create(player.getInventory().getItemInMainHand(), 3));
         item.editContainer(container -> {
-          container.addEffect(GemEffects.MULTISHOT,15, true);
-          container.addEffect(GemEffects.FLARE, 3);
-//          container.addEffect(GemEffects.BURROWING, 3, true);
-//          container.addEffect(GemEffects.FLARE, 3, true);
+          container.addEffect(Effects.MULTISHOT,3);
+          container.addEffect(Effects.FLARE,3);
         });
       } catch (ExecutionException | IllegalArgumentException e) {
         throw new RuntimeException(e);
       }
+      for (IRarity rarity : rarityIRegistry) {
+        Bukkit.broadcastMessage(rarity.toString());
+      }
+
     }
     return false;
   }

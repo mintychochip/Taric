@@ -1,9 +1,9 @@
-package org.aincraft.effects;
+package org.aincraft.effects.launchable;
 
 import org.aincraft.api.container.IEquipment;
 import org.aincraft.container.equipment.EquipmentFactory;
-import org.aincraft.effects.triggers.IOnShootBow.IArrowLaunchable;
-import org.aincraft.effects.triggers.IOnShootBow.ILaunchable;
+import org.aincraft.api.effects.triggers.IOnShootBow.IArrowLaunchable;
+import org.aincraft.api.effects.triggers.IOnShootBow.ILaunchable;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.AbstractArrow.PickupStatus;
 import org.bukkit.entity.Arrow;
@@ -11,16 +11,20 @@ import org.bukkit.entity.LivingEntity;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.Vector;
 
-public class ArrowLaunchable extends AbstractLaunchable implements IArrowLaunchable {
+class ArrowLaunchable extends Launchable implements IArrowLaunchable {
 
   private boolean critical;
   private double damage;
 
-  public ArrowLaunchable(Arrow arrow) {
+  ArrowLaunchable(Vector velocity) {
+    this(velocity, false, 1);
+  }
+
+  ArrowLaunchable(Arrow arrow) {
     this(arrow.getVelocity(), arrow.isCritical(), arrow.getDamage());
   }
 
-  public ArrowLaunchable(Vector velocity, boolean critical, double damage) {
+  ArrowLaunchable(Vector velocity, boolean critical, double damage) {
     super(Arrow.class, velocity);
     this.critical = critical;
     this.damage = damage;

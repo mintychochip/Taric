@@ -2,25 +2,18 @@ package org.aincraft.container.gem;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
-import io.papermc.paper.datacomponent.item.ItemLore;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.TreeMap;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
 import java.util.function.Supplier;
 import net.kyori.adventure.key.Key;
-import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.format.TextColor;
-import net.kyori.adventure.text.format.TextDecoration;
 import org.aincraft.Taric;
 import org.aincraft.api.container.gem.IEffectContainerHolder;
 import org.aincraft.api.container.gem.IGem;
 import org.aincraft.api.container.gem.IGem.IContainer;
 import org.aincraft.api.container.gem.IGem.IView;
-import org.aincraft.container.Rarity;
 import org.aincraft.effects.IGemEffect;
-import org.aincraft.util.Roman;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.inventory.ItemStack;
@@ -104,27 +97,27 @@ public class Gem extends
       super(effects, key, container);
     }
 
-    @Override
-    protected ItemLore effectsToLore() {
-      ItemLore.Builder builder = ItemLore.lore();
-      for (Entry<Key, Integer> entry : effects.entrySet()) {
-        IGemEffect effect = Taric.getEffects().get(entry.getKey());
-        if (effect == null) {
-          continue;
-        }
-        Rarity rarity = effect.getRarity();
-        String name = effect.getName();
-        TextColor color = TextColor.color(rarity.getColor());
-        Component styledName = Component.text(name).color(color);
-        Component roman = Component.text(Roman.fromInteger(entry.getValue()))
-            .color(color);
-        Component label = Component.empty().append(styledName).append(Component.space())
-            .append(roman).decoration(
-                TextDecoration.ITALIC, false);
-        builder.addLine(label);
-      }
-      return builder.build();
-    }
+//    @Override
+//    protected ItemLore effectsToLore() {
+//      ItemLore.Builder builder = ItemLore.lore();
+//      for (Entry<Key, Integer> entry : effects.entrySet()) {
+//        IGemEffect effect = Taric.getEffects().get(entry.getKey());
+//        if (effect == null) {
+//          continue;
+//        }
+//        Rarity rarity = effect.getRarity();
+//        String name = effect.getName();
+//        TextColor color = TextColor.color(rarity.getColor());
+//        Component styledName = Component.text(name).color(color);
+//        Component roman = Component.text(Roman.fromInteger(entry.getValue()))
+//            .color(color);
+//        Component label = Component.empty().append(styledName).append(Component.space())
+//            .append(roman).decoration(
+//                TextDecoration.ITALIC, false);
+//        builder.addLine(label);
+//      }
+//      return builder.build();
+//    }
   }
 
   private static final class Container extends AbstractEffectContainer<IContainer, IView> implements

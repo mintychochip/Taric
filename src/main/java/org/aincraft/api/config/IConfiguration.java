@@ -1,4 +1,4 @@
-package org.aincraft.config;
+package org.aincraft.api.config;
 
 import java.util.List;
 import java.util.Set;
@@ -18,5 +18,5 @@ public interface IConfiguration {
   double getDouble(String path);
   double getDouble(String path, double def);
   List<String> getStringList(String path);
-  ConfigurationSection getSection(String path);
+  ConfigurationSection getConfigurationSection(String path);
 }

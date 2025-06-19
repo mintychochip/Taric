@@ -1,6 +1,6 @@
 //package org.aincraft.effects.gems;
 //
-//import org.aincraft.effects.triggers.IOnEntityHitEntity;
+//import org.aincraft.api.effects.triggers.IOnEntityHitEntity;
 //import java.util.Map;
 //import java.util.Set;
 //import net.minecraft.world.entity.Mob;
