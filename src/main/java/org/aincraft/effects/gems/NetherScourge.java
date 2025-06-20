@@ -5,8 +5,8 @@ import java.util.Set;
 import org.aincraft.Settings;
 import org.aincraft.Taric;
 import org.aincraft.api.container.TargetType;
-import org.aincraft.api.effects.triggers.IOnEntityHitEntity;
-import org.aincraft.api.effects.triggers.TriggerType;
+import org.aincraft.api.container.trigger.IOnEntityHitEntity;
+import org.aincraft.api.container.trigger.TriggerType;
 import org.bukkit.Material;
 import org.bukkit.entity.Entity;
 import org.bukkit.event.entity.EntityDamageEvent.DamageModifier;
@@ -21,14 +21,14 @@ final class NetherScourge extends AbstractGemEffect implements IOnEntityHitEntit
   }
 
   @Override
-  public void onHitEntity(int rank, Entity damager, Entity damagee,
-      Map<DamageModifier, Double> modifiers) {
+  public void onHitEntity(IEntityHitEntityReceiver receiver) {
+    Entity damagee = receiver.getDamagee();
     if (!Settings.NETHER_SCOURGE_AFFECTED_TYPES.contains(damagee.getType())) {
       return;
     }
-    double base = modifiers.get(DamageModifier.BASE);
-    double total = base + rank * Taric.getRandom()
+    double base = receiver.getDamage(DamageModifier.BASE);
+    double total = base + receiver.getRank() * Taric.getRandom()
         .nextInt(Settings.NETHER_SCOURGE_DAMAGE_RANK_MIN, Settings.NETHER_SCOURGE_DAMAGE_RANK_MAX);
-    modifiers.put(DamageModifier.BASE, total);
+    receiver.setDamage(DamageModifier.BASE,total);
   }
 }

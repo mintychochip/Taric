@@ -5,8 +5,8 @@ import java.util.Set;
 import org.aincraft.api.container.Mutable;
 import org.aincraft.api.container.TargetType;
 import org.aincraft.api.container.TypeSet;
-import org.aincraft.api.effects.triggers.IOnBlockBreak;
-import org.aincraft.api.effects.triggers.TriggerType;
+import org.aincraft.api.container.trigger.IOnBlockBreak;
+import org.aincraft.api.container.trigger.TriggerType;
 import org.aincraft.events.FakeBlockBreakEvent;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -27,8 +27,14 @@ final class Burrowing extends AbstractGemEffect implements IOnBlockBreak {
   }
 
   @Override
-  public void onBlockBreak(int rank, Player player, ItemStack tool, BlockFace hitFace, Block origin,
-      Mutable<Integer> experience) {
+  public void onBlockBreak(IBlockBreakReceiver receiver) {
+    if (!receiver.isInitial()) {
+      return;
+    }
+    Block origin = receiver.getBlock();
+    int rank = receiver.getRank();
+    BlockFace face = receiver.getBlockFace();
+    Player player = receiver.getPlayer();
     Location location = origin.getLocation();
     for (int v = -rank; v <= rank; v++) {
       for (int u = -rank; u <= rank; u++) {
@@ -36,7 +42,7 @@ final class Burrowing extends AbstractGemEffect implements IOnBlockBreak {
           continue;
         }
 
-        Location target = switch (hitFace) {
+        Location target = switch (face) {
           case UP, DOWN -> location.clone().add(u, 0, v);
           case EAST, WEST -> location.clone().add(0, -v, u);
           case NORTH, SOUTH -> location.clone().add(u, -v, 0);

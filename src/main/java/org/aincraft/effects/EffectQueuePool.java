@@ -7,10 +7,10 @@ import java.util.Map;
 import java.util.PriorityQueue;
 import java.util.Queue;
 import java.util.concurrent.ConcurrentHashMap;
+import org.aincraft.api.container.trigger.TriggerType;
 import org.aincraft.container.IQueueLoader;
 import org.aincraft.container.IQueueLoader.IQueueLoaderHolder;
 import org.aincraft.effects.EffectQueuePool.EffectInstance;
-import org.aincraft.api.effects.triggers.TriggerType;
 
 public final class EffectQueuePool<T extends EffectInstance> {
 

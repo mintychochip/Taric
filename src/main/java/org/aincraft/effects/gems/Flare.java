@@ -6,9 +6,10 @@ import java.util.Random;
 import java.util.Set;
 import org.aincraft.Taric;
 import org.aincraft.api.container.TargetType;
-import org.aincraft.api.effects.triggers.IOnShootBow;
-import org.aincraft.api.effects.triggers.TriggerType;
-import org.aincraft.effects.launchable.LaunchableFactory;
+import org.aincraft.api.container.launchable.ILaunchable;
+import org.aincraft.api.container.trigger.IOnShootBow;
+import org.aincraft.api.container.trigger.TriggerType;
+import org.aincraft.container.launchable.LaunchableFactory;
 import org.bukkit.Color;
 import org.bukkit.FireworkEffect;
 import org.bukkit.FireworkEffect.Type;
@@ -29,8 +30,9 @@ final class Flare extends AbstractGemEffect implements IOnShootBow {
   public void onShootBow(int rank, LivingEntity launcher, List<ILaunchable> instances) {
     for (int i = 0; i < instances.size(); ++i) {
       ILaunchable launchable = instances.get(i);
-      instances.set(i, LaunchableFactory.createFirework(launchable.getVelocity(), true, 60,
-          randomFirework(FIREWORK_POOL.getNext(), rank)));
+      instances.set(i,
+          LaunchableFactory.createFirework(launchable.getVelocity(), launchable.getLocation(), true, 60,
+              randomFirework(FIREWORK_POOL.getNext(), rank)));
     }
   }
 

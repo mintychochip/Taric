@@ -53,9 +53,9 @@ public final class Settings {
     if (effects.isRegistered(Effects.VAMPIRISM.key())) {
       VAMPIRIC_FACTOR = Effects.VAMPIRISM.loadDouble(gemConfig, "factor", 1);
     }
-    if (effects.isRegistered(Effects.ECHOS_OF_INSIGHT.key())) {
-      KNOWLEDGE_ORBS_MIN = Effects.ECHOS_OF_INSIGHT.loadInt(gemConfig, "orbs-min", 1);
-      KNOWLEDGE_ORBS_MAX = Effects.ECHOS_OF_INSIGHT.loadInt(gemConfig, "orbs-max", 1);
+    if (effects.isRegistered(Effects.INSIGHT.key())) {
+      KNOWLEDGE_ORBS_MIN = Effects.INSIGHT.loadInt(gemConfig, "orbs-min", 1);
+      KNOWLEDGE_ORBS_MAX = Effects.INSIGHT.loadInt(gemConfig, "orbs-max", 1);
     }
     if (effects.isRegistered(Effects.SCAVENGE.key())) {
       SCAVENGE_BLACK_LIST = Effects.SCAVENGE.loadStringList(gemConfig, "black-list",
@@ -79,10 +79,10 @@ public final class Settings {
     if (effects.isRegistered(Effects.VORPAL.key())) {
       VORPAL_CHANCE_RANK = Effects.VORPAL.loadDouble(gemConfig, "chance-rank", 1);
     }
-    if (effects.isRegistered(Effects.COLD_ASPECT.key())) {
-      COLD_ASPECT_FREEZE_TICKS_RANK = Effects.COLD_ASPECT.loadInt(gemConfig,
+    if (effects.isRegistered(Effects.FROSTBITE.key())) {
+      COLD_ASPECT_FREEZE_TICKS_RANK = Effects.FROSTBITE.loadInt(gemConfig,
           "freeze-ticks-rank", 1);
-      COLD_ASPECT_MAX_FREEZE_TICKS = Effects.COLD_ASPECT.loadInt(gemConfig, "max-freeze-ticks",
+      COLD_ASPECT_MAX_FREEZE_TICKS = Effects.FROSTBITE.loadInt(gemConfig, "max-freeze-ticks",
           1);
     }
     if (effects.isRegistered(Effects.MULTISHOT.key())) {

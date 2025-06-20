@@ -1,6 +1,8 @@
 package org.aincraft.listeners;
 
 
+import static org.bukkit.event.EventPriority.HIGH;
+
 import com.google.common.base.Function;
 import com.google.common.base.Functions;
 import com.google.common.cache.LoadingCache;
@@ -16,23 +18,33 @@ import java.util.Set;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 import net.kyori.adventure.text.Component;
-import org.aincraft.api.container.gem.IGemInventory;
-import org.aincraft.container.EffectCooldown;
+import org.aincraft.api.container.Mutable;
 import org.aincraft.api.container.TargetType;
+import org.aincraft.api.container.gem.IGemInventory;
+import org.aincraft.api.container.launchable.ILaunchable;
+import org.aincraft.api.container.trigger.IOnActivate;
+import org.aincraft.api.container.trigger.IOnBlockBreak;
+import org.aincraft.api.container.trigger.IOnBlockDrop;
+import org.aincraft.api.container.trigger.IOnBucketEmpty;
+import org.aincraft.api.container.trigger.IOnEntityHitEntity;
+import org.aincraft.api.container.trigger.IOnEntityHitEntity.IEntityHitEntityReceiver;
+import org.aincraft.api.container.trigger.IOnInteract;
+import org.aincraft.api.container.trigger.IOnKillEntity;
+import org.aincraft.api.container.trigger.IOnPlayerShear;
+import org.aincraft.api.container.trigger.IOnShootBow;
+import org.aincraft.api.container.trigger.TriggerType;
+import org.aincraft.container.EffectCooldown;
+import org.aincraft.container.launchable.LaunchableFactory;
+import org.aincraft.container.trigger.BlockBreakReceiver;
+import org.aincraft.container.trigger.BlockDropReceiver;
+import org.aincraft.container.trigger.EntityHitEntityReceiver;
+import org.aincraft.container.trigger.InteractReceiver;
+import org.aincraft.container.trigger.KillTriggerReceiver;
+import org.aincraft.container.trigger.PlayerShearEntityReceiver;
 import org.aincraft.database.IDatabase;
 import org.aincraft.effects.EffectQueuePool;
 import org.aincraft.effects.EffectQueuePool.EffectInstance;
 import org.aincraft.effects.EffectQueuePool.EffectQueue;
-import org.aincraft.api.effects.triggers.IOnActivate;
-import org.aincraft.api.effects.triggers.IOnBlockBreak;
-import org.aincraft.api.effects.triggers.IOnBlockDrop;
-import org.aincraft.api.effects.triggers.IOnEntityHitEntity;
-import org.aincraft.api.effects.triggers.IOnKillEntity;
-import org.aincraft.api.effects.triggers.IOnPlayerShear;
-import org.aincraft.api.effects.triggers.IOnShootBow;
-import org.aincraft.api.effects.triggers.IOnShootBow.ILaunchable;
-import org.aincraft.api.effects.triggers.TriggerType;
-import org.aincraft.effects.launchable.LaunchableFactory;
 import org.aincraft.events.FakeBlockBreakEvent;
 import org.aincraft.events.FakeBlockDropItemEvent;
 import org.bukkit.Bukkit;
@@ -43,7 +55,6 @@ import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.block.BlockState;
 import org.bukkit.damage.DamageSource;
-import org.bukkit.entity.Arrow;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Item;
 import org.bukkit.entity.LivingEntity;
@@ -60,6 +71,7 @@ import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent.DamageModifier;
 import org.bukkit.event.entity.EntityDeathEvent;
 import org.bukkit.event.entity.EntityShootBowEvent;
+import org.bukkit.event.player.PlayerBucketEmptyEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerShearEntityEvent;
 import org.bukkit.inventory.EquipmentSlot;
@@ -89,7 +101,7 @@ public class EffectListener implements Listener {
     this.cooldownDatabase = cooldownDatabase;
   }
 
-  @EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
+  @EventHandler(priority = HIGH, ignoreCancelled = true)
   private void checkFaceBeforeBlockBreak(final PlayerInteractEvent event) {
     Action action = event.getAction();
     if (!action.isLeftClick()) {
@@ -104,7 +116,10 @@ public class EffectListener implements Listener {
     if (!(damageSource.getCausingEntity() instanceof Player player)) {
       return;
     }
+    KillTriggerReceiver receiver = new KillTriggerReceiver();
+    receiver.setHandle(event);
     try {
+
       EffectQueue<EffectInstance> queue = effectQueuePool.acquireAndFill(
           TriggerType.KILL_ENTITY, inventoryCache.get(player));
       if (queue.isEmpty()) {
@@ -112,20 +127,13 @@ public class EffectListener implements Listener {
         return;
       }
 
-      shared.getDrops().replaceAll(event.getDrops());
-      shared.getExperience().set(event.getDroppedExp());
       for (EffectInstance instance : queue) {
         if (instance.getEffect() instanceof IOnKillEntity trigger) {
-          trigger.onKillEntity(instance.getRank(), damageSource, event.getEntity(),
-              shared.getExperience(),
-              shared.getDrops());
+          receiver.setRank(instance.getRank());
+          trigger.onKillEntity(receiver);
         }
       }
       effectQueuePool.release(queue);
-      List<ItemStack> eventDrops = event.getDrops();
-      eventDrops.clear();
-      eventDrops.addAll(shared.getDrops());
-      event.setDroppedExp(shared.getExperience().get());
     } catch (ExecutionException e) {
       throw new RuntimeException(e);
     }
@@ -168,6 +176,8 @@ public class EffectListener implements Listener {
     if (!(damager instanceof Mob || damager instanceof Player)) {
       return;
     }
+    EntityHitEntityReceiver receiver = new EntityHitEntityReceiver();
+    receiver.setHandle(event);
     try {
       EffectQueue<EffectInstance> queue = effectQueuePool.acquireAndFill(
           TriggerType.ENTITY_HIT_ENTITY, inventoryCache.get((LivingEntity) event.getDamager()));
@@ -175,21 +185,13 @@ public class EffectListener implements Listener {
         effectQueuePool.release(queue);
         return;
       }
-      @SuppressWarnings("deprecation")
-      Map<DamageModifier, Double> modifiers = new HashMap<>();
-      modifiers.put(DamageModifier.BASE, event.getDamage(DamageModifier.BASE));
-      Map<DamageModifier, Function<? super Double, Double>> modifierFunctions = new HashMap<>();
-      modifierFunctions.put(DamageModifier.BASE, Functions.identity());
       for (EffectInstance instance : queue) {
         if (instance.getEffect() instanceof IOnEntityHitEntity trigger) {
-          trigger.onHitEntity(instance.getRank(), event.getDamager(), event.getEntity(),
-              modifiers);
+          receiver.setRank(instance.getRank());
+          trigger.onHitEntity(receiver);
         }
       }
       effectQueuePool.release(queue);
-      for (Entry<DamageModifier, Double> entry : modifiers.entrySet()) {
-        event.setDamage(entry.getKey(), entry.getValue());
-      }
     } catch (ExecutionException e) {
       throw new RuntimeException(e);
     }
@@ -205,16 +207,15 @@ public class EffectListener implements Listener {
         effectQueuePool.release(queue);
         return;
       }
-
-      shared.getDrops().replaceAll(event.getDrops());
+      PlayerShearEntityReceiver receiver = new PlayerShearEntityReceiver();
+      receiver.setHandle(PlayerShearEntityReceiver.createEvent(event));
       for (EffectInstance instance : queue) {
         if (instance.getEffect() instanceof IOnPlayerShear trigger) {
-          trigger.onPlayerShear(instance.getRank(), event.getPlayer(), event.getEntity(),
-              event.getItem(), shared.getDrops());
+          receiver.setRank(instance.getRank());
+          trigger.onPlayerShear(receiver);
         }
       }
       effectQueuePool.release(queue);
-      event.setDrops(shared.getDrops());
     } catch (ExecutionException e) {
       throw new RuntimeException(e);
     }
@@ -226,35 +227,25 @@ public class EffectListener implements Listener {
       return;
     }
     Block block = event.getBlock();
-    BlockState blockState = event.getBlockState();
     Location location = block.getLocation();
     if (!blocksDestroyed.contains(location)) {
       return;
     }
     blocksDestroyed.remove(location);
-    Player player = event.getPlayer();
+    BlockDropReceiver receiver = new BlockDropReceiver();
+    receiver.setHandle(event);
     try {
       EffectQueue<EffectInstance> queue = effectQueuePool.acquireAndFill(TriggerType.BLOCK_DROP,
-          inventoryCache.get(player));
-      if (queue.isEmpty()) {
-        effectQueuePool.release(queue);
-        return;
-      }
-      shared.getDrops().replaceAll(event.getItems().stream().map(Item::getItemStack));
-      for (EffectInstance instance : queue) {
-        if (instance.getEffect() instanceof IOnBlockDrop trigger) {
-          trigger.onBlockDrop(instance.getRank(), player, block, blockState, shared.getDrops());
+          inventoryCache.get(event.getPlayer()));
+      if (!queue.isEmpty()) {
+        for (EffectInstance instance : queue) {
+          if (instance.getEffect() instanceof IOnBlockDrop trigger) {
+            receiver.setRank(instance.getRank());
+            trigger.onBlockDrop(receiver);
+          }
         }
       }
       effectQueuePool.release(queue);
-      World world = location.getWorld();
-      List<Item> items = shared.getDrops().stream().map(stack -> {
-        Item item = world.createEntity(location, Item.class);
-        item.setItemStack(stack);
-        return item;
-      }).toList();
-      event.getItems().clear();
-      event.getItems().addAll(items);
     } catch (ExecutionException e) {
       throw new RuntimeException(e);
     }
@@ -266,28 +257,75 @@ public class EffectListener implements Listener {
       return;
     }
     Player player = event.getPlayer();
-    PlayerInventory inventory = player.getInventory();
-    ItemStack tool = inventory.getItemInMainHand();
-    Block block = event.getBlock();
-    EffectQueue<EffectInstance> queue;
     try {
-      queue = effectQueuePool.acquireAndFill(TriggerType.BLOCK_BREAK,
+      EffectQueue<EffectInstance> queue = effectQueuePool.acquireAndFill(TriggerType.BLOCK_BREAK,
           inventoryCache.get(player));
+      if (!queue.isEmpty()) {
+        BlockBreakReceiver receiver = new BlockBreakReceiver();
+        receiver.setHandle(event);
+        receiver.setBlockFace(lastClickedFace.get(player));
+        receiver.setInitial(true);
+        for (EffectInstance instance : queue) {
+          if (instance.getEffect() instanceof IOnBlockBreak trigger) {
+            receiver.setRank(instance.getRank());
+            trigger.onBlockBreak(receiver);
+          }
+        }
+      }
     } catch (ExecutionException e) {
       throw new RuntimeException(e);
     }
-    shared.getExperience().set(event.getExpToDrop());
-    for (EffectInstance instance : queue) {
-      if (instance.getEffect() instanceof IOnBlockBreak trigger) {
-        trigger.onBlockBreak(instance.getRank(), player, tool, lastClickedFace.get(player),
-            block, shared.getExperience());
-      }
-    }
-    effectQueuePool.release(queue);
-    event.setExpToDrop(shared.getExperience().get());
-    blocksDestroyed.add(block.getLocation());
+    blocksDestroyed.add(event.getBlock().getLocation());
   }
 
+  @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
+  private void onInteract(final PlayerInteractEvent event) {
+    Player player = event.getPlayer();
+    try {
+      EffectQueue<EffectInstance> queue = effectQueuePool.acquireAndFill(
+          TriggerType.INTERACT, inventoryCache.get(player));
+      if (!queue.isEmpty()) {
+        InteractReceiver receiver = new InteractReceiver();
+        receiver.setHandle(event);
+        for (EffectInstance instance : queue) {
+          if (instance.getEffect() instanceof IOnInteract trigger) {
+            receiver.setRank(instance.getRank());
+            trigger.onInteract(receiver);
+          }
+        }
+      }
+    } catch (ExecutionException e) {
+      throw new RuntimeException(e);
+    }
+  }
+
+  //TODO: fix api, usage is trash rn
+  @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
+  private void onBucketEmpty(final PlayerBucketEmptyEvent event) {
+    Player player = event.getPlayer();
+    try {
+      EffectQueue<EffectInstance> queue = effectQueuePool.acquireAndFill(TriggerType.BUCKET_EMPTY,
+          inventoryCache.get(player));
+      if (queue.isEmpty()) {
+        return;
+      }
+      EquipmentSlot hand = event.getHand();
+      ItemStack bucket = event.getItemStack();
+      Mutable<ItemStack> after = new Mutable<>(
+          bucket != null ? bucket.clone() : new ItemStack(Material.AIR));
+      for (EffectInstance instance : queue) {
+        if (instance.getEffect() instanceof IOnBucketEmpty trigger) {
+          trigger.onBucketEmpty(instance.getRank(), player, bucket, event.getBucket(), hand, after);
+        }
+      }
+      ItemStack newStack = after.get();
+      if (!newStack.getType().isAir()) {
+        event.setItemStack(newStack);
+      }
+    } catch (ExecutionException e) {
+      throw new RuntimeException(e);
+    }
+  }
   /*
   Semantics of onActivate, the only effect being checked is the hand
    */

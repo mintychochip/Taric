@@ -1,5 +1,6 @@
 package org.aincraft.effects.gems;
 
+import org.aincraft.Taric;
 import org.aincraft.effects.IGemEffect;
 
 public final class Effects {
@@ -10,7 +11,7 @@ public final class Effects {
 
   public static IGemEffect VAMPIRISM;
 
-  public static IGemEffect ECHOS_OF_INSIGHT;
+  public static IGemEffect INSIGHT;
 
   public static IGemEffect SCAVENGE;
 
@@ -22,7 +23,7 @@ public final class Effects {
 
   public static IGemEffect BLINK;
 
-  public static IGemEffect COLD_ASPECT;
+  public static IGemEffect FROSTBITE;
 
   public static IGemEffect MULTISHOT;
 
@@ -30,19 +31,25 @@ public final class Effects {
 
   public static IGemEffect PRISMATIC;
 
+  public static IGemEffect HARVEST;
+
+  public static IGemEffect OVERFLOWING;
+
   static {
-    AUTO_SMELT = new AutoSmelt();
+    AUTO_SMELT = AutoSmelt.create(Taric.getConfiguration("gems"));
     BURROWING = new Burrowing();
     VAMPIRISM = new Vampirism();
-    ECHOS_OF_INSIGHT = new Insight();
+    INSIGHT = new Insight();
     SCAVENGE = new Scavenge();
     VORPAL = new Vorpal();
     NETHER_SCOURGE = new NetherScourge();
     VEIN_MINER = new VeinMiner();
     BLINK = new Blink();
-    COLD_ASPECT = new ColdAspect();
+    FROSTBITE = new Frostbite();
     MULTISHOT = new Multishot();
     FLARE = new Flare();
     PRISMATIC = new Prismatic();
+    HARVEST = new Harvest();
+    OVERFLOWING = new Overflowing();
   }
 }

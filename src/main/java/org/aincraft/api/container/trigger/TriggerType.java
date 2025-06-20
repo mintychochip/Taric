@@ -1,4 +1,4 @@
-package org.aincraft.api.effects.triggers;
+package org.aincraft.api.container.trigger;
 
 import org.aincraft.effects.IGemEffect;
 import org.jetbrains.annotations.Nullable;
@@ -11,7 +11,10 @@ public enum TriggerType {
   SHOOT_BOW(IOnShootBow.class),
   PLAYER_SHEAR(IOnPlayerShear.class),
   ACTIVATE(IOnActivate.class),
-  SOCKET(IOnSocketEffect.class);
+  INTERACT(IOnInteract.class),
+  SOCKET(IOnSocketEffect.class),
+  BUCKET_EMPTY(IOnBucketEmpty.class),
+  FISH(IOnFish.class);
 
   private final Class<?> triggerClazz;
 

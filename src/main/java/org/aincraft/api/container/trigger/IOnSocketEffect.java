@@ -1,4 +1,4 @@
-package org.aincraft.api.effects.triggers;
+package org.aincraft.api.container.trigger;
 
 import org.bukkit.inventory.ItemStack;
 

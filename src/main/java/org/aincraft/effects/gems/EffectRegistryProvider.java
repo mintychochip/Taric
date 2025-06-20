@@ -4,8 +4,8 @@ import com.google.inject.Inject;
 import com.google.inject.Provider;
 import com.google.inject.name.Named;
 import org.aincraft.Taric;
-import org.aincraft.api.container.IRarity;
 import org.aincraft.api.config.IConfiguration;
+import org.aincraft.api.container.IRarity;
 import org.aincraft.effects.IGemEffect;
 import org.aincraft.registry.IRegistry;
 import org.aincraft.registry.SharedRegistry;
@@ -33,15 +33,17 @@ public final class EffectRegistryProvider implements Provider<IRegistry<IGemEffe
         .register(Effects.BURROWING)
         .register(Effects.FLARE)
         .register(Effects.VAMPIRISM)
-        .register(Effects.ECHOS_OF_INSIGHT)
+        .register(Effects.INSIGHT)
         .register(Effects.SCAVENGE)
         .register(Effects.NETHER_SCOURGE)
         .register(Effects.VEIN_MINER)
         .register(Effects.VORPAL)
         .register(Effects.PRISMATIC)
         .register(Effects.BLINK)
-        .register(Effects.COLD_ASPECT)
-        .register(Effects.MULTISHOT);
+        .register(Effects.FROSTBITE)
+        .register(Effects.MULTISHOT)
+        .register(Effects.OVERFLOWING)
+        .register(Effects.HARVEST);
     GemMetaFactory factory = new GemMetaFactory(rarityRegistry, plugin);
     for (String gemKey : gemConfiguration.getKeys(false)) {
       try {

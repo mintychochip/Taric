@@ -16,13 +16,6 @@ import org.jetbrains.annotations.NotNull;
 
 public class GemCommand implements CommandExecutor {
 
-  private final IRegistry<IRarity> rarityIRegistry;
-
-  @Inject
-  public GemCommand(IRegistry<IRarity> rarityIRegistry) {
-    this.rarityIRegistry = rarityIRegistry;
-  }
-
   @Override
   public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command,
       @NotNull String label, @NotNull String @NotNull [] args) {
@@ -31,16 +24,13 @@ public class GemCommand implements CommandExecutor {
         IGemItem item = GemItem.from(player.getInventory().getItemInMainHand(),
             () -> GemItem.create(player.getInventory().getItemInMainHand(), 3));
         item.editContainer(container -> {
-          container.addEffect(Effects.MULTISHOT,3);
-          container.addEffect(Effects.FLARE,3);
+          container.addEffect(Effects.VEIN_MINER,3,true);
+//          container.addEffect(Effects.HARVEST,3);
+          container.addEffect(Effects.INSIGHT,3);
         });
       } catch (ExecutionException | IllegalArgumentException e) {
         throw new RuntimeException(e);
       }
-      for (IRarity rarity : rarityIRegistry) {
-        Bukkit.broadcastMessage(rarity.toString());
-      }
-
     }
     return false;
   }

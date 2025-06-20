@@ -8,8 +8,8 @@ import java.util.Set;
 import org.aincraft.Settings;
 import org.aincraft.api.container.Mutable;
 import org.aincraft.api.container.TargetType;
-import org.aincraft.api.effects.triggers.IOnBlockBreak;
-import org.aincraft.api.effects.triggers.TriggerType;
+import org.aincraft.api.container.trigger.IOnBlockBreak;
+import org.aincraft.api.container.trigger.TriggerType;
 import org.aincraft.events.FakeBlockBreakEvent;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -20,16 +20,14 @@ import org.bukkit.inventory.ItemStack;
 
 final class VeinMiner extends AbstractGemEffect implements IOnBlockBreak {
 
-  private record BlockVisit(Block block, int depth) {
-
-  }
-
-  private static final Set<Block> VISITED = new HashSet<>();
-  private static final Deque<BlockVisit> STACK = new ArrayDeque<>();
-
   @Override
-  public void onBlockBreak(int rank, Player player, ItemStack tool, BlockFace hitFace,
-      Block block, Mutable<Integer> experience) {
+  public void onBlockBreak(IBlockBreakReceiver receiver) {
+    if (!receiver.isInitial()) {
+      return;
+    }
+    Block block = receiver.getBlock();
+    int rank = receiver.getRank();
+    Player player = receiver.getPlayer();
     Material material = block.getType();
     if (!material.toString().endsWith("_ORE")) {
       return;
@@ -43,6 +41,13 @@ final class VeinMiner extends AbstractGemEffect implements IOnBlockBreak {
       Bukkit.getPluginManager().callEvent(new FakeBlockBreakEvent(b, player));
     }
   }
+
+  private record BlockVisit(Block block, int depth) {
+
+  }
+
+  private static final Set<Block> VISITED = new HashSet<>();
+  private static final Deque<BlockVisit> STACK = new ArrayDeque<>();
 
   private static void veinMine(Set<Block> visited, Deque<BlockVisit> stack, Block start,
       int maxDepth, Material original) {

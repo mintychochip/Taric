@@ -1,7 +1,8 @@
-package org.aincraft.effects.launchable;
+package org.aincraft.container.launchable;
 
-import org.aincraft.api.effects.triggers.IOnShootBow.IFireworkLaunchable;
-import org.aincraft.api.effects.triggers.IOnShootBow.ILaunchable;
+import org.aincraft.api.container.launchable.IFireworkLaunchable;
+import org.aincraft.api.container.launchable.ILaunchable;
+import org.bukkit.Location;
 import org.bukkit.entity.Firework;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.inventory.meta.FireworkMeta;
@@ -15,27 +16,22 @@ final class FireworkLaunchable extends Launchable implements IFireworkLaunchable
   private FireworkMeta meta;
 
   FireworkLaunchable(
-      Vector velocity, boolean shotAtAngle, int ticksToDetonate, int ticksFlown,
+      Vector velocity, Location location, boolean shotAtAngle, int ticksToDetonate, int ticksFlown,
       FireworkMeta meta) {
-    super(Firework.class, velocity);
+    super(Firework.class, velocity, location);
     this.shotAtAngle = shotAtAngle;
     this.ticksToDetonate = ticksToDetonate;
     this.ticksFlown = ticksFlown;
     this.meta = meta;
   }
 
-  FireworkLaunchable(Vector velocity) {
-    super(Firework.class,velocity);
-  }
-
-  FireworkLaunchable(
-      Vector velocity, boolean shotAtAngle, int ticksToDetonate,
-      FireworkMeta meta) {
-    this(velocity, shotAtAngle, ticksToDetonate, 0, meta);
+  FireworkLaunchable(Vector velocity, Location location) {
+    super(Firework.class, velocity, location);
   }
 
   FireworkLaunchable(Firework firework) {
-    this(firework.getVelocity(), firework.isShotAtAngle(), firework.getTicksFlown(),
+    this(firework.getVelocity(), firework.getLocation(), firework.isShotAtAngle(),
+        firework.getTicksFlown(),
         firework.getTicksToDetonate(), firework.getFireworkMeta());
   }
 
@@ -91,6 +87,6 @@ final class FireworkLaunchable extends Launchable implements IFireworkLaunchable
 
   @Override
   public ILaunchable clone() {
-    return new FireworkLaunchable(velocity, shotAtAngle, ticksToDetonate, ticksFlown, meta);
+    return new FireworkLaunchable(velocity, location, shotAtAngle, ticksToDetonate, ticksFlown, meta);
   }
 }

@@ -13,6 +13,7 @@ public final class TargetType {
   public static final TypeSet SHOVEL = TypeSet.withSuffix("_SHOVEL");
   public static final TypeSet HOE = TypeSet.withSuffix("_HOE");
   public static final TypeSet SWORD = TypeSet.withSuffix("_SWORD");
+  public static final TypeSet BUCKET = TypeSet.withSuffix("BUCKET");
   public static final TypeSet BOW = TypeSet.single(Material.BOW);
   public static final TypeSet CROSSBOW = TypeSet.single(Material.CROSSBOW);
   public static final TypeSet RANGED_WEAPON = TypeSet.builder().union(BOW, CROSSBOW).build();

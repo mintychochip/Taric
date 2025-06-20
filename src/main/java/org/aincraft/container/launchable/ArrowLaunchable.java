@@ -1,9 +1,10 @@
-package org.aincraft.effects.launchable;
+package org.aincraft.container.launchable;
 
 import org.aincraft.api.container.IEquipment;
+import org.aincraft.api.container.launchable.IArrowLaunchable;
+import org.aincraft.api.container.launchable.ILaunchable;
 import org.aincraft.container.equipment.EquipmentFactory;
-import org.aincraft.api.effects.triggers.IOnShootBow.IArrowLaunchable;
-import org.aincraft.api.effects.triggers.IOnShootBow.ILaunchable;
+import org.bukkit.Location;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.AbstractArrow.PickupStatus;
 import org.bukkit.entity.Arrow;
@@ -16,16 +17,12 @@ class ArrowLaunchable extends Launchable implements IArrowLaunchable {
   private boolean critical;
   private double damage;
 
-  ArrowLaunchable(Vector velocity) {
-    this(velocity, false, 1);
-  }
-
   ArrowLaunchable(Arrow arrow) {
-    this(arrow.getVelocity(), arrow.isCritical(), arrow.getDamage());
+    this(arrow.getVelocity(), arrow.getLocation(), arrow.isCritical(), arrow.getDamage());
   }
 
-  ArrowLaunchable(Vector velocity, boolean critical, double damage) {
-    super(Arrow.class, velocity);
+  ArrowLaunchable(Vector velocity, Location location, boolean critical, double damage) {
+    super(Arrow.class, velocity, location);
     this.critical = critical;
     this.damage = damage;
   }
@@ -63,8 +60,9 @@ class ArrowLaunchable extends Launchable implements IArrowLaunchable {
     return damage;
   }
 
+
   @Override
   public ILaunchable clone() {
-    return new ArrowLaunchable(velocity, critical, damage);
+    return new ArrowLaunchable(velocity,location,critical,damage);
   }
 }

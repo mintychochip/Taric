@@ -23,4 +23,5 @@ public enum Rarities {
   public String getIdentifier() {
     return this.toString().toLowerCase();
   }
+
 }

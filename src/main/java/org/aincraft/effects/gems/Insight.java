@@ -1,20 +1,17 @@
 package org.aincraft.effects.gems;
 
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import org.aincraft.Settings;
 import org.aincraft.Taric;
 import org.aincraft.api.container.Mutable;
 import org.aincraft.api.container.TargetType;
-import org.aincraft.api.effects.triggers.IOnBlockBreak;
-import org.aincraft.api.effects.triggers.IOnKillEntity;
-import org.aincraft.api.effects.triggers.TriggerType;
+import org.aincraft.api.container.trigger.IOnBlockBreak;
+import org.aincraft.api.container.trigger.IOnKillEntity;
+import org.aincraft.api.container.trigger.TriggerType;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
-import org.bukkit.damage.DamageSource;
-import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
@@ -37,17 +34,14 @@ final class Insight extends AbstractGemEffect implements IOnKillEntity, IOnBlock
   }
 
   @Override
-  public void onKillEntity(int rank, DamageSource damageSource, LivingEntity entity,
-      Mutable<Integer> experience, List<ItemStack> drops) {
-    experience.set(echoes(rank, experience.get()));
+  public void onKillEntity(IKillEntityReceiver receiver) {
+    receiver.setExperience(echoes(receiver.getRank(),receiver.getExperience()));
   }
 
   @Override
-  public void onBlockBreak(int rank, Player player, ItemStack tool, BlockFace hitFace, Block block,
-      Mutable<Integer> experience) {
-    if (experience.get() <= 0) {
+  public void onBlockBreak(IBlockBreakReceiver receiver) {
+    if (receiver.getExperience() <= 0)
       return;
-    }
-    experience.set(echoes(experience.get(), rank));
+    receiver.setExperience(echoes(receiver.getExperience(),receiver.getRank()));
   }
 }

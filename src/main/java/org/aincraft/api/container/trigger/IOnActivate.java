@@ -1,4 +1,4 @@
-package org.aincraft.api.effects.triggers;
+package org.aincraft.api.container.trigger;
 
 import java.time.Duration;
 import org.bukkit.entity.Player;

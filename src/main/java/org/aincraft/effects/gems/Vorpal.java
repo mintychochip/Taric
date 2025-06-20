@@ -1,33 +1,28 @@
 package org.aincraft.effects.gems;
 
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import org.aincraft.Settings;
 import org.aincraft.Taric;
-import org.aincraft.api.container.Mutable;
 import org.aincraft.api.container.TargetType;
-import org.aincraft.api.effects.triggers.IOnKillEntity;
-import org.aincraft.api.effects.triggers.TriggerType;
+import org.aincraft.api.container.trigger.IOnKillEntity;
+import org.aincraft.api.container.trigger.TriggerType;
 import org.bukkit.Material;
-import org.bukkit.damage.DamageSource;
 import org.bukkit.entity.EntityType;
-import org.bukkit.entity.LivingEntity;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.Nullable;
 
 final class Vorpal extends AbstractGemEffect implements IOnKillEntity {
 
   @Override
-  public void onKillEntity(int rank, DamageSource damageSource, LivingEntity entity,
-      Mutable<Integer> experience, List<ItemStack> drops) {
-    EntityType type = entity.getType();
+  public void onKillEntity(IKillEntityReceiver receiver) {
+    EntityType type = receiver.getSlain().getType();
     if (!(type == EntityType.ZOMBIE || type == EntityType.SKELETON || type == EntityType.CREEPER
         || type == EntityType.WITHER_SKELETON || type == EntityType.PIGLIN)) {
       return;
     }
-    if (entity.getType() == EntityType.WITHER_SKELETON) {
-      for (ItemStack drop : drops) {
+    if (type == EntityType.WITHER_SKELETON) {
+      for (ItemStack drop : receiver.getDrops()) {
         Material material = drop.getType();
         String materialString = material.toString();
         if (materialString.endsWith("_HEAD") || materialString.endsWith("_SKULL")) {
@@ -35,12 +30,12 @@ final class Vorpal extends AbstractGemEffect implements IOnKillEntity {
         }
       }
     }
-    if (Taric.getRandom().nextDouble() <= Settings.VORPAL_CHANCE_RANK * rank) {
+    if (Taric.getRandom().nextDouble() <= Settings.VORPAL_CHANCE_RANK * receiver.getRank()) {
       Material material = getHeadFromType(type);
       if (material == null) {
         return;
       }
-      drops.add(new ItemStack(material));
+      receiver.getDrops().add(new ItemStack(material));
     }
   }
 

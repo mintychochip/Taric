@@ -5,23 +5,30 @@ import com.google.inject.Inject;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
+import java.util.stream.Collectors;
 import org.aincraft.Settings;
-import org.aincraft.api.container.gem.IGemInventory;
 import org.aincraft.api.container.Mutable;
+import org.aincraft.api.container.gem.IGemInventory;
+import org.aincraft.api.container.trigger.IOnBlockBreak;
+import org.aincraft.api.container.trigger.IOnBlockDrop;
+import org.aincraft.api.container.trigger.TriggerType;
+import org.aincraft.container.trigger.BlockBreakReceiver;
+import org.aincraft.container.trigger.BlockDropReceiver;
 import org.aincraft.effects.EffectQueuePool;
 import org.aincraft.effects.EffectQueuePool.EffectInstance;
 import org.aincraft.effects.EffectQueuePool.EffectQueue;
-import org.aincraft.api.effects.triggers.IOnBlockDrop;
-import org.aincraft.api.effects.triggers.TriggerType;
 import org.aincraft.events.FakeBlockBreakEvent;
 import org.aincraft.events.FakeBlockDropItemEvent;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.Particle;
+import org.bukkit.Sound;
 import org.bukkit.World;
 import org.bukkit.block.Block;
+import org.bukkit.block.BlockState;
 import org.bukkit.enchantments.Enchantment;
+import org.bukkit.entity.Entity;
 import org.bukkit.entity.ExperienceOrb;
 import org.bukkit.entity.Item;
 import org.bukkit.entity.LivingEntity;
@@ -37,8 +44,6 @@ public class FakeEventListener implements Listener {
   private final LoadingCache<LivingEntity, IGemInventory> inventoryCache;
   private final EffectQueuePool<EffectInstance> queuePool;
 
-  private static final List<ItemStack> FAKE_DROP_LIST = new ArrayList<>();
-  private static final Mutable<Integer> EXPERIENCE_MUTABLE = new Mutable<>(0);
   @Inject
   public FakeEventListener(LoadingCache<LivingEntity, IGemInventory> inventoryCache,
       EffectQueuePool<EffectInstance> queuePool) {
@@ -79,43 +84,43 @@ public class FakeEventListener implements Listener {
         return;
       }
     }
+    BlockState state = block.getState();
+    Location center = location.clone().add(0.5, 0.5, 0.5);
+    List<Item> list = block.getDrops(player.getInventory().getItemInMainHand(), player).stream().map(stack -> {
+      Item item = world.createEntity(center, Item.class);
+      item.setItemStack(stack);
+      return item;
+    }).collect(Collectors.toList());
     block.setType(Material.AIR);
+    if (event.getExpToDrop() > 0) {
+      world.spawn(center, ExperienceOrb.class,
+          orb -> orb.setExperience(event.getExpToDrop()));
+    }
+    Bukkit.getPluginManager().callEvent(new FakeBlockDropItemEvent(block,
+        state, player,
+        list));
+
   }
 
   @EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
   private void onFakeBlockDrop(final FakeBlockBreakEvent event) {
     Player player = event.getPlayer();
-    PlayerInventory inventory = player.getInventory();
-    ItemStack tool = inventory.getItemInMainHand();
-    Block block = event.getBlock();
     try {
-      EffectQueue<EffectInstance> queue = queuePool.acquireAndFill(TriggerType.BLOCK_DROP,
+      EffectQueue<EffectInstance> queue = queuePool.acquireAndFill(TriggerType.BLOCK_BREAK,
           inventoryCache.get(player));
-      FAKE_DROP_LIST.clear();
-      FAKE_DROP_LIST.addAll(block.getDrops(tool, player));
-      EXPERIENCE_MUTABLE.set(event.getExpToDrop());
       if (!queue.isEmpty()) {
+        BlockBreakReceiver receiver = new BlockBreakReceiver();
+        receiver.setHandle(event);
+        receiver.setInitial(false);
+        receiver.setBlockFace(null);
         for (EffectInstance instance : queue) {
-          if (instance.getEffect() instanceof IOnBlockDrop trigger) {
-            trigger.onBlockDrop(instance.getRank(), player, block, block.getState(), FAKE_DROP_LIST);
+          if (instance.getEffect() instanceof IOnBlockBreak trigger) {
+            receiver.setRank(instance.getRank());
+            trigger.onBlockBreak(receiver);
           }
         }
       }
       queuePool.release(queue);
-      Location location = block.getLocation();
-      Location center = location.clone().add(0.5, 0.5, 0.5);
-      World world = location.getWorld();
-      List<Item> list = FAKE_DROP_LIST.stream().map(stack -> {
-        Item item = world.createEntity(center, Item.class);
-        item.setItemStack(stack);
-        return item;
-      }).toList();
-      if (EXPERIENCE_MUTABLE.get() > 0) {
-        world.spawn(location, ExperienceOrb.class, orb -> orb.setExperience(EXPERIENCE_MUTABLE.get()));
-      }
-      Bukkit.getPluginManager().callEvent(new FakeBlockDropItemEvent(block,
-          block.getState(), player,
-          list));
     } catch (ExecutionException e) {
       throw new RuntimeException(e);
     }
@@ -123,6 +128,23 @@ public class FakeEventListener implements Listener {
 
   @EventHandler(priority = EventPriority.MONITOR)
   private void onFakeBlockDropItem(final FakeBlockDropItemEvent event) {
+    try {
+      EffectQueue<EffectInstance> queue = queuePool.acquireAndFill(TriggerType.BLOCK_DROP,
+          inventoryCache.get(
+              event.getPlayer()));
+      if (!queue.isEmpty()) {
+        BlockDropReceiver receiver = new BlockDropReceiver();
+        receiver.setHandle(event);
+        for (EffectInstance instance : queue) {
+          if (instance.getEffect() instanceof IOnBlockDrop trigger) {
+            receiver.setRank(instance.getRank());
+            trigger.onBlockDrop(receiver);
+          }
+        }
+      }
+    } catch (ExecutionException e) {
+      throw new RuntimeException(e);
+    }
     for (Item item : event.getItems()) {
       Location location = item.getLocation();
       World world = location.getWorld();

@@ -5,8 +5,9 @@ import java.util.Map;
 import java.util.Set;
 import org.aincraft.Taric;
 import org.aincraft.api.container.TypeSet;
-import org.aincraft.api.effects.triggers.IOnPlayerShear;
-import org.aincraft.api.effects.triggers.TriggerType;
+import org.aincraft.api.container.trigger.IOnPlayerShear;
+import org.aincraft.api.container.trigger.IShearEntityReceiver.IPlayerShearReceiver;
+import org.aincraft.api.container.trigger.TriggerType;
 import org.bukkit.DyeColor;
 import org.bukkit.Material;
 import org.bukkit.entity.Entity;
@@ -21,10 +22,11 @@ final class Prismatic extends AbstractGemEffect implements IOnPlayerShear {
     return Map.of(TriggerType.PLAYER_SHEAR, TypeSet.single(Material.SHEARS));
   }
 
+
+
   @Override
-  public void onPlayerShear(int rank, Player player, Entity sheared, ItemStack tool,
-      List<ItemStack> drops) {
-    if (!(sheared instanceof Sheep sheep)) {
+  public void onPlayerShear(IPlayerShearReceiver receiver) {
+    if (!(receiver.getSheared() instanceof Sheep sheep)) {
       return;
     }
     sheep.setColor(randomColor());

@@ -7,15 +7,18 @@ import java.util.Map;
 import java.util.Set;
 import org.aincraft.Settings;
 import org.aincraft.Taric;
+import org.aincraft.api.config.IConfiguration;
 import org.aincraft.api.container.TargetType;
-import org.aincraft.api.effects.triggers.IOnBlockDrop;
-import org.aincraft.api.effects.triggers.TriggerType;
+import org.aincraft.api.container.trigger.IOnBlockDrop;
+import org.aincraft.api.container.trigger.TriggerType;
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.Particle;
 import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockState;
+import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
@@ -23,42 +26,42 @@ import org.jetbrains.annotations.NotNull;
 final class AutoSmelt extends AbstractGemEffect implements IOnBlockDrop {
 
   private final Map<Material, ItemStack> conversions = new HashMap<>();
-//
-//  public static @NotNull AutoSmelt create(@NotNull IConfiguration gemConfiguration) {
-//    AutoSmelt as = new AutoSmelt();
-//
-//    String path = "auto-smelt.conversions";
-//
-//    if (!gemConfiguration.contains(path)) {
-//      throw new IllegalStateException(
-//          "[AutoSmelt] Missing required configuration section: '" + path + "'. " +
-//              "Expected a list of block-to-material mappings like:\n" +
-//              "  cobblestone: stone\n  iron_ore: iron_ingot"
-//      );
-//    }
-//
-//    ConfigurationSection conversionSection = gemConfiguration.getConfigurationSection(path);
-//    Set<String> sectionKeys = conversionSection.getKeys(false);
-//
-//    for (String sectionKey : sectionKeys) {
-//      try {
-//        Material base = Material.valueOf(sectionKey.toUpperCase());
-//        String convertedRaw = conversionSection.getString(sectionKey, "").toUpperCase();
-//        Material converted = Material.valueOf(convertedRaw);
-//        as.addConversion(base, converted);
-//      } catch (IllegalArgumentException ex) {
-//        Taric.getLogger().warning(
-//            "[AutoSmelt] Invalid material conversion in config: " +
-//                sectionKey + " → " + conversionSection.getString(sectionKey)
-//        );
-//      }
-//    }
-//    Taric.getLogger().info(
-//        String.format("[AutoSmelt] Loaded %d item conversions", as.conversions.size())
-//    );
-//
-//    return as;
-//  }
+
+  public static @NotNull AutoSmelt create(@NotNull IConfiguration gemConfiguration) {
+    AutoSmelt as = new AutoSmelt();
+
+    String path = "auto-smelt.conversions";
+
+    if (!gemConfiguration.contains(path)) {
+      throw new IllegalStateException(
+          "[AutoSmelt] Missing required configuration section: '" + path + "'. " +
+              "Expected a list of block-to-material mappings like:\n" +
+              "  cobblestone: stone\n  iron_ore: iron_ingot"
+      );
+    }
+
+    ConfigurationSection conversionSection = gemConfiguration.getConfigurationSection(path);
+    Set<String> sectionKeys = conversionSection.getKeys(false);
+
+    for (String sectionKey : sectionKeys) {
+      try {
+        Material base = Material.valueOf(sectionKey.toUpperCase());
+        String convertedRaw = conversionSection.getString(sectionKey, "").toUpperCase();
+        Material converted = Material.valueOf(convertedRaw);
+        as.addConversion(base, converted);
+      } catch (IllegalArgumentException ex) {
+        Taric.getLogger().warning(
+            "[AutoSmelt] Invalid material conversion in config: " +
+                sectionKey + " → " + conversionSection.getString(sectionKey)
+        );
+      }
+    }
+    Taric.getLogger().info(
+        String.format("[AutoSmelt] Loaded %d item conversions", as.conversions.size())
+    );
+
+    return as;
+  }
 
   public void addConversion(Material base, Material converted) {
     conversions.put(base, new ItemStack(converted, 1));
@@ -100,31 +103,22 @@ final class AutoSmelt extends AbstractGemEffect implements IOnBlockDrop {
   }
 
   @Override
-  public void onBlockDrop(int rank, Player player, Block block, BlockState blockState,
-      List<ItemStack> drops) {
+  public void onBlockDrop(IBlockDropReceiver receiver) {
+    List<ItemStack> drops = receiver.getDrops();
     if (drops.isEmpty()) {
       return;
     }
-    List<ItemStack> modifiedDrops = new ArrayList<>(drops.size());
-    for (ItemStack drop : drops) {
-      Material type = drop.getType();
-      if (smelt(rank) && conversions.containsKey(type)) {
-        ItemStack smelted = conversions.get(type);
-        if (smelted != null) {
-          ItemStack newSmelted = smelted.clone();
-          newSmelted.setAmount(drop.getAmount());
-          modifiedDrops.add(newSmelted);
-        } else {
-          modifiedDrops.add(drop.clone());
-        }
-        if (Settings.fakeEffectsShouldPlay(player)) {
-          playSmeltEffects(blockState.getBlock());
-        }
-      } else {
-        modifiedDrops.add(drop.clone());
+    for (int i = 0; i < drops.size(); ++i) {
+      ItemStack drop = drops.get(i);
+      Material material = drop.getType();
+      if (smelt(receiver.getRank()) && conversions.containsKey(material)) {
+        ItemStack smelted = conversions.get(material).clone();
+        Bukkit.broadcastMessage(smelted.toString());
+        smelted.setAmount(drop.getAmount());
+        drops.set(i,smelted);
       }
     }
-    drops.clear();
-    drops.addAll(modifiedDrops);
+    Bukkit.broadcastMessage("here" + drops.toString());
+    receiver.setDrops(drops);
   }
 }

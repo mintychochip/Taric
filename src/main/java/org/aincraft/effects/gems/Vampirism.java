@@ -4,8 +4,8 @@ import java.util.Map;
 import java.util.Set;
 import org.aincraft.Settings;
 import org.aincraft.api.container.TargetType;
-import org.aincraft.api.effects.triggers.IOnEntityHitEntity;
-import org.aincraft.api.effects.triggers.TriggerType;
+import org.aincraft.api.container.trigger.IOnEntityHitEntity;
+import org.aincraft.api.container.trigger.TriggerType;
 import org.bukkit.Color;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -41,16 +41,12 @@ public final class Vampirism extends AbstractGemEffect implements IOnEntityHitEn
   }
 
   @Override
-  public void onHitEntity(int rank, Entity damager, Entity damagee,
-      Map<DamageModifier, Double> modifiers) {
+  public void onHitEntity(IEntityHitEntityReceiver receiver) {
+    Entity damager = receiver.getDamager();
     if (!(damager instanceof LivingEntity livingEntity)) {
       return;
     }
-    Double base = modifiers.get(DamageModifier.BASE);
-    if (base == null) {
-      return;
-    }
-
+    double base = receiver.getDamage(DamageModifier.BASE);
     double heal = Settings.VAMPIRIC_FACTOR * base;
     double currentHealth = livingEntity.getHealth();
 
@@ -65,7 +61,7 @@ public final class Vampirism extends AbstractGemEffect implements IOnEntityHitEn
     } else {
       livingEntity.setHealth(maxHealth);
     }
-    if (damagee instanceof LivingEntity livingDamagee) {
+    if (receiver.getDamagee() instanceof LivingEntity livingDamagee) {
       playEffects(livingDamagee.getEyeLocation());
     }
   }
