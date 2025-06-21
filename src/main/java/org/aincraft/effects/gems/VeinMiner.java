@@ -6,7 +6,6 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 import org.aincraft.Settings;
-import org.aincraft.api.container.Mutable;
 import org.aincraft.api.container.TargetType;
 import org.aincraft.api.container.trigger.IOnBlockBreak;
 import org.aincraft.api.container.trigger.TriggerType;
@@ -16,18 +15,17 @@ import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.entity.Player;
-import org.bukkit.inventory.ItemStack;
 
 final class VeinMiner extends AbstractGemEffect implements IOnBlockBreak {
 
   @Override
-  public void onBlockBreak(IBlockBreakReceiver receiver) {
-    if (!receiver.isInitial()) {
+  public void onBlockBreak(IBlockBreakContext context) {
+    if (!context.isInitial()) {
       return;
     }
-    Block block = receiver.getBlock();
-    int rank = receiver.getRank();
-    Player player = receiver.getPlayer();
+    Block block = context.getBlock();
+    int rank = context.getRank();
+    Player player = context.getPlayer();
     Material material = block.getType();
     if (!material.toString().endsWith("_ORE")) {
       return;

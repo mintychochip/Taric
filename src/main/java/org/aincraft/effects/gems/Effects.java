@@ -35,6 +35,8 @@ public final class Effects {
 
   public static IGemEffect OVERFLOWING;
 
+  public static IGemEffect GLIMMER;
+
   static {
     AUTO_SMELT = AutoSmelt.create(Taric.getConfiguration("gems"));
     BURROWING = new Burrowing();
@@ -51,5 +53,6 @@ public final class Effects {
     PRISMATIC = new Prismatic();
     HARVEST = new Harvest();
     OVERFLOWING = new Overflowing();
+    GLIMMER = new Glimmer();
   }
 }

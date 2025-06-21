@@ -1,9 +1,8 @@
 package org.aincraft.container.trigger;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
-import org.aincraft.api.container.trigger.IOnBlockDrop.IBlockDropReceiver;
+import org.aincraft.api.container.trigger.IOnBlockDrop.IBlockDropContext;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.block.Block;
@@ -12,9 +11,10 @@ import org.bukkit.entity.Item;
 import org.bukkit.entity.Player;
 import org.bukkit.event.block.BlockDropItemEvent;
 import org.bukkit.inventory.ItemStack;
+import org.jetbrains.annotations.NotNull;
 
-public final class BlockDropReceiver extends AbstractTriggerReceiver<BlockDropItemEvent> implements
-    IBlockDropReceiver {
+public final class BlockDropContext extends AbstractTriggerContext<BlockDropItemEvent> implements
+    IBlockDropContext {
 
   @Override
   public Player getPlayer() {
@@ -47,7 +47,7 @@ public final class BlockDropReceiver extends AbstractTriggerReceiver<BlockDropIt
   }
 
   @Override
-  public List<ItemStack> getDrops() {
+  public @NotNull List<ItemStack> getDrops() {
     return event.getItems().stream().map(Item::getItemStack).collect(Collectors.toList());
   }
 }

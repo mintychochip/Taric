@@ -1,15 +1,14 @@
 package org.aincraft.api.container.trigger;
 
-import org.aincraft.api.container.receiver.ITriggerReceiver;
+import org.aincraft.api.container.receiver.ITriggerContext;
 import org.bukkit.entity.Entity;
-import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent.DamageModifier;
 
 public interface IOnEntityHitEntity {
 
-  void onHitEntity(IEntityHitEntityReceiver receiver);
+  void onHitEntity(IEntityHitEntityContext context);
 
-  interface IEntityHitEntityReceiver extends ITriggerReceiver {
+  interface IEntityHitEntityContext extends ITriggerContext {
 
     Entity getDamager();
 

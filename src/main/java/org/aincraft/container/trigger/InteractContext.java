@@ -1,6 +1,6 @@
 package org.aincraft.container.trigger;
 
-import org.aincraft.api.container.trigger.IOnInteract.IInteractReceiver;
+import org.aincraft.api.container.trigger.IOnInteract.IInteractContext;
 import org.bukkit.Location;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
@@ -13,8 +13,8 @@ import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-public final class InteractReceiver extends AbstractTriggerReceiver<PlayerInteractEvent> implements
-    IInteractReceiver {
+public final class InteractContext extends AbstractTriggerContext<PlayerInteractEvent> implements
+    IInteractContext {
 
   @Override
   public @NotNull Player getPlayer() {

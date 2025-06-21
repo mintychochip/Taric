@@ -1,15 +1,13 @@
 package org.aincraft.container.trigger;
 
-import java.util.HashMap;
-import java.util.Map;
-import org.aincraft.api.container.trigger.IOnEntityHitEntity.IEntityHitEntityReceiver;
+import org.aincraft.api.container.trigger.IOnEntityHitEntity.IEntityHitEntityContext;
 import org.bukkit.entity.Entity;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent.DamageModifier;
 
-public final class EntityHitEntityReceiver extends
-    AbstractTriggerReceiver<EntityDamageByEntityEvent> implements
-    IEntityHitEntityReceiver {
+public final class EntityHitEntityContext extends
+    AbstractTriggerContext<EntityDamageByEntityEvent> implements
+    IEntityHitEntityContext {
 
   @Override
   public Entity getDamager() {

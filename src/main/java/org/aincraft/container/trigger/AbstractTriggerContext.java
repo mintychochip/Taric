@@ -1,14 +1,13 @@
 package org.aincraft.container.trigger;
 
-import org.aincraft.api.container.receiver.ITriggerReceiver;
-import org.bukkit.event.Event;
+import org.aincraft.api.container.receiver.ITriggerContext;
 
-public abstract class AbstractTriggerReceiver<E> implements ITriggerReceiver {
+abstract class AbstractTriggerContext<E> implements ITriggerContext {
 
   protected E event;
   protected int rank;
 
-  AbstractTriggerReceiver() {
+  AbstractTriggerContext() {
     this.event = null;
     this.rank = 0;
   }

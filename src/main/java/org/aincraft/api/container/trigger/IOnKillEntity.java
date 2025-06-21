@@ -1,18 +1,19 @@
 package org.aincraft.api.container.trigger;
 
+import java.util.List;
 import org.aincraft.api.container.receiver.IReceiveDrops;
-import org.aincraft.api.container.receiver.IReceiveExperience;
-import org.aincraft.api.container.receiver.ITriggerReceiver;
+import org.aincraft.api.container.receiver.IExperienceContext;
+import org.aincraft.api.container.receiver.ITriggerContext;
 import org.bukkit.damage.DamageSource;
 import org.bukkit.entity.LivingEntity;
-import org.bukkit.event.entity.EntityDeathEvent;
+import org.bukkit.inventory.ItemStack;
 
 public interface IOnKillEntity {
 
-  void onKillEntity(IKillEntityReceiver receiver);
+  void onKillEntity(IKillEntityContext context);
 
-  interface IKillEntityReceiver extends ITriggerReceiver, IReceiveDrops,
-      IReceiveExperience {
+  interface IKillEntityContext extends ITriggerContext, IReceiveDrops<List<ItemStack>>,
+      IExperienceContext {
 
     DamageSource getDamageSource();
 

@@ -1,15 +1,15 @@
 package org.aincraft.effects.gems;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import org.aincraft.Settings;
 import org.aincraft.Taric;
 import org.aincraft.api.config.IConfiguration;
 import org.aincraft.api.container.TargetType;
+import org.aincraft.api.container.TypeSet;
 import org.aincraft.api.container.trigger.IOnBlockDrop;
+import org.aincraft.api.container.trigger.IOnFish;
 import org.aincraft.api.container.trigger.TriggerType;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -17,9 +17,7 @@ import org.bukkit.Material;
 import org.bukkit.Particle;
 import org.bukkit.World;
 import org.bukkit.block.Block;
-import org.bukkit.block.BlockState;
 import org.bukkit.configuration.ConfigurationSection;
-import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 
@@ -103,22 +101,22 @@ final class AutoSmelt extends AbstractGemEffect implements IOnBlockDrop {
   }
 
   @Override
-  public void onBlockDrop(IBlockDropReceiver receiver) {
-    List<ItemStack> drops = receiver.getDrops();
+  public void onBlockDrop(IBlockDropContext context) {
+    List<ItemStack> drops = context.getDrops();
     if (drops.isEmpty()) {
       return;
     }
     for (int i = 0; i < drops.size(); ++i) {
       ItemStack drop = drops.get(i);
       Material material = drop.getType();
-      if (smelt(receiver.getRank()) && conversions.containsKey(material)) {
+      if (smelt(context.getRank()) && conversions.containsKey(material)) {
         ItemStack smelted = conversions.get(material).clone();
         Bukkit.broadcastMessage(smelted.toString());
         smelted.setAmount(drop.getAmount());
-        drops.set(i,smelted);
+        drops.set(i, smelted);
       }
     }
     Bukkit.broadcastMessage("here" + drops.toString());
-    receiver.setDrops(drops);
+    context.setDrops(drops);
   }
 }

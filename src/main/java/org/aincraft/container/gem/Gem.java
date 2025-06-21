@@ -50,21 +50,30 @@ public class Gem extends
 
 
   @Nullable
-  public static Gem fromIfExists(ItemStack stack) {
+  public static IGem fromIfExists(ItemStack stack) {
     return GemItemFactory.holderFromIfExists(stack, GEM_KEY,
         Gem.Container.class, container -> new Gem(stack, container));
   }
 
   @NotNull
-  public static Gem from(ItemStack stack, Callable<? extends Gem> loader)
+  public static IGem from(ItemStack stack, Callable<? extends Gem> loader)
       throws ExecutionException {
     return GemItemFactory.holderFrom(stack, GEM_KEY, loader,
         Gem.Container.class,
         container -> new Gem(stack, container));
   }
 
+  @NotNull
+  public static IGem create(Material material) {
+    return create(material,1);
+  }
+
+  @NotNull
+  public static IGem create(Material material, int amount) {
+    return new Gem(new ItemStack(material,amount),new Container(MAP_SUPPLIER.get()));
+  }
   @Nullable
-  public static Gem create(ItemStack stack) {
+  public static IGem create(ItemStack stack) {
     if (GemItemFactory.hasContainer(GEM_KEY, stack)) {
       return null;
     }

@@ -10,7 +10,7 @@ import java.time.Duration;
 import org.aincraft.api.container.IRarity;
 import org.aincraft.api.container.gem.IGemInventory;
 import org.aincraft.container.gem.GemInventory;
-import org.aincraft.container.rarity.RarityRegistryProvider;
+import org.aincraft.container.rarity.RarityRegistryInitializer;
 import org.aincraft.database.Extractor;
 import org.aincraft.database.Extractor.ResourceExtractor;
 import org.aincraft.database.IDatabase;
@@ -34,7 +34,7 @@ public class RuntimeModule extends AbstractModule {
     bind(new TypeLiteral<LoadingCache<LivingEntity, IGemInventory>>() {
     }).toInstance(createPlayerCache());
     bind(new TypeLiteral<IRegistry<IRarity>>() {
-    }).toProvider(RarityRegistryProvider.class).in(Singleton.class);
+    }).toProvider(RarityRegistryInitializer.class).in(Singleton.class);
     bind(EffectQueuePool.class).toInstance(new EffectQueuePool<>());
     bind(IDatabase.class).toProvider(StorageProvider.class).in(Singleton.class);
     bind(Extractor.class).to(ResourceExtractor.class);

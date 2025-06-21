@@ -21,14 +21,14 @@ final class NetherScourge extends AbstractGemEffect implements IOnEntityHitEntit
   }
 
   @Override
-  public void onHitEntity(IEntityHitEntityReceiver receiver) {
-    Entity damagee = receiver.getDamagee();
+  public void onHitEntity(IEntityHitEntityContext context) {
+    Entity damagee = context.getDamagee();
     if (!Settings.NETHER_SCOURGE_AFFECTED_TYPES.contains(damagee.getType())) {
       return;
     }
-    double base = receiver.getDamage(DamageModifier.BASE);
-    double total = base + receiver.getRank() * Taric.getRandom()
+    double base = context.getDamage(DamageModifier.BASE);
+    double total = base + context.getRank() * Taric.getRandom()
         .nextInt(Settings.NETHER_SCOURGE_DAMAGE_RANK_MIN, Settings.NETHER_SCOURGE_DAMAGE_RANK_MAX);
-    receiver.setDamage(DamageModifier.BASE,total);
+    context.setDamage(DamageModifier.BASE,total);
   }
 }

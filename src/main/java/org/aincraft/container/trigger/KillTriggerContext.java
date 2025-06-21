@@ -1,14 +1,15 @@
 package org.aincraft.container.trigger;
 
 import java.util.List;
-import org.aincraft.api.container.trigger.IOnKillEntity.IKillEntityReceiver;
+import org.aincraft.api.container.trigger.IOnKillEntity.IKillEntityContext;
 import org.bukkit.damage.DamageSource;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.event.entity.EntityDeathEvent;
 import org.bukkit.inventory.ItemStack;
+import org.jetbrains.annotations.NotNull;
 
-public final class KillTriggerReceiver extends AbstractTriggerReceiver<EntityDeathEvent> implements
-    IKillEntityReceiver {
+public final class KillTriggerContext extends AbstractTriggerContext<EntityDeathEvent> implements
+    IKillEntityContext {
 
   @Override
   public DamageSource getDamageSource() {
@@ -27,7 +28,7 @@ public final class KillTriggerReceiver extends AbstractTriggerReceiver<EntityDea
   }
 
   @Override
-  public List<ItemStack> getDrops() {
+  public @NotNull List<ItemStack> getDrops() {
     return event.getDrops();
   }
 

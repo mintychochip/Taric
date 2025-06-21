@@ -1,6 +1,6 @@
 package org.aincraft.container.trigger;
 
-import org.aincraft.api.container.trigger.IOnBlockBreak.IBlockBreakReceiver;
+import org.aincraft.api.container.trigger.IOnBlockBreak.IBlockBreakContext;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.entity.Player;
@@ -8,8 +8,8 @@ import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
 
-public class BlockBreakReceiver extends AbstractTriggerReceiver<BlockBreakEvent> implements
-    IBlockBreakReceiver {
+public class BlockBreakContext extends AbstractTriggerContext<BlockBreakEvent> implements
+    IBlockBreakContext {
 
   private boolean initial = false;
 

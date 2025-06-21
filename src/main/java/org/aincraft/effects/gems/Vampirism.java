@@ -41,12 +41,12 @@ public final class Vampirism extends AbstractGemEffect implements IOnEntityHitEn
   }
 
   @Override
-  public void onHitEntity(IEntityHitEntityReceiver receiver) {
-    Entity damager = receiver.getDamager();
+  public void onHitEntity(IEntityHitEntityContext context) {
+    Entity damager = context.getDamager();
     if (!(damager instanceof LivingEntity livingEntity)) {
       return;
     }
-    double base = receiver.getDamage(DamageModifier.BASE);
+    double base = context.getDamage(DamageModifier.BASE);
     double heal = Settings.VAMPIRIC_FACTOR * base;
     double currentHealth = livingEntity.getHealth();
 
@@ -61,7 +61,7 @@ public final class Vampirism extends AbstractGemEffect implements IOnEntityHitEn
     } else {
       livingEntity.setHealth(maxHealth);
     }
-    if (receiver.getDamagee() instanceof LivingEntity livingDamagee) {
+    if (context.getDamagee() instanceof LivingEntity livingDamagee) {
       playEffects(livingDamagee.getEyeLocation());
     }
   }

@@ -3,17 +3,15 @@ package org.aincraft.listeners;
 
 import static org.bukkit.event.EventPriority.HIGH;
 
-import com.google.common.base.Function;
-import com.google.common.base.Functions;
 import com.google.common.cache.LoadingCache;
 import com.google.inject.Inject;
+import io.papermc.paper.event.entity.FishHookStateChangeEvent;
 import java.time.Duration;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.Set;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
@@ -27,7 +25,7 @@ import org.aincraft.api.container.trigger.IOnBlockBreak;
 import org.aincraft.api.container.trigger.IOnBlockDrop;
 import org.aincraft.api.container.trigger.IOnBucketEmpty;
 import org.aincraft.api.container.trigger.IOnEntityHitEntity;
-import org.aincraft.api.container.trigger.IOnEntityHitEntity.IEntityHitEntityReceiver;
+import org.aincraft.api.container.trigger.IOnFish;
 import org.aincraft.api.container.trigger.IOnInteract;
 import org.aincraft.api.container.trigger.IOnKillEntity;
 import org.aincraft.api.container.trigger.IOnPlayerShear;
@@ -35,12 +33,13 @@ import org.aincraft.api.container.trigger.IOnShootBow;
 import org.aincraft.api.container.trigger.TriggerType;
 import org.aincraft.container.EffectCooldown;
 import org.aincraft.container.launchable.LaunchableFactory;
-import org.aincraft.container.trigger.BlockBreakReceiver;
-import org.aincraft.container.trigger.BlockDropReceiver;
-import org.aincraft.container.trigger.EntityHitEntityReceiver;
-import org.aincraft.container.trigger.InteractReceiver;
-import org.aincraft.container.trigger.KillTriggerReceiver;
-import org.aincraft.container.trigger.PlayerShearEntityReceiver;
+import org.aincraft.container.trigger.BlockBreakContext;
+import org.aincraft.container.trigger.BlockDropContext;
+import org.aincraft.container.trigger.EntityHitEntityContext;
+import org.aincraft.container.trigger.FishContext;
+import org.aincraft.container.trigger.InteractContext;
+import org.aincraft.container.trigger.KillTriggerContext;
+import org.aincraft.container.trigger.PlayerShearEntityContext;
 import org.aincraft.database.IDatabase;
 import org.aincraft.effects.EffectQueuePool;
 import org.aincraft.effects.EffectQueuePool.EffectInstance;
@@ -50,13 +49,11 @@ import org.aincraft.events.FakeBlockDropItemEvent;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
-import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
-import org.bukkit.block.BlockState;
 import org.bukkit.damage.DamageSource;
 import org.bukkit.entity.Entity;
-import org.bukkit.entity.Item;
+import org.bukkit.entity.FishHook;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Mob;
 import org.bukkit.entity.Player;
@@ -68,15 +65,14 @@ import org.bukkit.event.block.Action;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockDropItemEvent;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
-import org.bukkit.event.entity.EntityDamageEvent.DamageModifier;
 import org.bukkit.event.entity.EntityDeathEvent;
 import org.bukkit.event.entity.EntityShootBowEvent;
 import org.bukkit.event.player.PlayerBucketEmptyEvent;
+import org.bukkit.event.player.PlayerFishEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerShearEntityEvent;
 import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.plugin.Plugin;
 
 public class EffectListener implements Listener {
@@ -116,7 +112,7 @@ public class EffectListener implements Listener {
     if (!(damageSource.getCausingEntity() instanceof Player player)) {
       return;
     }
-    KillTriggerReceiver receiver = new KillTriggerReceiver();
+    KillTriggerContext receiver = new KillTriggerContext();
     receiver.setHandle(event);
     try {
 
@@ -176,7 +172,7 @@ public class EffectListener implements Listener {
     if (!(damager instanceof Mob || damager instanceof Player)) {
       return;
     }
-    EntityHitEntityReceiver receiver = new EntityHitEntityReceiver();
+    EntityHitEntityContext receiver = new EntityHitEntityContext();
     receiver.setHandle(event);
     try {
       EffectQueue<EffectInstance> queue = effectQueuePool.acquireAndFill(
@@ -207,8 +203,8 @@ public class EffectListener implements Listener {
         effectQueuePool.release(queue);
         return;
       }
-      PlayerShearEntityReceiver receiver = new PlayerShearEntityReceiver();
-      receiver.setHandle(PlayerShearEntityReceiver.createEvent(event));
+      PlayerShearEntityContext receiver = new PlayerShearEntityContext();
+      receiver.setHandle(PlayerShearEntityContext.createEvent(event));
       for (EffectInstance instance : queue) {
         if (instance.getEffect() instanceof IOnPlayerShear trigger) {
           receiver.setRank(instance.getRank());
@@ -232,7 +228,7 @@ public class EffectListener implements Listener {
       return;
     }
     blocksDestroyed.remove(location);
-    BlockDropReceiver receiver = new BlockDropReceiver();
+    BlockDropContext receiver = new BlockDropContext();
     receiver.setHandle(event);
     try {
       EffectQueue<EffectInstance> queue = effectQueuePool.acquireAndFill(TriggerType.BLOCK_DROP,
@@ -261,7 +257,7 @@ public class EffectListener implements Listener {
       EffectQueue<EffectInstance> queue = effectQueuePool.acquireAndFill(TriggerType.BLOCK_BREAK,
           inventoryCache.get(player));
       if (!queue.isEmpty()) {
-        BlockBreakReceiver receiver = new BlockBreakReceiver();
+        BlockBreakContext receiver = new BlockBreakContext();
         receiver.setHandle(event);
         receiver.setBlockFace(lastClickedFace.get(player));
         receiver.setInitial(true);
@@ -285,7 +281,7 @@ public class EffectListener implements Listener {
       EffectQueue<EffectInstance> queue = effectQueuePool.acquireAndFill(
           TriggerType.INTERACT, inventoryCache.get(player));
       if (!queue.isEmpty()) {
-        InteractReceiver receiver = new InteractReceiver();
+        InteractContext receiver = new InteractContext();
         receiver.setHandle(event);
         for (EffectInstance instance : queue) {
           if (instance.getEffect() instanceof IOnInteract trigger) {
@@ -298,6 +294,30 @@ public class EffectListener implements Listener {
       throw new RuntimeException(e);
     }
   }
+
+  @EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
+  private void onPlayerFish(final PlayerFishEvent event) {
+    Player player = event.getPlayer();
+    try {
+      EffectQueue<EffectInstance> queue = effectQueuePool.acquireAndFill(TriggerType.FISH,inventoryCache.get(player));
+      if (!queue.isEmpty()) {
+        FishContext receiver = new FishContext();
+        receiver.setHandle(event);
+        FishHook hook = event.getHook();
+        hook.setGlowing(true);
+        for (EffectInstance instance : queue) {
+          if (instance.getEffect() instanceof IOnFish trigger) {
+            receiver.setRank(instance.getRank());
+            trigger.onFish(receiver);
+          }
+        }
+      }
+
+    } catch (ExecutionException e) {
+      throw new RuntimeException(e);
+    }
+  }
+
 
   //TODO: fix api, usage is trash rn
   @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)

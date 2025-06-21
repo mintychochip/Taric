@@ -12,7 +12,6 @@ import org.bukkit.Particle;
 import org.bukkit.World;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
-import org.bukkit.event.entity.EntityDamageEvent.DamageModifier;
 import org.jetbrains.annotations.NotNull;
 
 final class Frostbite extends AbstractGemEffect implements IOnEntityHitEntity {
@@ -33,11 +32,11 @@ final class Frostbite extends AbstractGemEffect implements IOnEntityHitEntity {
   }
 
   @Override
-  public void onHitEntity(IEntityHitEntityReceiver receiver) {
-    Entity damagee = receiver.getDamagee();
+  public void onHitEntity(IEntityHitEntityContext context) {
+    Entity damagee = context.getDamagee();
     int base = damagee.getFreezeTicks();
     damagee.setFreezeTicks(
-        Math.min(base + receiver.getRank() * Settings.COLD_ASPECT_FREEZE_TICKS_RANK,
+        Math.min(base + context.getRank() * Settings.COLD_ASPECT_FREEZE_TICKS_RANK,
             Settings.COLD_ASPECT_MAX_FREEZE_TICKS));
     if (damagee instanceof LivingEntity livingEntity) {
       playEffects(livingEntity.getEyeLocation());

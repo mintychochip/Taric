@@ -6,6 +6,7 @@ import org.aincraft.api.container.gem.IGemItem.IView;
 import org.aincraft.api.exceptions.CapacityException;
 import org.aincraft.api.exceptions.TargetTypeException;
 import org.aincraft.effects.IGemEffect;
+import org.bukkit.Material;
 
 public interface IGemItem extends IEffectContainerHolder<IView, IContainer> {
 
@@ -14,17 +15,17 @@ public interface IGemItem extends IEffectContainerHolder<IView, IContainer> {
     int getMaxSockets();
 
     int getSocketsUsed();
+
+    Material getMaterial();
   }
 
   interface IContainer extends IEffectContainer<IContainer, IView> {
 
-    default int getMaxSockets() {
-      return getView().getMaxSockets();
-    }
+    int getMaxSockets();
 
-    default int getSocketsUsed() {
-      return getView().getSocketsUsed();
-    }
+    int getSocketsUsed();
+
+    Material getMaterial();
 
     @Override
     void addEffect(IGemEffect effect, int rank, boolean force)

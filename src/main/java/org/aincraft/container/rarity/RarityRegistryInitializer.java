@@ -16,14 +16,14 @@ import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.plugin.Plugin;
 import org.jetbrains.annotations.NotNull;
 
-public final class RarityRegistryProvider implements Provider<IRegistry<IRarity>> {
+public final class RarityRegistryInitializer implements Provider<IRegistry<IRarity>> {
 
   private final IConfiguration generalConfiguration;
 
   private final Plugin plugin;
 
   @Inject
-  public RarityRegistryProvider(@Named("general")
+  public RarityRegistryInitializer(@Named("general")
   IConfiguration generalConfiguration, Plugin plugin) {
     this.generalConfiguration = generalConfiguration;
     this.plugin = plugin;

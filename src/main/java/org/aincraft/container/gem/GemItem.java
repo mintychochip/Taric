@@ -35,7 +35,7 @@ public final class GemItem extends AbstractEffectContainerHolder<IView, IContain
   @Nullable
   public static IGemItem fromIfExists(ItemStack stack) {
     return GemItemFactory.holderFromIfExists(stack, GEM_ITEM_KEY, Container.class,
-        container -> new GemItem(stack,container));
+        container -> new GemItem(stack, container));
   }
 
   @NotNull
@@ -84,22 +84,24 @@ public final class GemItem extends AbstractEffectContainerHolder<IView, IContain
       AbstractEffectContainerView<Container, IContainer, IView> implements
       IView {
 
-    private final int sockets;
-
-    View(Map<Key, Integer> effects, NamespacedKey key, int sockets, Container container) {
+    View(Map<Key, Integer> effects, NamespacedKey key, Container container) {
       super(effects, key, container);
-      this.sockets = sockets;
     }
 
 
     @Override
     public int getMaxSockets() {
-      return sockets;
+      return container.getMaxSockets();
     }
 
     @Override
     public int getSocketsUsed() {
-      return effects.size();
+      return container.getSocketsUsed();
+    }
+
+    @Override
+    public Material getMaterial() {
+      return container.getMaterial();
     }
   }
 
@@ -131,9 +133,23 @@ public final class GemItem extends AbstractEffectContainerHolder<IView, IContain
 
     @Override
     protected IView buildView() {
-      return new View(effects, GEM_ITEM_KEY, sockets, this);
+      return new View(effects, GEM_ITEM_KEY,this);
     }
 
+    @Override
+    public int getMaxSockets() {
+      return sockets;
+    }
+
+    @Override
+    public int getSocketsUsed() {
+      return effects.size();
+    }
+
+    @Override
+    public Material getMaterial() {
+      return material;
+    }
 
     @Override
     public void addEffect(IGemEffect effect, int rank, boolean force) {

@@ -1,6 +1,6 @@
 package org.aincraft.api.container.receiver;
 
-public interface IReceiveExperience {
+public interface IExperienceContext {
   void setExperience(int exp);
   int getExperience();
 }

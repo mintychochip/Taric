@@ -1,15 +1,15 @@
 package org.aincraft.container.trigger;
 
 import java.util.List;
-import org.aincraft.api.container.trigger.IShearEntityReceiver;
+import org.aincraft.api.container.trigger.IShearEntityContext;
 import org.bukkit.entity.Entity;
 import org.bukkit.event.Event;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 
-abstract class ShearEntityReceiver<E extends ShearEntityEvent<H>, H extends Event> extends
-    AbstractTriggerReceiver<E> implements
-    IShearEntityReceiver {
+abstract class ShearEntityContext<E extends ShearEntityEvent<H>, H extends Event> extends
+    AbstractTriggerContext<E> implements
+    IShearEntityContext {
 
   @Override
   public @NotNull ItemStack getTool() {
@@ -27,7 +27,7 @@ abstract class ShearEntityReceiver<E extends ShearEntityEvent<H>, H extends Even
   }
 
   @Override
-  public List<ItemStack> getDrops() {
+  public @NotNull List<ItemStack> getDrops() {
     return event.getDrops();
   }
 }

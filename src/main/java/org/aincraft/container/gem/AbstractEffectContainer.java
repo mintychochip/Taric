@@ -9,6 +9,7 @@ import org.aincraft.Taric;
 import org.aincraft.api.container.gem.IEffectContainer;
 import org.aincraft.api.container.gem.IEffectContainerView;
 import org.aincraft.effects.IGemEffect;
+import org.bukkit.Bukkit;
 import org.bukkit.NamespacedKey;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
@@ -70,7 +71,8 @@ abstract class AbstractEffectContainer<C extends IEffectContainer<C, V>, V exten
   }
 
   @Override
-  public void move(IGemEffect effect, IEffectContainer<? extends C, ? extends V> other) {
+  public void move(IGemEffect effect,
+      IEffectContainer<? extends IEffectContainer<?, ?>, ? extends IEffectContainerView> other) {
     if (!has(effect) || other.has(effect)) {
       return;
     }

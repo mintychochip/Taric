@@ -1,10 +1,8 @@
 package org.aincraft.effects.gems;
 
 import java.util.HashSet;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import org.aincraft.api.container.Mutable;
 import org.aincraft.api.container.TargetType;
 import org.aincraft.api.container.trigger.IOnBlockBreak;
 import org.aincraft.api.container.trigger.IOnBlockDrop;
@@ -15,13 +13,9 @@ import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
-import org.bukkit.block.BlockFace;
-import org.bukkit.block.BlockState;
 import org.bukkit.block.data.Ageable;
 import org.bukkit.block.data.BlockData;
-import org.bukkit.entity.Player;
 import org.bukkit.event.block.Action;
-import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 
 final class Harvest extends AbstractGemEffect implements IOnBlockBreak, IOnBlockDrop, IOnInteract {
@@ -29,11 +23,11 @@ final class Harvest extends AbstractGemEffect implements IOnBlockBreak, IOnBlock
   private final Set<Location> harvested = new HashSet<>();
 
   @Override
-  public void onBlockBreak(IBlockBreakReceiver receiver) {
-    if (shouldNotHarvest(receiver.getBlock())) {
+  public void onBlockBreak(IBlockBreakContext context) {
+    if (shouldNotHarvest(context.getBlock())) {
       return;
     }
-    harvested.add(receiver.getBlock().getLocation());
+    harvested.add(context.getBlock().getLocation());
   }
 
   @Override
@@ -63,25 +57,25 @@ final class Harvest extends AbstractGemEffect implements IOnBlockBreak, IOnBlock
   }
 
   @Override
-  public void onBlockDrop(IBlockDropReceiver receiver) {
-    Block block = receiver.getBlock();
+  public void onBlockDrop(IBlockDropContext context) {
+    Block block = context.getBlock();
     Location location = block.getLocation();
     if (!harvested.contains(location)) {
       return;
     }
     harvested.remove(location);
-    replant(block, receiver.getBlockState().getType());
+    replant(block, context.getBlockState().getType());
   }
 
   @Override
-  public void onInteract(IInteractReceiver receiver) {
-    Block block = receiver.getBlock();
-    Action action = receiver.getAction();
+  public void onInteract(IInteractContext context) {
+    Block block = context.getBlock();
+    Action action = context.getAction();
     if (block == null || (action.isLeftClick() || action == Action.PHYSICAL) || shouldNotHarvest(
         block)) {
       return;
     }
     harvested.add(block.getLocation());
-    Bukkit.getPluginManager().callEvent(new FakeBlockBreakEvent(block, receiver.getPlayer()));
+    Bukkit.getPluginManager().callEvent(new FakeBlockBreakEvent(block, context.getPlayer()));
   }
 }

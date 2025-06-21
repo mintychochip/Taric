@@ -10,7 +10,8 @@ plugins {
 group = "org.aincraft"
 version = "1.1"
 
-paperweight.reobfArtifactConfiguration = io.papermc.paperweight.userdev.ReobfArtifactConfiguration.REOBF_PRODUCTION
+paperweight.reobfArtifactConfiguration =
+    io.papermc.paperweight.userdev.ReobfArtifactConfiguration.REOBF_PRODUCTION
 
 repositories {
     gradlePluginPortal()
@@ -23,7 +24,7 @@ repositories {
 dependencies {
     paperweight.paperDevBundle("1.21.5-R0.1-SNAPSHOT")
     implementation("com.h2database:h2:2.2.224")
-    implementation("com.palmergames.bukkit.towny:towny:0.101.1.0")
+    compileOnly("com.palmergames.bukkit.towny:towny:0.101.1.0")
     implementation("com.google.inject:guice:7.0.0")
     implementation("com.zaxxer:HikariCP:5.0.1")
     compileOnly("io.papermc.paper:paper-api:1.21.5-R0.1-SNAPSHOT")
@@ -72,7 +73,9 @@ tasks.named<ProcessResources>("processResources") {
     }
 }
 
-tasks.named<com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar>("shadowJar") {
-    archiveFileName.set("${project.name}-${project.version}.jar")
-    destinationDirectory.set(file("C:\\Users\\justi\\Desktop\\paper\\plugins"))
+tasks {
+    shadowJar {
+        archiveFileName.set("${project.name}-${project.version}.jar")
+        destinationDirectory.set(file("C:\\Users\\justi\\Desktop\\paper\\plugins"))
+    }
 }

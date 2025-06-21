@@ -43,7 +43,8 @@ public final class EffectRegistryProvider implements Provider<IRegistry<IGemEffe
         .register(Effects.FROSTBITE)
         .register(Effects.MULTISHOT)
         .register(Effects.OVERFLOWING)
-        .register(Effects.HARVEST);
+        .register(Effects.HARVEST)
+        .register(Effects.GLIMMER);
     GemMetaFactory factory = new GemMetaFactory(rarityRegistry, plugin);
     for (String gemKey : gemConfiguration.getKeys(false)) {
       try {

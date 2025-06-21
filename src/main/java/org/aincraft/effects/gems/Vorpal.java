@@ -15,14 +15,14 @@ import org.jetbrains.annotations.Nullable;
 final class Vorpal extends AbstractGemEffect implements IOnKillEntity {
 
   @Override
-  public void onKillEntity(IKillEntityReceiver receiver) {
-    EntityType type = receiver.getSlain().getType();
+  public void onKillEntity(IKillEntityContext context) {
+    EntityType type = context.getSlain().getType();
     if (!(type == EntityType.ZOMBIE || type == EntityType.SKELETON || type == EntityType.CREEPER
         || type == EntityType.WITHER_SKELETON || type == EntityType.PIGLIN)) {
       return;
     }
     if (type == EntityType.WITHER_SKELETON) {
-      for (ItemStack drop : receiver.getDrops()) {
+      for (ItemStack drop : context.getDrops()) {
         Material material = drop.getType();
         String materialString = material.toString();
         if (materialString.endsWith("_HEAD") || materialString.endsWith("_SKULL")) {
@@ -30,12 +30,12 @@ final class Vorpal extends AbstractGemEffect implements IOnKillEntity {
         }
       }
     }
-    if (Taric.getRandom().nextDouble() <= Settings.VORPAL_CHANCE_RANK * receiver.getRank()) {
+    if (Taric.getRandom().nextDouble() <= Settings.VORPAL_CHANCE_RANK * context.getRank()) {
       Material material = getHeadFromType(type);
       if (material == null) {
         return;
       }
-      receiver.getDrops().add(new ItemStack(material));
+      context.getDrops().add(new ItemStack(material));
     }
   }
 

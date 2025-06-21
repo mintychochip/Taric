@@ -17,7 +17,7 @@ public interface IEffectContainer<C extends IEffectContainer<C, V>, V extends IE
 
   void clear();
 
-  void move(IGemEffect effect, IEffectContainer<? extends C, ? extends V> other);
+  void move(IGemEffect effect, IEffectContainer<? extends IEffectContainer<?, ?>, ? extends IEffectContainerView> other);
 
   void copy(IEffectContainer<? extends C, ? extends V> other, boolean clear);
 

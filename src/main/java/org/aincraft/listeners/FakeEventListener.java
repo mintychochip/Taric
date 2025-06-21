@@ -2,18 +2,16 @@ package org.aincraft.listeners;
 
 import com.google.common.cache.LoadingCache;
 import com.google.inject.Inject;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 import java.util.stream.Collectors;
 import org.aincraft.Settings;
-import org.aincraft.api.container.Mutable;
 import org.aincraft.api.container.gem.IGemInventory;
 import org.aincraft.api.container.trigger.IOnBlockBreak;
 import org.aincraft.api.container.trigger.IOnBlockDrop;
 import org.aincraft.api.container.trigger.TriggerType;
-import org.aincraft.container.trigger.BlockBreakReceiver;
-import org.aincraft.container.trigger.BlockDropReceiver;
+import org.aincraft.container.trigger.BlockBreakContext;
+import org.aincraft.container.trigger.BlockDropContext;
 import org.aincraft.effects.EffectQueuePool;
 import org.aincraft.effects.EffectQueuePool.EffectInstance;
 import org.aincraft.effects.EffectQueuePool.EffectQueue;
@@ -23,12 +21,10 @@ import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.Particle;
-import org.bukkit.Sound;
 import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockState;
 import org.bukkit.enchantments.Enchantment;
-import org.bukkit.entity.Entity;
 import org.bukkit.entity.ExperienceOrb;
 import org.bukkit.entity.Item;
 import org.bukkit.entity.LivingEntity;
@@ -109,7 +105,7 @@ public class FakeEventListener implements Listener {
       EffectQueue<EffectInstance> queue = queuePool.acquireAndFill(TriggerType.BLOCK_BREAK,
           inventoryCache.get(player));
       if (!queue.isEmpty()) {
-        BlockBreakReceiver receiver = new BlockBreakReceiver();
+        BlockBreakContext receiver = new BlockBreakContext();
         receiver.setHandle(event);
         receiver.setInitial(false);
         receiver.setBlockFace(null);
@@ -133,7 +129,7 @@ public class FakeEventListener implements Listener {
           inventoryCache.get(
               event.getPlayer()));
       if (!queue.isEmpty()) {
-        BlockDropReceiver receiver = new BlockDropReceiver();
+        BlockDropContext receiver = new BlockDropContext();
         receiver.setHandle(event);
         for (EffectInstance instance : queue) {
           if (instance.getEffect() instanceof IOnBlockDrop trigger) {
@@ -142,6 +138,7 @@ public class FakeEventListener implements Listener {
           }
         }
       }
+      queuePool.release(queue);
     } catch (ExecutionException e) {
       throw new RuntimeException(e);
     }

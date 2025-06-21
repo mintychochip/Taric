@@ -2,7 +2,6 @@ package org.aincraft.effects.gems;
 
 import java.util.Map;
 import java.util.Set;
-import org.aincraft.api.container.Mutable;
 import org.aincraft.api.container.TargetType;
 import org.aincraft.api.container.TypeSet;
 import org.aincraft.api.container.trigger.IOnBlockBreak;
@@ -14,7 +13,6 @@ import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.entity.Player;
-import org.bukkit.inventory.ItemStack;
 
 final class Burrowing extends AbstractGemEffect implements IOnBlockBreak {
 
@@ -27,14 +25,14 @@ final class Burrowing extends AbstractGemEffect implements IOnBlockBreak {
   }
 
   @Override
-  public void onBlockBreak(IBlockBreakReceiver receiver) {
-    if (!receiver.isInitial()) {
+  public void onBlockBreak(IBlockBreakContext context) {
+    if (!context.isInitial()) {
       return;
     }
-    Block origin = receiver.getBlock();
-    int rank = receiver.getRank();
-    BlockFace face = receiver.getBlockFace();
-    Player player = receiver.getPlayer();
+    Block origin = context.getBlock();
+    int rank = context.getRank();
+    BlockFace face = context.getBlockFace();
+    Player player = context.getPlayer();
     Location location = origin.getLocation();
     for (int v = -rank; v <= rank; v++) {
       for (int u = -rank; u <= rank; u++) {

@@ -11,12 +11,14 @@ import java.util.Random;
 import java.util.logging.Logger;
 import org.aincraft.api.config.IConfiguration;
 import org.aincraft.commands.GemCommand;
+import org.aincraft.container.gui.GuiListener;
 import org.aincraft.database.IDatabase;
 import org.aincraft.effects.IGemEffect;
 import org.aincraft.listeners.EffectListener;
 import org.aincraft.listeners.FakeEventListener;
 import org.aincraft.listeners.GemCacheListener;
 import org.aincraft.listeners.HandlerModule;
+import org.aincraft.listeners.SocketGemListener;
 import org.aincraft.module.RuntimeModule;
 import org.aincraft.registry.IRegistry;
 import org.bukkit.Bukkit;
@@ -42,6 +44,8 @@ public class Taric {
         .registerEvents(injector.getInstance(GemCacheListener.class), Taric.getPlugin());
     Bukkit.getPluginManager()
         .registerEvents(injector.getInstance(FakeEventListener.class), Taric.getPlugin());
+    Bukkit.getPluginManager()
+        .registerEvents(injector.getInstance(SocketGemListener.class), Taric.getPlugin());
     //temporary
     Bukkit.getPluginCommand("gem").setExecutor(injector.getInstance(GemCommand.class));
     Settings.initialize();
