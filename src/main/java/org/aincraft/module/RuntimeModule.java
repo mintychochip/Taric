@@ -8,9 +8,11 @@ import com.google.inject.Singleton;
 import com.google.inject.TypeLiteral;
 import java.time.Duration;
 import org.aincraft.api.container.IRarity;
+import org.aincraft.api.container.ISocketColor;
 import org.aincraft.api.container.gem.IGemInventory;
 import org.aincraft.container.gem.GemInventory;
 import org.aincraft.container.rarity.RarityRegistryInitializer;
+import org.aincraft.container.rarity.SocketRegistryInitializer;
 import org.aincraft.database.Extractor;
 import org.aincraft.database.Extractor.ResourceExtractor;
 import org.aincraft.database.IDatabase;
@@ -35,6 +37,8 @@ public class RuntimeModule extends AbstractModule {
     }).toInstance(createPlayerCache());
     bind(new TypeLiteral<IRegistry<IRarity>>() {
     }).toProvider(RarityRegistryInitializer.class).in(Singleton.class);
+    bind(new TypeLiteral<IRegistry<ISocketColor>>() {
+    }).toProvider(SocketRegistryInitializer.class).in(Singleton.class);
     bind(EffectQueuePool.class).toInstance(new EffectQueuePool<>());
     bind(IDatabase.class).toProvider(StorageProvider.class).in(Singleton.class);
     bind(Extractor.class).to(ResourceExtractor.class);

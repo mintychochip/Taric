@@ -20,6 +20,11 @@ public class SharedRegistry<T extends Keyed> implements IRegistry<T> {
   }
 
   @Override
+  public T get(Keyed keyed) {
+    return get(keyed.key());
+  }
+
+  @Override
   public @Nullable T get(Key key) {
     return registry.get(key);
   }

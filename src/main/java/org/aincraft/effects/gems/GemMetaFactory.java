@@ -8,6 +8,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 import org.aincraft.api.config.IConfigurationFactory;
 import org.aincraft.api.container.IRarity;
+import org.aincraft.api.container.ISocketColor;
 import org.aincraft.api.container.trigger.TriggerType;
 import org.aincraft.effects.gems.AbstractGemEffect.GemEffectMeta;
 import org.aincraft.registry.IRegistry;
@@ -20,15 +21,18 @@ import org.jetbrains.annotations.NotNull;
 final class GemMetaFactory implements IConfigurationFactory<GemEffectMeta> {
 
   private final IRegistry<IRarity> rarityRegistry;
+  private final IRegistry<ISocketColor> colorRegistry;
   private final Plugin plugin;
 
   @Inject
-  GemMetaFactory(IRegistry<IRarity> rarityRegistry, Plugin plugin) {
+  GemMetaFactory(IRegistry<IRarity> rarityRegistry, IRegistry<ISocketColor> colorRegistry,
+      Plugin plugin) {
     this.rarityRegistry = rarityRegistry;
+    this.colorRegistry = colorRegistry;
     this.plugin = plugin;
   }
 
-  private static final String[] REQUIRED_FIELDS = {"max-rank", "rarity", "priority",
+  private static final String[] REQUIRED_FIELDS = {"max-rank", "rarity", "color", "priority",
       "description", "required-active-slots"};
 
   @Override
@@ -42,7 +46,12 @@ final class GemMetaFactory implements IConfigurationFactory<GemEffectMeta> {
     if (rarityString == null) {
       throw new IllegalArgumentException("rarity cannot be null");
     }
+    String colorString = section.getString("color");
+    if (colorString == null) {
+      throw new IllegalArgumentException("color cannot be null");
+    }
     IRarity rarity = rarityRegistry.get(new NamespacedKey(plugin, rarityString));
+    ISocketColor color = colorRegistry.get(new NamespacedKey(plugin, colorString));
     ConfigurationSection prioritySection = section.getConfigurationSection("priority");
     if (prioritySection == null) {
       throw new IllegalArgumentException("priority section cannot be null");
@@ -52,7 +61,7 @@ final class GemMetaFactory implements IConfigurationFactory<GemEffectMeta> {
     Set<EquipmentSlot> slots = section.getStringList("required-active-slots").stream()
         .map(EquipmentSlot::valueOf).collect(
             Collectors.toSet());
-    return new GemEffectMeta(maxRank, rarity, priorityMap, description, slots);
+    return new GemEffectMeta(maxRank, rarity, color, priorityMap, description, slots);
   }
 
   private static Map<TriggerType, Integer> getPriorityMap(@NotNull ConfigurationSection section)

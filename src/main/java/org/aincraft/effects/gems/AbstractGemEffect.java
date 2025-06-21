@@ -5,6 +5,7 @@ import com.google.common.base.Suppliers;
 import java.util.Map;
 import java.util.Set;
 import org.aincraft.api.container.IRarity;
+import org.aincraft.api.container.ISocketColor;
 import org.aincraft.api.container.trigger.TriggerType;
 import org.aincraft.effects.IGemEffect;
 import org.bukkit.Material;
@@ -126,6 +127,11 @@ abstract class AbstractGemEffect implements IGemEffect {
     return meta.rarity;
   }
 
+  @Override
+  public ISocketColor getColor() {
+    return meta.color;
+  }
+
   @NotNull
   @Override
   public Set<EquipmentSlot> getRequiredActiveSlots() {
@@ -139,6 +145,7 @@ abstract class AbstractGemEffect implements IGemEffect {
 
   public record GemEffectMeta(int maxLevel,
                               IRarity rarity,
+                              ISocketColor color,
                               Map<TriggerType, Integer> priority,
                               String description,
                               Set<EquipmentSlot> requiredActiveSlots) {

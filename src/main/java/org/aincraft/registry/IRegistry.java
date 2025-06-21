@@ -10,6 +10,8 @@ public interface IRegistry<T extends Keyed> extends Iterable<T> {
 
   IRegistry<T> register(T object);
 
+  T get(Keyed keyed);
+
   @Nullable
   T get(Key key);
 

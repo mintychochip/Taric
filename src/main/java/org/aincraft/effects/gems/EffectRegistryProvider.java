@@ -6,6 +6,7 @@ import com.google.inject.name.Named;
 import org.aincraft.Taric;
 import org.aincraft.api.config.IConfiguration;
 import org.aincraft.api.container.IRarity;
+import org.aincraft.api.container.ISocketColor;
 import org.aincraft.effects.IGemEffect;
 import org.aincraft.registry.IRegistry;
 import org.aincraft.registry.SharedRegistry;
@@ -16,13 +17,15 @@ public final class EffectRegistryProvider implements Provider<IRegistry<IGemEffe
 
   private final IConfiguration gemConfiguration;
   private final IRegistry<IRarity> rarityRegistry;
+  private final IRegistry<ISocketColor> colorRegistry;
   private final Plugin plugin;
 
   @Inject
   public EffectRegistryProvider(@Named("gems") IConfiguration gemConfiguration,
-      IRegistry<IRarity> rarityRegistry, Plugin plugin) {
+      IRegistry<IRarity> rarityRegistry, IRegistry<ISocketColor> colorRegistry, Plugin plugin) {
     this.gemConfiguration = gemConfiguration;
     this.rarityRegistry = rarityRegistry;
+    this.colorRegistry = colorRegistry;
     this.plugin = plugin;
   }
 
@@ -45,7 +48,7 @@ public final class EffectRegistryProvider implements Provider<IRegistry<IGemEffe
         .register(Effects.OVERFLOWING)
         .register(Effects.HARVEST)
         .register(Effects.GLIMMER);
-    GemMetaFactory factory = new GemMetaFactory(rarityRegistry, plugin);
+    GemMetaFactory factory = new GemMetaFactory(rarityRegistry, colorRegistry, plugin);
     for (String gemKey : gemConfiguration.getKeys(false)) {
       try {
         Taric.getLogger().info(gemKey);

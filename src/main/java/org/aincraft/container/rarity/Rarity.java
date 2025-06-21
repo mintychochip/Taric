@@ -5,16 +5,15 @@ import net.kyori.adventure.text.format.TextColor;
 import org.aincraft.api.container.IRarity;
 import org.jetbrains.annotations.NotNull;
 
-final class Rarity implements IRarity {
+final class Rarity extends AbstractRegisterable implements IRarity {
 
-  private final Key key;
   private final TextColor textColor;
   private final double base;
   private final String name;
   private final int priority;
 
   Rarity(Key key, TextColor textColor, double base, String name, int priority) {
-    this.key = key;
+    super(key);
     this.textColor = textColor;
     this.base = base;
     this.name = name;
@@ -59,8 +58,7 @@ final class Rarity implements IRarity {
 
   @Override
   public String toString() {
-    return new StringBuilder()
-        .append(this.getClass().getSimpleName())
+    return new StringBuilder(this.getClass().getSimpleName())
         .append('[').append("key=").append(key.asString()).append(", ")
         .append("name=").append(name).append(", ")
         .append("base=").append(base).append(", ")

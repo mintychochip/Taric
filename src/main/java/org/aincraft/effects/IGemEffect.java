@@ -5,6 +5,7 @@ import java.util.Set;
 import org.aincraft.Taric;
 import org.aincraft.api.config.IConfiguration;
 import org.aincraft.api.container.IRarity;
+import org.aincraft.api.container.ISocketColor;
 import org.aincraft.api.container.trigger.TriggerType;
 import org.bukkit.Keyed;
 import org.bukkit.Material;
@@ -16,6 +17,8 @@ public interface IGemEffect extends Keyed {
   int getPriority(TriggerType triggerType);
 
   IRarity getRarity();
+
+  ISocketColor getColor();
 
   boolean isValidTarget(TriggerType triggerType, Material material);
 
