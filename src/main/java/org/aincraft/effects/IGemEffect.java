@@ -18,7 +18,7 @@ public interface IGemEffect extends Keyed {
 
   IRarity getRarity();
 
-  ISocketColor getColor();
+  ISocketColor getSocketColor();
 
   boolean isValidTarget(TriggerType triggerType, Material material);
 

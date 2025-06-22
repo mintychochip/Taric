@@ -9,6 +9,7 @@ import java.util.concurrent.ExecutionException;
 import java.util.function.Supplier;
 import net.kyori.adventure.key.Key;
 import org.aincraft.Taric;
+import org.aincraft.api.container.ISocketColor;
 import org.aincraft.api.container.gem.IEffectContainerHolder;
 import org.aincraft.api.container.gem.IGem;
 import org.aincraft.api.container.gem.IGem.IContainer;
@@ -64,25 +65,32 @@ public class Gem extends
   }
 
   @NotNull
-  public static IGem create(Material material) {
-    return create(material,1);
+  public static IGem create(Material material, ISocketColor color) {
+    return create(material, 1, color);
   }
 
   @NotNull
-  public static IGem create(Material material, int amount) {
-    return new Gem(new ItemStack(material,amount),new Container(MAP_SUPPLIER.get()));
+  public static IGem create(Material material, int amount, ISocketColor color) {
+    return new Gem(new ItemStack(material, amount), new Container(MAP_SUPPLIER.get(), color));
   }
+
   @Nullable
-  public static IGem create(ItemStack stack) {
+  public static IGem create(ItemStack stack, ISocketColor color) {
     if (GemItemFactory.hasContainer(GEM_KEY, stack)) {
       return null;
     }
-    return new Gem(stack, new Container(MAP_SUPPLIER.get()));
+    return new Gem(stack, new Container(MAP_SUPPLIER.get(), color));
   }
 
   @NotNull
-  public static IEffectContainerHolder.Builder<IGem,IContainer,IView> builder(Material material) {
-    return new Builder(new ItemStack(material),new Container(MAP_SUPPLIER.get()));
+  public static IEffectContainerHolder.Builder<IGem, IContainer, IView> builder(Material material,
+      ISocketColor color) {
+    return new Builder(new ItemStack(material), new Container(MAP_SUPPLIER.get(), color));
+  }
+
+  @Override
+  public ISocketColor getSocketColor() {
+    return container.getSocketColor();
   }
 
   private static final class Builder extends
@@ -104,6 +112,11 @@ public class Gem extends
 
     View(Map<Key, Integer> effects, NamespacedKey key, Container container) {
       super(effects, key, container);
+    }
+
+    @Override
+    public ISocketColor getSocketColor() {
+      return container.getSocketColor();
     }
 
 //    @Override
@@ -136,8 +149,25 @@ public class Gem extends
     @SerializedName("effects")
     private final Map<Key, Integer> effects;
 
-    private Container(Map<Key, Integer> effects) {
+    private final ISocketColor socketColor;
+
+    private Container(Map<Key, Integer> effects, ISocketColor socketColor) {
       this.effects = effects;
+      this.socketColor = socketColor;
+    }
+
+    @Override
+    public ISocketColor getSocketColor() {
+      return socketColor;
+    }
+
+    @Override
+    public void addEffect(IGemEffect effect, int rank) {
+      ISocketColor socketColor = effect.getSocketColor();
+      if (!this.socketColor.equals(socketColor)) {
+        return;
+      }
+      super.addEffect(effect, rank);
     }
 
     @Override
@@ -152,7 +182,7 @@ public class Gem extends
 
     @Override
     public IContainer clone() {
-      Container container = new Container(MAP_SUPPLIER.get());
+      Container container = new Container(MAP_SUPPLIER.get(), socketColor);
       this.copy(container, true);
       return container;
     }

@@ -2,9 +2,11 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/IdeaProjects.Taric.main.iml" filepath="$PROJECT_DIR$/.idea/modules/IdeaProjects.Taric.main.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/Taric.main.iml" filepath="$PROJECT_DIR$/.idea/modules/Taric.main.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/Taric.test.iml" filepath="$PROJECT_DIR$/.idea/modules/Taric.test.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/org.aincraft.Taric.main.iml" filepath="$PROJECT_DIR$/.idea/modules/org.aincraft.Taric.main.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/org.aincraft.Taric.test.iml" filepath="$PROJECT_DIR$/.idea/modules/org.aincraft.Taric.test.iml" />
     </modules>
   </component>
 </project>

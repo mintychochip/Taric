@@ -128,7 +128,7 @@ abstract class AbstractGemEffect implements IGemEffect {
   }
 
   @Override
-  public ISocketColor getColor() {
+  public ISocketColor getSocketColor() {
     return meta.color;
   }
 
