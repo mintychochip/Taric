@@ -18,8 +18,6 @@ import org.aincraft.api.config.IConfiguration;
 import org.aincraft.api.container.ISocketColor;
 import org.aincraft.config.ConfigurationFactory;
 import org.aincraft.effects.IGemEffect;
-import org.bukkit.Bukkit;
-import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.plugin.Plugin;
 

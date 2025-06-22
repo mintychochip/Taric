@@ -2,7 +2,6 @@ package org.aincraft.api.container.rework;
 
 import org.aincraft.api.container.ISocketColor;
 import org.aincraft.effects.IGemEffect;
-import org.jetbrains.annotations.NotNull;
 
 public interface ISocketContainer {
 

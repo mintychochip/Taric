@@ -4,8 +4,6 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Queue;
-import net.kyori.adventure.key.Key;
-import org.aincraft.Taric;
 import org.aincraft.api.container.IEquipment;
 import org.aincraft.api.container.gem.IGemInventory;
 import org.aincraft.api.container.trigger.TriggerType;

@@ -5,7 +5,6 @@ import static org.bukkit.event.EventPriority.HIGH;
 
 import com.google.common.cache.LoadingCache;
 import com.google.inject.Inject;
-import io.papermc.paper.event.entity.FishHookStateChangeEvent;
 import java.time.Duration;
 import java.util.ArrayList;
 import java.util.HashMap;
