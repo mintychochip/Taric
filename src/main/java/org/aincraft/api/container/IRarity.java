@@ -8,7 +8,7 @@ public interface IRarity extends Keyed, Comparable<IRarity> {
 
   int getPriority();
 
-  TextColor getColor();
+  TextColor getTextColor();
 
   double getBase();
 

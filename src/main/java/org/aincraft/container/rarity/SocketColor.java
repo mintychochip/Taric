@@ -17,7 +17,7 @@ final class SocketColor extends AbstractRegisterable implements ISocketColor {
   }
 
   @Override
-  public TextColor getColor() {
+  public TextColor getTextColor() {
     return textColor;
   }
 
@@ -33,12 +33,6 @@ final class SocketColor extends AbstractRegisterable implements ISocketColor {
 
   @Override
   public String toString() {
-    return new StringBuilder(this.getClass().getSimpleName())
-        .append('[').append("key=").append(key.asString()).append(", ")
-        .append("color=rgb(")
-        .append(textColor.red()).append(", ")
-        .append(textColor.green()).append(", ")
-        .append(textColor.blue()).append(")")
-        .append(']').toString();
+    return key.toString();
   }
 }

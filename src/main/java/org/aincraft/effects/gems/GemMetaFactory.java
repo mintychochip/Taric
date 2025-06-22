@@ -3,6 +3,7 @@ package org.aincraft.effects.gems;
 import com.google.common.base.Preconditions;
 import com.google.inject.Inject;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -32,7 +33,8 @@ final class GemMetaFactory implements IConfigurationFactory<GemEffectMeta> {
     this.plugin = plugin;
   }
 
-  private static final String[] REQUIRED_FIELDS = {"max-rank", "rarity", "color", "priority",
+  private static final String[] REQUIRED_FIELDS = {"max-rank", "adjectives", "rarity", "color",
+      "priority",
       "description", "required-active-slots"};
 
   @Override
@@ -50,6 +52,7 @@ final class GemMetaFactory implements IConfigurationFactory<GemEffectMeta> {
     if (colorString == null) {
       throw new IllegalArgumentException("color cannot be null");
     }
+    List<String> adjectives = section.getStringList("adjectives");
     IRarity rarity = rarityRegistry.get(new NamespacedKey(plugin, rarityString));
     ISocketColor color = colorRegistry.get(new NamespacedKey(plugin, colorString));
     ConfigurationSection prioritySection = section.getConfigurationSection("priority");
@@ -61,7 +64,7 @@ final class GemMetaFactory implements IConfigurationFactory<GemEffectMeta> {
     Set<EquipmentSlot> slots = section.getStringList("required-active-slots").stream()
         .map(EquipmentSlot::valueOf).collect(
             Collectors.toSet());
-    return new GemEffectMeta(maxRank, rarity, color, priorityMap, description, slots);
+    return new GemEffectMeta(maxRank, rarity, color, adjectives, priorityMap, description, slots);
   }
 
   private static Map<TriggerType, Integer> getPriorityMap(@NotNull ConfigurationSection section)

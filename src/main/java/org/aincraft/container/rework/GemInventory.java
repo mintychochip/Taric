@@ -1,4 +1,4 @@
-package org.aincraft.container.gem;
+package org.aincraft.container.rework;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -8,7 +8,6 @@ import net.kyori.adventure.key.Key;
 import org.aincraft.Taric;
 import org.aincraft.api.container.IEquipment;
 import org.aincraft.api.container.gem.IGemInventory;
-import org.aincraft.api.container.gem.IGemItem;
 import org.aincraft.api.container.trigger.TriggerType;
 import org.aincraft.container.IQueueLoader;
 import org.aincraft.effects.EffectQueuePool.EffectInstance;
@@ -47,10 +46,9 @@ public class GemInventory implements IGemInventory {
   public void fillQueue(TriggerType triggerType, Queue<EffectInstance> queue) {
     for (Map.Entry<EquipmentSlot, IGemItem> itemEntry : inventory.entrySet()) {
       IGemItem gemItem = itemEntry.getValue();
-      for (Entry<Key, Integer> entry : gemItem.getEffectContainerView()) {
-        Key key = entry.getKey();
+      for (Entry<IGemEffect, Integer> entry : gemItem.getEffectContainer()) {
         int rank = entry.getValue();
-        IGemEffect effect = Taric.getEffects().get(key);
+        IGemEffect effect = entry.getKey();
         if (triggerType.hasTriggerType(effect) && effect.isValidSlot(itemEntry.getKey())
             && effect.isValidTarget(triggerType, gemItem.getStack().getType())) {
           queue.add(new EffectInstance(effect, rank));

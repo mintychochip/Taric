@@ -1,10 +1,12 @@
 package org.aincraft.container.rework;
 
+import java.util.Map.Entry;
 import java.util.function.Consumer;
 import org.aincraft.api.container.ISocketColor;
 import org.aincraft.container.rework.IGemItem.IGemItemContainer;
 import org.aincraft.container.rework.IGemItem.IGemItemContainerView;
 import org.aincraft.effects.IGemEffect;
+import org.jetbrains.annotations.Nullable;
 
 public interface IGemItem extends IEffectContainerHolder<IGemItemContainer, IGemItemContainerView> {
 
@@ -16,13 +18,11 @@ public interface IGemItem extends IEffectContainerHolder<IGemItemContainer, IGem
 
     void editCounter(ISocketColor color, Consumer<ISocketLimitCounter> counterConsumer);
 
+    @Nullable
     ISocketLimitCounterView getCounter(ISocketColor color);
-
-    void move(IGemEffect effect,
-        IEffectContainerHolder<? extends IEffectContainer<?>, IEffectContainerView> target);
   }
 
-  interface IGemItemContainerView extends IEffectContainerView {
+  interface IGemItemContainerView extends IEffectContainerView, Iterable<Entry<IGemEffect,Integer>> {
 
     boolean hasEffect(IGemEffect effect);
 

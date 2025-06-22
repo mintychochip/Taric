@@ -1,7 +1,7 @@
 package org.aincraft.api.events;
 
-import org.aincraft.api.container.gem.IGem;
-import org.aincraft.api.container.gem.IGemItem;
+import org.aincraft.container.rework.IGem;
+import org.aincraft.container.rework.IGemItem;
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
 import org.jetbrains.annotations.NotNull;

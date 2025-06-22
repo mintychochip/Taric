@@ -10,6 +10,9 @@ import java.sql.SQLException;
 import java.util.Random;
 import java.util.logging.Logger;
 import org.aincraft.api.config.IConfiguration;
+import org.aincraft.api.container.IRarity;
+import org.aincraft.api.container.ISocketColor;
+import org.aincraft.commands.ContainerCommand;
 import org.aincraft.commands.GemCommand;
 import org.aincraft.database.IDatabase;
 import org.aincraft.effects.IGemEffect;
@@ -43,6 +46,7 @@ public class Taric {
     Bukkit.getPluginManager()
         .registerEvents(injector.getInstance(FakeEventListener.class), Taric.getPlugin());
     //temporary
+    Bukkit.getPluginCommand("container").setExecutor(injector.getInstance(ContainerCommand.class));
     Bukkit.getPluginCommand("gem").setExecutor(injector.getInstance(GemCommand.class));
     Settings.initialize();
   }
@@ -65,6 +69,14 @@ public class Taric {
   }
 
   public static IRegistry<IGemEffect> getEffects() {
+    return instance.injector.getInstance(new Key<>() {
+    });
+  }
+  public static IRegistry<IRarity> getRarity() {
+    return instance.injector.getInstance(new Key<>() {
+    });
+  }
+  public static IRegistry<ISocketColor> getColors() {
     return instance.injector.getInstance(new Key<>() {
     });
   }

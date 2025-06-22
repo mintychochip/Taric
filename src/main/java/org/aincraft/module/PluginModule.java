@@ -5,6 +5,7 @@ import com.google.gson.GsonBuilder;
 import com.google.gson.JsonParseException;
 import com.google.gson.TypeAdapter;
 import com.google.gson.stream.JsonReader;
+import com.google.gson.stream.JsonToken;
 import com.google.gson.stream.JsonWriter;
 import com.google.inject.AbstractModule;
 import com.google.inject.name.Names;
@@ -14,7 +15,10 @@ import java.util.Map.Entry;
 import net.kyori.adventure.key.Key;
 import org.aincraft.Taric;
 import org.aincraft.api.config.IConfiguration;
+import org.aincraft.api.container.ISocketColor;
 import org.aincraft.config.ConfigurationFactory;
+import org.aincraft.effects.IGemEffect;
+import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.plugin.Plugin;
@@ -33,10 +37,14 @@ public final class PluginModule extends AbstractModule {
   protected void configure() {
     bind(Gson.class).toInstance(
         new GsonBuilder()
+            .enableComplexMapKeySerialization()
             .registerTypeAdapter(Key.class, new KeyAdapter())
+            .registerTypeAdapter(IGemEffect.class,new EffectAdapter())
+            .registerTypeAdapter(ISocketColor.class,new ColorAdapter())
             .excludeFieldsWithoutExposeAnnotation()
             .create()
-    );    bind(Plugin.class).toInstance(plugin);
+    );
+    bind(Plugin.class).toInstance(plugin);
     bind(Taric.class).asEagerSingleton();
     ConfigurationFactory configurationFactory = new ConfigurationFactory(plugin);
     for (Entry<String, String> entry : configs.entrySet()) {
@@ -45,47 +53,80 @@ public final class PluginModule extends AbstractModule {
     }
   }
 
-  public static class MaterialAdapter extends TypeAdapter<Material> {
-
-    @Override
-    public void write(JsonWriter jsonWriter, Material material) throws IOException {
-      jsonWriter.value(material.toString());
-    }
-
-    @Override
-    public Material read(JsonReader jsonReader) throws IOException {
-      return Material.valueOf(jsonReader.nextString());
-    }
-  }
-
   public static class KeyAdapter extends TypeAdapter<Key> {
+
     @Override
     public void write(JsonWriter out, Key key) throws IOException {
-      out.value(key.namespace() + ":" + key.key());
+      if (key == null) {
+        out.nullValue(); // write null properly
+        return;
+      }
+      out.value(key.toString());
     }
 
     @Override
     public Key read(JsonReader in) throws IOException {
+      if (in.peek() == JsonToken.NULL) {
+        in.nextNull(); // consume null
+        return null;
+      }
+
       String raw = in.nextString();
       String[] parts = raw.split(":", 2);
-      if (parts.length != 2) throw new JsonParseException("Invalid Key format: " + raw);
+      if (parts.length != 2) {
+        throw new JsonParseException("Invalid Key format: " + raw);
+      }
       return new NamespacedKey(parts[0], parts[1]);
     }
   }
 
-  public static class NamespacedKeyAdapter extends TypeAdapter<NamespacedKey> {
+  public static class ColorAdapter extends TypeAdapter<ISocketColor> {
 
     @Override
-    public void write(JsonWriter out, NamespacedKey key) throws IOException {
-      out.value(key.getNamespace() + ":" + key.getKey());
+    public void write(JsonWriter out, ISocketColor color) throws IOException {
+      if (color == null) {
+        out.nullValue();
+        return;
+      }
+      out.value(color.key().toString());
     }
 
     @Override
-    public NamespacedKey read(JsonReader in) throws IOException {
+    public ISocketColor read(JsonReader in) throws IOException {
+      if (in.peek() == JsonToken.NULL) {
+        in.nextNull();
+        return null;
+      }
       String raw = in.nextString();
       String[] parts = raw.split(":", 2);
-      if (parts.length != 2) throw new JsonParseException("Invalid NamespacedKey: " + raw);
-      return new NamespacedKey(parts[0], parts[1]);
+      if (parts.length != 2) {
+        throw new JsonParseException("Invalid Key format: " + raw);
+      }
+      NamespacedKey key = new NamespacedKey(parts[0], parts[1]);
+      return Taric.getColors().get(key);
+    }
+  }
+
+  public static class EffectAdapter extends TypeAdapter<IGemEffect> {
+
+    @Override
+    public void write(JsonWriter out, IGemEffect effect) throws IOException {
+      if (effect == null) {
+        out.nullValue();
+        return;
+      }
+      out.value(effect.key().toString());
+    }
+
+    @Override
+    public IGemEffect read(JsonReader in) throws IOException {
+      String raw = in.nextString();
+      String[] parts = raw.split(":", 2);
+      if (parts.length != 2) {
+        throw new JsonParseException("Invalid NamespacedKey: " + raw);
+      }
+      NamespacedKey key = new NamespacedKey(parts[0], parts[1]);
+      return Taric.getEffects().get(key);
     }
   }
 }

@@ -24,6 +24,8 @@ public interface IGemEffect extends Keyed {
 
   boolean isValidTarget(Material material);
 
+  String getAdjective();
+
   int getMaxRank();
 
   /**
@@ -34,8 +36,6 @@ public interface IGemEffect extends Keyed {
   Set<EquipmentSlot> getRequiredActiveSlots();
 
   boolean isValidSlot(EquipmentSlot slot);
-
-  TriggerType[] getTriggerTypes();
 
   String getDescription();
 

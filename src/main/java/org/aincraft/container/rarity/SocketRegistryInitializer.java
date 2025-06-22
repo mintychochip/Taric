@@ -13,6 +13,7 @@ import org.aincraft.api.container.IRarity;
 import org.aincraft.api.container.ISocketColor;
 import org.aincraft.registry.IRegistry;
 import org.aincraft.registry.SharedRegistry;
+import org.bukkit.Bukkit;
 import org.bukkit.NamespacedKey;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.plugin.Plugin;
@@ -47,7 +48,6 @@ public final class SocketRegistryInitializer implements Provider<IRegistry<ISock
       } catch (IllegalArgumentException ex) {
         Taric.getLogger().info(ex.getMessage());
       }
-
     }
     return registry;
   }

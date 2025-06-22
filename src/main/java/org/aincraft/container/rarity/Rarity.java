@@ -36,7 +36,7 @@ final class Rarity extends AbstractRegisterable implements IRarity {
   }
 
   @Override
-  public TextColor getColor() {
+  public TextColor getTextColor() {
     return textColor;
   }
 

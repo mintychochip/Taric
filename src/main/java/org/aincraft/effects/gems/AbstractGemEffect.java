@@ -2,8 +2,10 @@ package org.aincraft.effects.gems;
 
 import com.google.common.base.Supplier;
 import com.google.common.base.Suppliers;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import org.aincraft.Taric;
 import org.aincraft.api.container.IRarity;
 import org.aincraft.api.container.ISocketColor;
 import org.aincraft.api.container.trigger.TriggerType;
@@ -98,26 +100,6 @@ abstract class AbstractGemEffect implements IGemEffect {
   }
 
   @Override
-  public TriggerType[] getTriggerTypes() {
-    if (TRIGGER_TYPES != null) {
-      return TRIGGER_TYPES;
-    }
-    Class<? extends AbstractGemEffect> clazz = this.getClass();
-    Class<?>[] interfaces = clazz.getInterfaces();
-    TRIGGER_TYPES = new TriggerType[interfaces.length];
-    int count = 0;
-    for (Class<?> iface : interfaces) {
-      TriggerType triggerType = TriggerType.find(iface);
-      if (triggerType == null) {
-        continue;
-      }
-      TRIGGER_TYPES[count++] = triggerType;
-    }
-
-    return TRIGGER_TYPES;
-  }
-
-  @Override
   public String getName() {
     return nameSupplier.get();
   }
@@ -143,9 +125,28 @@ abstract class AbstractGemEffect implements IGemEffect {
     return meta.requiredActiveSlots.contains(slot);
   }
 
+  @Override
+  public String getAdjective() {
+    int size = meta.adjectives.size();
+    if (size == 0) {
+      return "";
+    }
+    if (size == 1) {
+      return meta.adjectives.getFirst();
+    }
+    int index = Taric.getRandom().nextInt(size);
+    return meta.adjectives.get(index);
+  }
+
+  @Override
+  public final String toString() {
+    return getKey().toString();
+  }
+
   public record GemEffectMeta(int maxLevel,
                               IRarity rarity,
                               ISocketColor color,
+                              List<String> adjectives,
                               Map<TriggerType, Integer> priority,
                               String description,
                               Set<EquipmentSlot> requiredActiveSlots) {

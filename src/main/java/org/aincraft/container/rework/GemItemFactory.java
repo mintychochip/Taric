@@ -1,4 +1,4 @@
-package org.aincraft.container.gem;
+package org.aincraft.container.rework;
 
 import io.papermc.paper.persistence.PersistentDataContainerView;
 import java.util.HashMap;
@@ -7,11 +7,7 @@ import java.util.concurrent.Callable;
 import java.util.function.Function;
 import org.aincraft.Taric;
 import org.aincraft.api.container.IEquipment;
-import org.aincraft.api.container.gem.IEffectContainer;
-import org.aincraft.api.container.gem.IEffectContainerHolder;
-import org.aincraft.api.container.gem.IEffectContainerView;
 import org.aincraft.api.container.gem.IGemInventory;
-import org.aincraft.api.container.gem.IGemItem;
 import org.aincraft.container.equipment.EquipmentFactory;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
@@ -33,7 +29,7 @@ final class GemItemFactory {
     return pdc.has(key);
   }
 
-  static <C extends IEffectContainer<?, V>, V extends IEffectContainerView>
+  static <C extends org.aincraft.container.rework.IEffectContainer<V>, V extends org.aincraft.container.rework.IEffectContainerView>
   C containerFromStack(
       NamespacedKey key,
       ItemStack stack,
@@ -46,7 +42,7 @@ final class GemItemFactory {
 
 
   @Nullable
-  static <C extends IEffectContainer<?, V>, V extends IEffectContainerView>
+  static <C extends org.aincraft.container.rework.IEffectContainer<V>, V extends org.aincraft.container.rework.IEffectContainerView>
   C containerFromIfExists(
       ItemStack stack,
       NamespacedKey containerKey,
@@ -60,9 +56,9 @@ final class GemItemFactory {
   }
 
   @Nullable
-  static <H extends IEffectContainerHolder<V, ?>,
-      C extends IEffectContainer<?, V>,
-      V extends IEffectContainerView>
+  static <H extends org.aincraft.container.rework.IEffectContainerHolder<?, V>,
+      C extends org.aincraft.container.rework.IEffectContainer<V>,
+      V extends org.aincraft.container.rework.IEffectContainerView>
   H holderFromIfExists(
       ItemStack stack,
       NamespacedKey containerKey,
@@ -74,8 +70,8 @@ final class GemItemFactory {
   }
 
   @NotNull
-  static <H extends IEffectContainerHolder<V, ?>,
-      C extends IEffectContainer<?, V>,
+  static <H extends IEffectContainerHolder<?, V>,
+      C extends IEffectContainer<V>,
       V extends IEffectContainerView>
   H holderFrom(
       ItemStack stack,

@@ -1,7 +1,6 @@
 package org.aincraft.container.rework;
 
 import org.aincraft.api.container.ISocketColor;
-import org.aincraft.api.container.gem.IGem.IContainer;
 import org.aincraft.container.rework.IGem.IGemContainer;
 import org.aincraft.container.rework.IGem.IGemContainerView;
 import org.aincraft.effects.IGemEffect;
@@ -16,8 +15,9 @@ public interface IGem extends IEffectContainerHolder<IGemContainer, IGemContaine
 
     IGemEffect getEffect();
 
-    void move(IEffectContainerHolder<? extends IEffectContainer<?>, IEffectContainerView> target);
+    int getRank();
 
+    void move(IEffectContainerHolder<?,?> holder);
   }
 
   interface IGemContainerView extends IEffectContainerView {
@@ -25,5 +25,7 @@ public interface IGem extends IEffectContainerHolder<IGemContainer, IGemContaine
     ISocketColor getSocketColor();
 
     IGemEffect getEffect();
+
+    int getRank();
   }
 }

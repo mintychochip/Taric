@@ -1,18 +1,28 @@
 package org.aincraft.container.rework;
 
+import com.google.gson.annotations.Expose;
+import com.google.gson.annotations.SerializedName;
 import io.papermc.paper.datacomponent.item.ItemLore;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
-import java.util.concurrent.Callable;
+import java.util.Map.Entry;
 import java.util.function.Consumer;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
+import net.kyori.adventure.text.format.TextDecoration;
 import org.aincraft.api.container.ISocketColor;
+import org.aincraft.api.container.TargetType;
 import org.aincraft.container.rework.IGemItem.IGemItemContainer;
 import org.aincraft.container.rework.IGemItem.IGemItemContainerView;
 import org.aincraft.effects.IGemEffect;
+import org.aincraft.util.Roman;
+import org.aincraft.util.Utils;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.inventory.ItemStack;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public class GemItem extends AbstractHolder<IGemItemContainer, IGemItemContainerView> implements
     IGemItem {
@@ -23,7 +33,17 @@ public class GemItem extends AbstractHolder<IGemItemContainer, IGemItemContainer
     super(stack, container);
   }
 
-  public static IGemItem create(Material material) {
+  @Nullable
+  public static IGemItem fromIfExists(ItemStack stack) {
+    return GemItemFactory.holderFromIfExists(stack, GEM_ITEM_KEY, Container.class,
+        container -> new GemItem(stack, container));
+  }
+
+  @NotNull
+  public static IGemItem create(Material material) throws IllegalArgumentException {
+    if (!TargetType.ALL.contains(material)) {
+      throw new IllegalArgumentException("illegal material");
+    }
     return new GemItem(new ItemStack(material), new Container(GEM_ITEM_KEY, material));
   }
 
@@ -31,19 +51,50 @@ public class GemItem extends AbstractHolder<IGemItemContainer, IGemItemContainer
       AbstractView<Container, IGemItemContainer, IGemItemContainerView> implements
       IGemItemContainerView {
 
-    @Override
-    protected Component toItemTitle() {
-      return null;
+    View(Container container) {
+      super(container);
     }
 
     @Override
     protected ItemLore toItemLore() {
-      return null;
+      ItemLore.Builder builder = ItemLore.lore();
+      for (Entry<IGemEffect, Integer> effectEntry : container.effects.entrySet()) {
+        IGemEffect effect = effectEntry.getKey();
+        int rank = effectEntry.getValue();
+        if (effect == null || rank == 0) {
+          continue;
+        }
+        ISocketColor color = effect.getSocketColor();
+        Component effectLabel = Component.empty()
+            .append(Component.text(effect.getName())
+                .append(Component.space())
+                .append(Component.text(Roman.fromInteger(rank))));
+        Component label = Component.empty()
+            .append(Component.text("\u2022 ["))
+            .append(Component.space())
+            .append(effectLabel)
+            .append(Component.text(" ]"))
+            .color(color.getTextColor()).decoration(
+                TextDecoration.ITALIC, false);
+        builder.addLine(label);
+      }
+      for (Entry<ISocketColor, SocketLimitCounter> counterEntry : container.counters.entrySet()) {
+        ISocketColor color = counterEntry.getKey();
+        SocketLimitCounter counter = counterEntry.getValue();
+        int remaining = counter.getRemaining();
+        for (int i = 0; i < remaining; ++i) {
+          Component label = Component.empty().append(Component.text("\u2022 [ Empty ]"))
+              .color(color.getTextColor()).decoration(TextDecoration.ITALIC, false);
+          builder.addLine(label);
+        }
+      }
+
+      return builder.build();
     }
 
-
-    View(Container container) {
-      super(container);
+    @Override
+    protected Component toItemTitle() {
+      return super.toItemTitle();
     }
 
     @Override
@@ -60,15 +111,27 @@ public class GemItem extends AbstractHolder<IGemItemContainer, IGemItemContainer
     public ISocketLimitCounterView getCounter(ISocketColor color) {
       return container.getCounter(color);
     }
+
+    @NotNull
+    @Override
+    public Iterator<Entry<IGemEffect, Integer>> iterator() {
+      return new HashMap<>(container.effects).entrySet().iterator();
+    }
   }
 
   private static final class Container extends AbstractContainer<IGemItemContainerView> implements
       IGemItemContainer {
 
+    @Expose
+    @SerializedName("effects")
     private final Map<IGemEffect, Integer> effects = new HashMap<>();
 
+    @Expose
+    @SerializedName("counters")
     private final Map<ISocketColor, SocketLimitCounter> counters = new HashMap<>();
 
+    @Expose
+    @SerializedName("material")
     private final Material material;
 
     Container(NamespacedKey containerKey, Material material) {
@@ -90,6 +153,7 @@ public class GemItem extends AbstractHolder<IGemItemContainer, IGemItemContainer
       return true;
     }
 
+
     @Override
     public void editCounter(ISocketColor color,
         Consumer<ISocketLimitCounter> counterConsumer) {
@@ -99,16 +163,21 @@ public class GemItem extends AbstractHolder<IGemItemContainer, IGemItemContainer
     }
 
     @Override
+    @Nullable
     public ISocketLimitCounterView getCounter(ISocketColor color) {
-      return counters.get(color).getView();
+      if (!counters.containsKey(color)) {
+        return null;
+      }
+      SocketLimitCounter counter = counters.get(color);
+      return counter.getView();
     }
 
     @Override
     public boolean setEffect(IGemEffect effect, int rank, boolean force) {
+      ISocketColor socketColor = effect.getSocketColor();
       if (!force) {
-        ISocketColor socketColor = effect.getSocketColor();
-        int sockets = this.getRemainingSockets(socketColor);
-        if (sockets <= 0 && !hasEffect(effect)) {
+        ISocketLimitCounterView counter = this.getCounter(socketColor);
+        if (counter != null && counter.getRemaining() <= 0 && !hasEffect(effect)) {
           return false;
         }
         if (!effect.isValidTarget(material)) {
@@ -116,8 +185,16 @@ public class GemItem extends AbstractHolder<IGemItemContainer, IGemItemContainer
         }
         rank = Math.min(effect.getMaxRank(), rank);
       }
+      this.editCounter(socketColor, ISocketLimitCounter::incrementCurrent);
       effects.put(effect, rank);
       return true;
+    }
+
+    @Override
+    public void removeEffect(IGemEffect effect) {
+      ISocketColor socketColor = effect.getSocketColor();
+      this.editCounter(socketColor, ISocketLimitCounter::decrementCurrent);
+      effects.remove(effect);
     }
 
     @Override
@@ -135,17 +212,47 @@ public class GemItem extends AbstractHolder<IGemItemContainer, IGemItemContainer
       effects.clear();
     }
 
-
     @Override
-    public void move(IGemEffect effect,
-        IEffectContainerHolder<? extends IEffectContainer<?>, IEffectContainerView> target) {
+    public String toString() {
+      StringBuilder sb = new StringBuilder();
+      sb.append("Container{")
+          .append("material=").append(material)
+          .append(", effects={");
 
+      for (Map.Entry<IGemEffect, Integer> entry : effects.entrySet()) {
+        IGemEffect effect = entry.getKey();
+        sb.append(effect.key().asString())
+            .append(":rank=").append(entry.getValue())
+            .append(", ");
+      }
+      if (!effects.isEmpty()) {
+        sb.setLength(sb.length() - 2);
+      }
+      sb.append("}, counters={");
+
+      for (Map.Entry<ISocketColor, SocketLimitCounter> entry : counters.entrySet()) {
+        ISocketColor color = entry.getKey();
+        SocketLimitCounter counter = entry.getValue();
+        sb.append(color.toString())
+            .append(":[")
+            .append(counter.getCurrent()).append("/").append(counter.getMax())
+            .append("], ");
+      }
+      if (!counters.isEmpty()) {
+        sb.setLength(sb.length() - 2);
+      }
+      sb.append("}}");
+      return sb.toString();
     }
   }
 
   private static final class SocketLimitCounter implements ISocketLimitCounter {
 
+    @Expose
+    @SerializedName("max")
     private int max;
+    @Expose
+    @SerializedName("current")
     private int current;
 
     private SocketLimitCounter(int max) {

@@ -1,5 +1,9 @@
 package org.aincraft.container.rework;
 
+import com.google.gson.annotations.Expose;
+import com.google.gson.annotations.SerializedName;
+import java.util.UUID;
+import net.kyori.adventure.key.Key;
 import org.aincraft.effects.IGemEffect;
 import org.bukkit.NamespacedKey;
 
@@ -7,14 +11,26 @@ abstract class AbstractContainer<V extends IEffectContainerView> implements IEff
 
   private V view = null;
 
-  private final NamespacedKey containerKey;
+  @Expose
+  @SerializedName("container-key")
+  private final Key containerKey;
+
+  @Expose
+  @SerializedName("uuid")
+  private final UUID uuid;
 
   AbstractContainer(NamespacedKey containerKey) {
     this.containerKey = containerKey;
+    this.uuid = UUID.randomUUID();
   }
 
   NamespacedKey getContainerKey() {
-    return containerKey;
+    return (NamespacedKey) containerKey;
+  }
+
+  @Override
+  public UUID getUuid() {
+    return uuid;
   }
 
   protected abstract V buildView();

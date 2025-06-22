@@ -6,3 +6,5 @@ authors: [ mintychochip ]
 commands:
   gem:
     description: creates a gem
+  container:
+    description: checks container

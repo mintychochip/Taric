@@ -10,7 +10,7 @@ import java.time.Duration;
 import org.aincraft.api.container.IRarity;
 import org.aincraft.api.container.ISocketColor;
 import org.aincraft.api.container.gem.IGemInventory;
-import org.aincraft.container.gem.GemInventory;
+import org.aincraft.container.rework.GemInventory;
 import org.aincraft.container.rarity.RarityRegistryInitializer;
 import org.aincraft.container.rarity.SocketRegistryInitializer;
 import org.aincraft.database.Extractor;

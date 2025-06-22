@@ -111,12 +111,10 @@ final class AutoSmelt extends AbstractGemEffect implements IOnBlockDrop {
       Material material = drop.getType();
       if (smelt(context.getRank()) && conversions.containsKey(material)) {
         ItemStack smelted = conversions.get(material).clone();
-        Bukkit.broadcastMessage(smelted.toString());
         smelted.setAmount(drop.getAmount());
         drops.set(i, smelted);
       }
     }
-    Bukkit.broadcastMessage("here" + drops.toString());
     context.setDrops(drops);
   }
 }
