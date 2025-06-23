@@ -1,4 +1,4 @@
-package org.aincraft.container.equipment;
+package org.aincraft.container;
 
 import org.aincraft.api.container.IEquipment;
 import org.bukkit.inventory.EquipmentSlot;

@@ -1,4 +1,4 @@
-package org.aincraft.container.gem;
+package org.aincraft.container;
 
 import io.papermc.paper.datacomponent.DataComponentTypes;
 import io.papermc.paper.datacomponent.item.ItemLore;

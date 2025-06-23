@@ -2,7 +2,6 @@ package org.aincraft.api.container;
 
 import java.util.List;
 import net.kyori.adventure.key.Key;
-import org.aincraft.container.util.WeightedRandom;
 import org.aincraft.registry.IRegistry;
 
 public final class Rarities {

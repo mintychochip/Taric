@@ -1,4 +1,4 @@
-package org.aincraft.container.gem;
+package org.aincraft.container;
 
 import org.aincraft.api.container.gem.IEffectContainer;
 import org.aincraft.api.container.gem.IEffectContainerView;

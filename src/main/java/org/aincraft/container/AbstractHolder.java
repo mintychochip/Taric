@@ -1,4 +1,4 @@
-package org.aincraft.container.gem;
+package org.aincraft.container;
 
 import java.util.function.Consumer;
 import org.aincraft.api.container.gem.IItemContainer;

@@ -1,4 +1,4 @@
-package org.aincraft.container.gem;
+package org.aincraft.container;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;

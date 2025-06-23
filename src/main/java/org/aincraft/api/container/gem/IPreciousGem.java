@@ -4,7 +4,6 @@ import org.aincraft.api.container.IRarity;
 import org.aincraft.api.container.ISocketColor;
 import org.aincraft.api.container.gem.IPreciousGem.IPreciousGemContainer;
 import org.aincraft.api.container.gem.IPreciousGem.IPreciousGemContainerView;
-import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 
@@ -30,6 +29,13 @@ public interface IPreciousGem extends
   interface IPreciousGemFactory extends
       IItemHolderFactory<IPreciousGem, IPreciousGemContainer, IPreciousGemContainerView> {
 
-    IPreciousGem create(Material material, IRarity rarity, ISocketColor socketColor);
+    IPreciousGem create(ItemStack stack, IRarity rarity, ISocketColor color)
+        throws IllegalArgumentException;
+
+    IPreciousGem create(ItemStack stack, ISocketColor color) throws IllegalArgumentException;
+
+    IPreciousGem create(ItemStack stack, IRarity rarity) throws IllegalArgumentException;
+
+    IPreciousGem create(ItemStack stack) throws IllegalArgumentException;
   }
 }

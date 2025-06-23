@@ -2,12 +2,9 @@ package org.aincraft.commands;
 
 import com.google.inject.Inject;
 import org.aincraft.api.container.ISocketColor;
-import org.aincraft.api.container.Rarities;
 import org.aincraft.api.container.SocketColors;
-import org.aincraft.api.container.gem.IPreciousGem.IPreciousGemFactory;
-import org.aincraft.container.gem.GemEffectSelector;
 import org.aincraft.api.container.gem.IPreciousGem;
-import org.aincraft.registry.IRegistry;
+import org.aincraft.api.container.gem.IPreciousGem.IPreciousGemFactory;
 import org.bukkit.Material;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -31,8 +28,7 @@ public class GemCommand implements CommandExecutor {
       @NotNull String label, @NotNull String @NotNull [] args) {
     if (sender instanceof Player player) {
       for (ISocketColor value : SocketColors.values()) {
-        IPreciousGem gem = factory.create(Material.EMERALD,
-            Rarities.LEGENDARY, value);
+        IPreciousGem gem = factory.create(new ItemStack(Material.EMERALD));
         player.getInventory().addItem(gem.getStack());
       }
 

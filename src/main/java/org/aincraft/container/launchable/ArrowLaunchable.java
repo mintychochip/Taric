@@ -1,14 +1,13 @@
 package org.aincraft.container.launchable;
 
-import org.aincraft.api.container.IEquipment;
 import org.aincraft.api.container.launchable.IArrowLaunchable;
 import org.aincraft.api.container.launchable.ILaunchable;
-import org.aincraft.container.equipment.EquipmentFactory;
 import org.bukkit.Location;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.AbstractArrow.PickupStatus;
 import org.bukkit.entity.Arrow;
 import org.bukkit.entity.LivingEntity;
+import org.bukkit.inventory.EntityEquipment;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.Vector;
 
@@ -30,10 +29,12 @@ class ArrowLaunchable extends Launchable implements IArrowLaunchable {
   @Override
   public void launch(LivingEntity shooter) {
     shooter.launchProjectile(Arrow.class, velocity, a -> {
-      IEquipment equipment = EquipmentFactory.equipmentFromEntity(shooter);
-      ItemStack bow = equipment.getItemInMainHand();
-      if (bow.getEnchantmentLevel(Enchantment.INFINITY) > 0) {
-        a.setPickupStatus(PickupStatus.DISALLOWED);
+      EntityEquipment entityEquipment = shooter.getEquipment();
+      if (entityEquipment != null) {
+        ItemStack bow = entityEquipment.getItemInMainHand();
+        if (bow.getEnchantmentLevel(Enchantment.INFINITY) > 0) {
+          a.setPickupStatus(PickupStatus.DISALLOWED);
+        }
       }
       a.setDamage(damage);
       a.setCritical(critical);
@@ -63,6 +64,6 @@ class ArrowLaunchable extends Launchable implements IArrowLaunchable {
 
   @Override
   public ILaunchable clone() {
-    return new ArrowLaunchable(velocity,location,critical,damage);
+    return new ArrowLaunchable(velocity, location, critical, damage);
   }
 }

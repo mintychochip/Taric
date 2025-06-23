@@ -39,7 +39,8 @@ public class Taric {
   @Inject
   public Taric(Injector injector, IRegistry<IRarity> rarityRegistry,
       IRegistry<ISocketColor> socketColorRegistry) {
-    this.injector = injector.createChildInjector(new HandlerModule());
+    RuntimeModule module = injector.getInstance(RuntimeModule.class);
+    this.injector = injector.createChildInjector(new HandlerModule(), module);
     this.rarityRegistry = rarityRegistry;
     this.socketColorRegistry = socketColorRegistry;
     instance = this;

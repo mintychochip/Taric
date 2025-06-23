@@ -6,7 +6,7 @@ import org.aincraft.Settings;
 import org.aincraft.Taric;
 import org.aincraft.api.container.TargetType;
 import org.aincraft.api.container.TypeSet;
-import org.aincraft.api.container.receiver.IExperienceContext;
+import org.aincraft.api.container.context.IExperienceContext;
 import org.aincraft.api.container.trigger.IOnBlockBreak;
 import org.aincraft.api.container.trigger.IOnFish;
 import org.aincraft.api.container.trigger.IOnKillEntity;

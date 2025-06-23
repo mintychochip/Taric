@@ -1,6 +1,5 @@
 package org.aincraft.api.container.gem;
 
-import java.awt.Component;
 import java.util.Map.Entry;
 import java.util.function.Consumer;
 import org.aincraft.api.container.ISocketColor;

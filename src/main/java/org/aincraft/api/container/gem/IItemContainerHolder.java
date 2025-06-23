@@ -1,6 +1,5 @@
 package org.aincraft.api.container.gem;
 
-import java.util.concurrent.Callable;
 import java.util.function.Consumer;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;

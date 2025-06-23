@@ -1,6 +1,6 @@
 package org.aincraft.container.trigger;
 
-import org.aincraft.api.container.receiver.ITriggerContext;
+import org.aincraft.api.container.context.ITriggerContext;
 
 abstract class AbstractTriggerContext<E> implements ITriggerContext {
 

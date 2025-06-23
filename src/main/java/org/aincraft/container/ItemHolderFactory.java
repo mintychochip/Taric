@@ -1,4 +1,4 @@
-package org.aincraft.container.gem;
+package org.aincraft.container;
 
 import io.papermc.paper.persistence.PersistentDataContainerView;
 import java.util.concurrent.Callable;
@@ -22,7 +22,7 @@ abstract class ItemHolderFactory<H extends IItemContainerHolder<C, V>, C extends
 
   protected abstract NamespacedKey getContainerKey();
 
-  protected abstract H holderFunction(ItemStack stack, C container);
+  protected abstract H create(ItemStack stack, C container);
 
   static boolean hasContainer(NamespacedKey key, ItemStack stack) {
     Material material = stack.getType();
@@ -52,13 +52,13 @@ abstract class ItemHolderFactory<H extends IItemContainerHolder<C, V>, C extends
     if (container == null) {
       throw new IllegalArgumentException("container not found, this is a bug");
     }
-    return holderFunction(stack,container);
+    return create(stack,container);
   }
 
   @Override
   public @Nullable H fromIfExists(ItemStack stack) {
     C container = containerIfExists(stack);
-    return container != null ? holderFunction(stack,container) : null;
+    return container != null ? create(stack,container) : null;
   }
 
   @Override

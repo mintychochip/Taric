@@ -143,6 +143,11 @@ abstract class AbstractGemEffect implements IGemEffect {
     return getKey().toString();
   }
 
+  @Override
+  public double getWeight() {
+    return meta.rarity.getWeight();
+  }
+
   public record GemEffectMeta(int maxLevel,
                               IRarity rarity,
                               ISocketColor color,

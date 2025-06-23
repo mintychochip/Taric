@@ -35,6 +35,11 @@ public class SharedRegistry<T extends Keyed> implements IRegistry<T> {
   }
 
   @Override
+  public boolean isRegistered(T object) {
+    return isRegistered(object.key());
+  }
+
+  @Override
   public Collection<T> values() {
     return registry.values();
   }

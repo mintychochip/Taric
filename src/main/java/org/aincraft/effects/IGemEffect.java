@@ -6,13 +6,14 @@ import org.aincraft.Taric;
 import org.aincraft.api.config.IConfiguration;
 import org.aincraft.api.container.IRarity;
 import org.aincraft.api.container.ISocketColor;
+import org.aincraft.api.container.IWeighable;
 import org.aincraft.api.container.trigger.TriggerType;
 import org.bukkit.Keyed;
 import org.bukkit.Material;
 import org.bukkit.inventory.EquipmentSlot;
 import org.jetbrains.annotations.NotNull;
 
-public interface IGemEffect extends Keyed {
+public interface IGemEffect extends Keyed, IWeighable {
 
   int getPriority(TriggerType triggerType);
 

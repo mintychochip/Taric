@@ -1,6 +1,6 @@
 package org.aincraft.api.container.trigger;
 
-import org.aincraft.api.container.receiver.ITriggerContext;
+import org.aincraft.api.container.context.ITriggerContext;
 import org.bukkit.Location;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;

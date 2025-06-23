@@ -1,18 +1,22 @@
-package org.aincraft.container.gem;
+package org.aincraft.container;
 
+import com.google.common.base.Preconditions;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
+import com.google.inject.Inject;
 import io.papermc.paper.datacomponent.item.ItemLore;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextDecoration;
+import org.aincraft.Taric;
 import org.aincraft.api.container.IRarity;
 import org.aincraft.api.container.ISocketColor;
 import org.aincraft.api.container.gem.IPreciousGem;
 import org.aincraft.api.container.gem.IPreciousGem.IPreciousGemContainer;
 import org.aincraft.api.container.gem.IPreciousGem.IPreciousGemContainerView;
+import org.aincraft.api.container.util.IRandomSelector;
+import org.aincraft.registry.IRegistry;
 import org.aincraft.util.Utils;
-import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
@@ -126,6 +130,20 @@ final class PreciousGem extends
       ItemHolderFactory<IPreciousGem, IPreciousGemContainer, IPreciousGemContainerView> implements
       IPreciousGemFactory {
 
+    private final IRegistry<IRarity> rarityRegistry;
+    private final IRegistry<ISocketColor> colorRegistry;
+    private final IRandomSelector<IRarity> raritySelector;
+    private final IRandomSelector<ISocketColor> colorSelector;
+
+    @Inject
+    Factory(IRegistry<IRarity> rarityRegistry, IRegistry<ISocketColor> colorRegistry,
+        IRandomSelector<IRarity> raritySelector, IRandomSelector<ISocketColor> colorSelector) {
+      this.rarityRegistry = rarityRegistry;
+      this.colorRegistry = colorRegistry;
+      this.raritySelector = raritySelector;
+      this.colorSelector = colorSelector;
+    }
+
     @Override
     protected Class<? extends IPreciousGemContainer> getContainerImplClazz() {
       return Container.class;
@@ -137,14 +155,37 @@ final class PreciousGem extends
     }
 
     @Override
-    protected IPreciousGem holderFunction(ItemStack stack, IPreciousGemContainer container) {
+    protected IPreciousGem create(ItemStack stack, IPreciousGemContainer container) {
       return new PreciousGem(stack, container);
     }
 
     @Override
-    public IPreciousGem create(Material material, IRarity rarity, ISocketColor socketColor) {
-      return new PreciousGem(new ItemStack(material),
-          new PreciousGem.Container(PreciousGem.PRECIOUS_GEM_KEY, rarity, socketColor));
+    public IPreciousGem create(ItemStack stack, IRarity rarity, ISocketColor color)
+        throws IllegalArgumentException {
+      Preconditions.checkArgument(rarityRegistry.isRegistered(rarity));
+      Preconditions.checkArgument(colorRegistry.isRegistered(color));
+      Container container = new Container(this.getContainerKey(), rarity, color);
+      return new PreciousGem(stack, container);
+    }
+
+    @Override
+    public IPreciousGem create(ItemStack stack, ISocketColor color)
+        throws IllegalArgumentException {
+      //TODO: remove static call
+      IRarity rarity = raritySelector.getRandom(Taric.getRandom());
+      return create(stack, rarity, color);
+    }
+
+    @Override
+    public IPreciousGem create(ItemStack stack, IRarity rarity) throws IllegalArgumentException {
+      ISocketColor color = colorSelector.getRandom(Taric.getRandom());
+      return create(stack, rarity, color);
+    }
+
+    @Override
+    public IPreciousGem create(ItemStack stack) throws IllegalArgumentException {
+      IRarity rarity = raritySelector.getRandom(Taric.getRandom());
+      return create(stack, rarity);
     }
   }
 }

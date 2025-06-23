@@ -8,6 +8,7 @@ import com.google.gson.stream.JsonReader;
 import com.google.gson.stream.JsonToken;
 import com.google.gson.stream.JsonWriter;
 import com.google.inject.AbstractModule;
+import com.google.inject.Singleton;
 import com.google.inject.name.Names;
 import java.io.IOException;
 import java.util.Map;
@@ -19,6 +20,9 @@ import org.aincraft.Taric;
 import org.aincraft.api.config.IConfiguration;
 import org.aincraft.api.container.ISocketColor;
 import org.aincraft.config.ConfigurationFactory;
+import org.aincraft.database.Extractor;
+import org.aincraft.database.Extractor.ResourceExtractor;
+import org.aincraft.database.IDatabase;
 import org.aincraft.effects.IGemEffect;
 import org.bukkit.NamespacedKey;
 import org.bukkit.plugin.Plugin;
@@ -52,6 +56,8 @@ public final class PluginModule extends AbstractModule {
       bind(IConfiguration.class).annotatedWith(Names.named(entry.getKey()))
           .toInstance(configurationFactory.yaml(entry.getValue()));
     }
+    bind(IDatabase.class).toProvider(StorageProvider.class).in(Singleton.class);
+    bind(Extractor.class).to(ResourceExtractor.class);
   }
 
   public static class KeyAdapter extends TypeAdapter<Key> {

@@ -1,4 +1,4 @@
-package org.aincraft.container.gem;
+package org.aincraft.container;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
@@ -357,7 +357,7 @@ final class GemItem extends AbstractHolder<IGemItemContainer, IGemItemContainerV
     }
 
     @Override
-    protected IGemItem holderFunction(ItemStack stack, IGemItemContainer container) {
+    protected IGemItem create(ItemStack stack, IGemItemContainer container) {
       return new GemItem(stack, container);
     }
 

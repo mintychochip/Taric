@@ -3,10 +3,12 @@ package org.aincraft.container.util;
 import com.google.common.collect.ForwardingMap;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Random;
-import org.jetbrains.annotations.Nullable;
+import java.util.random.RandomGenerator;
+import org.aincraft.api.container.util.IRandomSelector;
 
-public class WeightedRandom<T> extends ForwardingMap<T, Double> {
+class WeightedRandomSelector<T> extends
+    ForwardingMap<T, Double> implements
+    IRandomSelector<T> {
 
   private final Map<T, Double> objects = new HashMap<>();
 
@@ -15,8 +17,8 @@ public class WeightedRandom<T> extends ForwardingMap<T, Double> {
     return objects;
   }
 
-  @Nullable
-  public T getRandom(Random random) {
+  @Override
+  public T getRandom(RandomGenerator randomGenerator) {
     if (objects.isEmpty()) {
       return null;
     }
@@ -25,7 +27,7 @@ public class WeightedRandom<T> extends ForwardingMap<T, Double> {
       cumulativeSum += weight;
     }
 
-    double target = random.nextDouble() * cumulativeSum;
+    double target = randomGenerator.nextDouble() * cumulativeSum;
     double runningSum = 0;
     for (Entry<T, Double> entry : objects.entrySet()) {
       runningSum += entry.getValue();

@@ -1,16 +1,17 @@
-package org.aincraft.container.gem;
+package org.aincraft.container;
 
+import com.google.inject.Inject;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Queue;
 import org.aincraft.api.container.IEquipment;
+import org.aincraft.api.container.IEquipment.IEquipmentFactory;
 import org.aincraft.api.container.gem.IGemInventory;
+import org.aincraft.api.container.gem.IGemInventoryFactory;
 import org.aincraft.api.container.gem.IGemItem;
+import org.aincraft.api.container.gem.IGemItem.IGemItemFactory;
 import org.aincraft.api.container.trigger.TriggerType;
-import org.aincraft.container.IQueueLoader;
-import org.aincraft.container.equipment.EquipmentFactory;
-import org.aincraft.container.gem.GemItem.Factory;
 import org.aincraft.effects.EffectQueuePool.EffectInstance;
 import org.aincraft.effects.IGemEffect;
 import org.bukkit.entity.LivingEntity;
@@ -28,26 +29,6 @@ public class GemInventory implements IGemInventory {
   GemInventory(IEquipment equipment, Map<EquipmentSlot, IGemItem> inventory) {
     this.equipment = equipment;
     this.inventory = inventory;
-  }
-
-  @NotNull
-  public static IGemInventory from(@NotNull LivingEntity entity) {
-    Map<EquipmentSlot, IGemItem> inventory = new HashMap<>();
-    IEquipment equipment = EquipmentFactory.equipmentFromEntity(entity);
-    Factory factory = new Factory();
-    for (EquipmentSlot slot : EquipmentSlot.values()) {
-      try {
-        ItemStack stack = equipment.getItem(slot);
-        IGemItem gemItem = factory.fromIfExists(stack);
-        if (gemItem == null) {
-          continue;
-        }
-        inventory.put(slot, gemItem);
-      } catch (IllegalArgumentException ignored) {
-
-      }
-    }
-    return new GemInventory(equipment, inventory);
   }
 
   @Override
@@ -71,6 +52,37 @@ public class GemInventory implements IGemInventory {
           queue.add(new EffectInstance(effect, rank));
         }
       }
+    }
+  }
+
+  static final class GemInventoryFactory implements IGemInventoryFactory {
+
+    private final IEquipmentFactory equipmentFactory;
+    private final IGemItemFactory gemItemFactory;
+
+    @Inject
+    GemInventoryFactory(IEquipmentFactory equipmentFactory, IGemItemFactory gemItemFactory) {
+      this.equipmentFactory = equipmentFactory;
+      this.gemItemFactory = gemItemFactory;
+    }
+
+    @Override
+    public IGemInventory create(@NotNull LivingEntity entity) {
+      Map<EquipmentSlot, IGemItem> inventory = new HashMap<>();
+      IEquipment equipment = equipmentFactory.create(entity);
+      for (EquipmentSlot slot : EquipmentSlot.values()) {
+        try {
+          ItemStack stack = equipment.getItem(slot);
+          IGemItem gemItem = gemItemFactory.fromIfExists(stack);
+          if (gemItem == null) {
+            continue;
+          }
+          inventory.put(slot, gemItem);
+        } catch (IllegalArgumentException ignored) {
+
+        }
+      }
+      return new GemInventory(equipment, inventory);
     }
   }
 }

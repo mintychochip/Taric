@@ -17,6 +17,8 @@ public interface IRegistry<T extends Keyed> extends Iterable<T> {
 
   boolean isRegistered(Key key);
 
+  boolean isRegistered(T object);
+
   default Stream<T> stream() {
     return values().stream();
   }

@@ -2,10 +2,7 @@ package org.aincraft.api.container;
 
 import java.util.List;
 import net.kyori.adventure.key.Key;
-import net.kyori.adventure.key.Keyed;
 import org.aincraft.registry.IRegistry;
-import org.bukkit.NamespacedKey;
-import org.jetbrains.annotations.NotNull;
 
 public final class SocketColors {
 
