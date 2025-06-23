@@ -1,7 +1,7 @@
 package org.aincraft.api.container.trigger;
 
 import org.aincraft.api.container.receiver.IExperienceContext;
-import org.aincraft.api.container.receiver.IReceiveDrops;
+import org.aincraft.api.container.receiver.IDropContext;
 import org.aincraft.api.container.receiver.ITriggerContext;
 import org.bukkit.entity.FishHook;
 import org.bukkit.entity.Player;
@@ -12,7 +12,7 @@ public interface IOnFish {
 
   void onFish(IFishContext context);
 
-  interface IFishContext extends ITriggerContext, IExperienceContext, IReceiveDrops<ItemStack> {
+  interface IFishContext extends ITriggerContext, IExperienceContext, IDropContext<ItemStack> {
 
     Player getPlayer();
 

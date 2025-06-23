@@ -76,7 +76,6 @@ import org.bukkit.plugin.Plugin;
 
 public class EffectListener implements Listener {
 
-  private final Shared shared;
   private final Plugin plugin;
   private final EffectQueuePool<EffectInstance> effectQueuePool;
   private final Map<Player, BlockFace> lastClickedFace = new HashMap<>();
@@ -86,10 +85,9 @@ public class EffectListener implements Listener {
 
 
   @Inject
-  public EffectListener(Shared shared, Plugin plugin,
+  public EffectListener(Plugin plugin,
       EffectQueuePool<EffectInstance> effectQueuePool,
       LoadingCache<LivingEntity, IGemInventory> inventoryCache, IDatabase cooldownDatabase) {
-    this.shared = shared;
     this.plugin = plugin;
     this.effectQueuePool = effectQueuePool;
     this.inventoryCache = inventoryCache;

@@ -1,12 +1,17 @@
-package org.aincraft.container.rework;
+package org.aincraft.container.gem;
 
 import java.util.function.Consumer;
+import org.aincraft.api.container.gem.IItemContainer;
+import org.aincraft.api.container.gem.IItemContainerHolder;
+import org.aincraft.api.container.gem.IItemContainerView;
 import org.bukkit.inventory.ItemStack;
+import org.jetbrains.annotations.NotNull;
 
-abstract class AbstractHolder<C extends IEffectContainer<V>, V extends IEffectContainerView> implements
-    IEffectContainerHolder<C, V> {
+abstract class AbstractHolder<C extends IItemContainer<V>, V extends IItemContainerView> implements
+    IItemContainerHolder<C, V> {
 
   protected final ItemStack stack;
+
   protected final C container;
 
   public AbstractHolder(ItemStack stack, C container) {
@@ -16,12 +21,12 @@ abstract class AbstractHolder<C extends IEffectContainer<V>, V extends IEffectCo
   }
 
   @Override
-  public ItemStack getStack() {
+  public @NotNull ItemStack getStack() {
     return stack;
   }
 
   @Override
-  public V getEffectContainer() {
+  public V getContainer() {
     return container.getView();
   }
 

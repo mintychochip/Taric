@@ -2,7 +2,7 @@ package org.aincraft.api.container.trigger;
 
 import java.util.List;
 import org.aincraft.api.container.receiver.IExperienceContext;
-import org.aincraft.api.container.receiver.IReceiveDrops;
+import org.aincraft.api.container.receiver.IDropContext;
 import org.aincraft.api.container.receiver.ITriggerContext;
 import org.bukkit.damage.DamageSource;
 import org.bukkit.entity.LivingEntity;
@@ -12,7 +12,7 @@ public interface IOnKillEntity {
 
   void onKillEntity(IKillEntityContext context);
 
-  interface IKillEntityContext extends ITriggerContext, IReceiveDrops<List<ItemStack>>,
+  interface IKillEntityContext extends ITriggerContext, IDropContext<List<ItemStack>>,
       IExperienceContext {
 
     DamageSource getDamageSource();

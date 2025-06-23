@@ -12,6 +12,8 @@ import java.util.logging.Logger;
 import org.aincraft.api.config.IConfiguration;
 import org.aincraft.api.container.IRarity;
 import org.aincraft.api.container.ISocketColor;
+import org.aincraft.api.container.Rarities;
+import org.aincraft.api.container.SocketColors;
 import org.aincraft.commands.ContainerCommand;
 import org.aincraft.commands.GemCommand;
 import org.aincraft.database.IDatabase;
@@ -31,10 +33,15 @@ public class Taric {
 
   private static Taric instance;
   private final Injector injector;
+  private final IRegistry<IRarity> rarityRegistry;
+  private final IRegistry<ISocketColor> socketColorRegistry;
 
   @Inject
-  public Taric(Injector injector) {
-    this.injector = injector.createChildInjector(new RuntimeModule(), new HandlerModule());
+  public Taric(Injector injector, IRegistry<IRarity> rarityRegistry,
+      IRegistry<ISocketColor> socketColorRegistry) {
+    this.injector = injector.createChildInjector(new HandlerModule());
+    this.rarityRegistry = rarityRegistry;
+    this.socketColorRegistry = socketColorRegistry;
     instance = this;
   }
 
@@ -48,6 +55,8 @@ public class Taric {
     //temporary
     Bukkit.getPluginCommand("container").setExecutor(injector.getInstance(ContainerCommand.class));
     Bukkit.getPluginCommand("gem").setExecutor(injector.getInstance(GemCommand.class));
+    Rarities.initialize(rarityRegistry);
+    SocketColors.initialize(socketColorRegistry);
     Settings.initialize();
   }
 
@@ -72,10 +81,12 @@ public class Taric {
     return instance.injector.getInstance(new Key<>() {
     });
   }
+
   public static IRegistry<IRarity> getRarity() {
     return instance.injector.getInstance(new Key<>() {
     });
   }
+
   public static IRegistry<ISocketColor> getColors() {
     return instance.injector.getInstance(new Key<>() {
     });

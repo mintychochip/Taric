@@ -1,29 +1,28 @@
-package org.aincraft.container.rework;
+package org.aincraft.container.gem;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 import io.papermc.paper.datacomponent.item.ItemLore;
-import io.papermc.paper.persistence.PersistentDataContainerView;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextDecoration;
-import org.aincraft.Taric;
 import org.aincraft.api.container.ISocketColor;
-import org.aincraft.container.rework.IGem.IGemContainer;
-import org.aincraft.container.rework.IGem.IGemContainerView;
+import org.aincraft.api.container.gem.IEffectContainer;
+import org.aincraft.api.container.gem.IGem;
+import org.aincraft.api.container.gem.IGem.IGemContainer;
+import org.aincraft.api.container.gem.IGem.IGemContainerView;
+import org.aincraft.api.container.gem.IItemContainerHolder;
 import org.aincraft.effects.IGemEffect;
 import org.aincraft.util.Roman;
 import org.aincraft.util.Utils;
-import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.persistence.PersistentDataType;
 import org.jetbrains.annotations.Nullable;
 
-public class Gem extends AbstractHolder<IGemContainer, IGemContainerView> implements IGem {
+final class Gem extends AbstractHolder<IGemContainer, IGemContainerView> implements IGem {
 
-  private static final NamespacedKey GEM_KEY = new NamespacedKey("taric", "gem");
+  static final NamespacedKey GEM_KEY = new NamespacedKey("taric", "gem");
 
   public Gem(ItemStack stack, IGemContainer container) {
     super(stack, container);
@@ -32,22 +31,6 @@ public class Gem extends AbstractHolder<IGemContainer, IGemContainerView> implem
   @Override
   public ISocketColor getSocketColor() {
     return container.getSocketColor();
-  }
-
-
-  @Nullable
-  public static IGem fromIfExists(ItemStack stack) {
-    PersistentDataContainerView pdc = stack.getPersistentDataContainer();
-    if (!pdc.has(GEM_KEY)) {
-      return null;
-    }
-    String string = pdc.get(GEM_KEY, PersistentDataType.STRING);
-    Container container = Taric.getGson().fromJson(string, Container.class);
-    return new Gem(stack, container);
-  }
-
-  public static IGem create(Material material, ISocketColor socketColor) {
-    return new Gem(new ItemStack(material), new Container(GEM_KEY, socketColor));
   }
 
   private static final class View extends
@@ -144,7 +127,7 @@ public class Gem extends AbstractHolder<IGemContainer, IGemContainerView> implem
   }
 
 
-  private static final class Container extends AbstractContainer<IGemContainerView> implements
+  static final class Container extends AbstractEffectContainer<IGemContainerView> implements
       IGemContainer {
 
     @Nullable
@@ -177,11 +160,16 @@ public class Gem extends AbstractHolder<IGemContainer, IGemContainerView> implem
 
     @Override
     public void removeEffect(IGemEffect effect) {
-
+      if (this.effect == null || rank == 0) {
+        return;
+      }
+      if (effect.equals(this.effect)) {
+        clear();
+      }
     }
 
     @Override
-    public void move(IEffectContainerHolder<?, ?> holder) {
+    public void move(IItemContainerHolder<? extends IEffectContainer<?>, ?> holder) {
       if (effect == null || rank == 0) {
         return;
       }
@@ -212,7 +200,6 @@ public class Gem extends AbstractHolder<IGemContainer, IGemContainerView> implem
 
     @Override
     public void clear() {
-      Bukkit.broadcastMessage("called clear");
       this.effect = null;
       this.rank = 0;
     }
@@ -239,6 +226,29 @@ public class Gem extends AbstractHolder<IGemContainer, IGemContainerView> implem
           .append('}')
           .toString();
     }
+  }
 
+  static final class Factory extends
+      ItemHolderFactory<IGem, IGemContainer, IGemContainerView> implements IGemFactory{
+
+    @Override
+    protected Class<? extends IGemContainer> getContainerImplClazz() {
+      return Container.class;
+    }
+
+    @Override
+    protected NamespacedKey getContainerKey() {
+      return GEM_KEY;
+    }
+
+    @Override
+    protected IGem holderFunction(ItemStack stack, IGemContainer container) {
+      return new Gem(stack, container);
+    }
+
+    @Override
+    public IGem create(Material material, ISocketColor socketColor) {
+      return new Gem(new ItemStack(material), new Container(Gem.GEM_KEY, socketColor));
+    }
   }
 }

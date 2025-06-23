@@ -8,21 +8,16 @@ import org.jetbrains.annotations.NotNull;
 final class Rarity extends AbstractRegisterable implements IRarity {
 
   private final TextColor textColor;
-  private final double base;
+  private final double weight;
   private final String name;
   private final int priority;
 
-  Rarity(Key key, TextColor textColor, double base, String name, int priority) {
+  Rarity(Key key, TextColor textColor, double weight, String name, int priority) {
     super(key);
     this.textColor = textColor;
-    this.base = base;
+    this.weight = weight;
     this.name = name;
     this.priority = priority;
-  }
-
-  @Override
-  public double additive(double chance) {
-    return Math.min(1.0, chance + base);
   }
 
   @Override
@@ -41,8 +36,8 @@ final class Rarity extends AbstractRegisterable implements IRarity {
   }
 
   @Override
-  public double getBase() {
-    return base;
+  public double getWeight() {
+    return weight;
   }
 
   @Override
@@ -61,7 +56,7 @@ final class Rarity extends AbstractRegisterable implements IRarity {
     return new StringBuilder(this.getClass().getSimpleName())
         .append('[').append("key=").append(key.asString()).append(", ")
         .append("name=").append(name).append(", ")
-        .append("base=").append(base).append(", ")
+        .append("base=").append(weight).append(", ")
         .append("priority=").append(priority).append(", ")
         .append("color=rgb(")
           .append(textColor.red()).append(", ")

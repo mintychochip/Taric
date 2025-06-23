@@ -1,7 +1,8 @@
-package org.aincraft.container.rework;
+package org.aincraft.container.gem;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
+import io.papermc.paper.datacomponent.DataComponentTypes;
 import io.papermc.paper.datacomponent.item.ItemLore;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -12,8 +13,11 @@ import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.TextDecoration;
 import org.aincraft.api.container.ISocketColor;
 import org.aincraft.api.container.TargetType;
-import org.aincraft.container.rework.IGemItem.IGemItemContainer;
-import org.aincraft.container.rework.IGemItem.IGemItemContainerView;
+import org.aincraft.api.container.gem.IEffectContainer;
+import org.aincraft.api.container.gem.IGemItem;
+import org.aincraft.api.container.gem.IGemItem.IGemItemContainer;
+import org.aincraft.api.container.gem.IGemItem.IGemItemContainerView;
+import org.aincraft.api.container.gem.IItemContainerHolder;
 import org.aincraft.effects.IGemEffect;
 import org.aincraft.util.Roman;
 import org.bukkit.Material;
@@ -22,27 +26,13 @@ import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-public class GemItem extends AbstractHolder<IGemItemContainer, IGemItemContainerView> implements
+final class GemItem extends AbstractHolder<IGemItemContainer, IGemItemContainerView> implements
     IGemItem {
 
-  private static final NamespacedKey GEM_ITEM_KEY = new NamespacedKey("taric", "item");
+  static final NamespacedKey GEM_ITEM_KEY = new NamespacedKey("taric", "item");
 
   public GemItem(ItemStack stack, IGemItemContainer container) {
     super(stack, container);
-  }
-
-  @Nullable
-  public static IGemItem fromIfExists(ItemStack stack) {
-    return GemItemFactory.holderFromIfExists(stack, GEM_ITEM_KEY, Container.class,
-        container -> new GemItem(stack, container));
-  }
-
-  @NotNull
-  public static IGemItem create(Material material) throws IllegalArgumentException {
-    if (!TargetType.ALL.contains(material)) {
-      throw new IllegalArgumentException("illegal material");
-    }
-    return new GemItem(new ItemStack(material), new Container(GEM_ITEM_KEY, material));
   }
 
   private static final class View extends
@@ -92,7 +82,7 @@ public class GemItem extends AbstractHolder<IGemItemContainer, IGemItemContainer
 
     @Override
     protected Component toItemTitle() {
-      return super.toItemTitle();
+      return container.getItemName();
     }
 
     @Override
@@ -117,7 +107,8 @@ public class GemItem extends AbstractHolder<IGemItemContainer, IGemItemContainer
     }
   }
 
-  private static final class Container extends AbstractContainer<IGemItemContainerView> implements
+  static final class Container extends
+      AbstractEffectContainer<IGemItemContainerView> implements
       IGemItemContainer {
 
     @Expose
@@ -132,9 +123,18 @@ public class GemItem extends AbstractHolder<IGemItemContainer, IGemItemContainer
     @SerializedName("material")
     private final Material material;
 
-    Container(NamespacedKey containerKey, Material material) {
+    @Expose
+    @SerializedName("item-name")
+    private Component itemName;
+
+    Container(NamespacedKey containerKey, Material material, Component itemName) {
       super(containerKey);
       this.material = material;
+      this.itemName = itemName;
+    }
+
+    public Component getItemName() {
+      return itemName;
     }
 
     @Override
@@ -143,14 +143,17 @@ public class GemItem extends AbstractHolder<IGemItemContainer, IGemItemContainer
     }
 
     @Override
-    public boolean initializeCounter(ISocketColor color, int max) {
+    public void initializeCounter(ISocketColor color, int max) {
       if (counters.containsKey(color)) {
-        return false;
+        return;
       }
       counters.put(color, new SocketLimitCounter(max));
-      return true;
     }
 
+    @Override
+    public boolean counterIsInitialized(ISocketColor color) {
+      return counters.containsKey(color);
+    }
 
     @Override
     public void editCounter(ISocketColor color,
@@ -158,6 +161,19 @@ public class GemItem extends AbstractHolder<IGemItemContainer, IGemItemContainer
       if (counters.containsKey(color)) {
         counterConsumer.accept(counters.get(color));
       }
+    }
+
+    @Override
+    public void move(IGemEffect effect,
+        IItemContainerHolder<? extends IEffectContainer<?>, ?> holder) {
+      if (!this.hasEffect(effect)) {
+        return;
+      }
+      holder.editContainer(container -> {
+        if (container.setEffect(effect, effects.get(effect))) {
+          this.removeEffect(effect);
+        }
+      });
     }
 
     @Override
@@ -190,6 +206,9 @@ public class GemItem extends AbstractHolder<IGemItemContainer, IGemItemContainer
 
     @Override
     public void removeEffect(IGemEffect effect) {
+      if (!effects.containsKey(effect)) {
+        return;
+      }
       ISocketColor socketColor = effect.getSocketColor();
       this.editCounter(socketColor, ISocketLimitCounter::decrementCurrent);
       effects.remove(effect);
@@ -244,7 +263,7 @@ public class GemItem extends AbstractHolder<IGemItemContainer, IGemItemContainer
     }
   }
 
-  private static final class SocketLimitCounter implements ISocketLimitCounter {
+  static final class SocketLimitCounter implements ISocketLimitCounter {
 
     @Expose
     @SerializedName("max")
@@ -320,6 +339,44 @@ public class GemItem extends AbstractHolder<IGemItemContainer, IGemItemContainer
     @Override
     public int getRemaining() {
       return getMax() - getCurrent();
+    }
+  }
+
+  static final class Factory extends
+      ItemHolderFactory<IGemItem, IGemItemContainer, IGemItemContainerView> implements
+      IGemItemFactory {
+
+    @Override
+    protected Class<? extends IGemItemContainer> getContainerImplClazz() {
+      return Container.class;
+    }
+
+    @Override
+    protected NamespacedKey getContainerKey() {
+      return GEM_ITEM_KEY;
+    }
+
+    @Override
+    protected IGemItem holderFunction(ItemStack stack, IGemItemContainer container) {
+      return new GemItem(stack, container);
+    }
+
+    @Override
+    public IGemItem create(Material material) throws IllegalArgumentException {
+      return create(new ItemStack(material));
+    }
+
+    @Override
+    public IGemItem create(ItemStack stack) throws IllegalArgumentException {
+      if (Factory.hasContainer(GemItem.GEM_ITEM_KEY, stack)) {
+        throw new IllegalArgumentException("stack already has container");
+      }
+      if (!TargetType.ALL.contains(stack.getType())) {
+        throw new IllegalArgumentException("illegal material");
+      }
+      Component itemName = stack.getData(DataComponentTypes.ITEM_NAME);
+      return new GemItem(stack,
+          new GemItem.Container(GemItem.GEM_ITEM_KEY, stack.getType(), itemName));
     }
   }
 }

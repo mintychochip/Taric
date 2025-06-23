@@ -11,6 +11,7 @@ import org.aincraft.api.config.IConfiguration;
 import org.aincraft.api.config.IConfigurationFactory;
 import org.aincraft.api.container.IRarity;
 import org.aincraft.registry.IRegistry;
+import org.aincraft.registry.SharedRegistry;
 import org.bukkit.NamespacedKey;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.plugin.Plugin;
@@ -36,7 +37,7 @@ public final class RarityRegistryInitializer implements Provider<IRegistry<IRari
     if (raritySection == null) {
       throw new IllegalArgumentException("rarity section cannot be null");
     }
-    RarityRegistry registry = new RarityRegistry();
+    SharedRegistry<IRarity> registry = new SharedRegistry<>();
     RarityFactory factory = new RarityFactory(plugin);
     for (String rarityKey : raritySection.getKeys(false)) {
       try {

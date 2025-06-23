@@ -1,9 +1,8 @@
-package org.aincraft.container.rework;
+package org.aincraft.api.container.gem;
 
-import java.util.UUID;
 import org.aincraft.effects.IGemEffect;
 
-public interface IEffectContainer<V extends IEffectContainerView> {
+public interface IEffectContainer<V extends IEffectContainerView> extends IItemContainer<V> {
 
   boolean setEffect(IGemEffect effect, int rank);
 
@@ -13,9 +12,5 @@ public interface IEffectContainer<V extends IEffectContainerView> {
 
   int getRank(IGemEffect effect);
 
-  UUID getUuid();
-
   void clear();
-
-  V getView();
 }

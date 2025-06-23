@@ -13,6 +13,8 @@ import java.io.IOException;
 import java.util.Map;
 import java.util.Map.Entry;
 import net.kyori.adventure.key.Key;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.minimessage.MiniMessage;
 import org.aincraft.Taric;
 import org.aincraft.api.config.IConfiguration;
 import org.aincraft.api.container.ISocketColor;
@@ -37,8 +39,9 @@ public final class PluginModule extends AbstractModule {
         new GsonBuilder()
             .enableComplexMapKeySerialization()
             .registerTypeAdapter(Key.class, new KeyAdapter())
-            .registerTypeAdapter(IGemEffect.class,new EffectAdapter())
-            .registerTypeAdapter(ISocketColor.class,new ColorAdapter())
+            .registerTypeAdapter(IGemEffect.class, new EffectAdapter())
+            .registerTypeAdapter(ISocketColor.class, new ColorAdapter())
+            .registerTypeAdapter(Component.class, new ComponentAdapter())
             .excludeFieldsWithoutExposeAnnotation()
             .create()
     );
@@ -75,6 +78,29 @@ public final class PluginModule extends AbstractModule {
         throw new JsonParseException("Invalid Key format: " + raw);
       }
       return new NamespacedKey(parts[0], parts[1]);
+    }
+  }
+
+  public static class ComponentAdapter extends TypeAdapter<Component> {
+
+    @Override
+    public void write(JsonWriter out, Component component) throws IOException {
+      if (component == null) {
+        out.nullValue();
+        return;
+      }
+      String serialized = MiniMessage.miniMessage().serialize(component);
+      out.value(serialized);
+    }
+
+    @Override
+    public Component read(JsonReader in) throws IOException {
+      if (in.peek() == JsonToken.NULL) {
+        in.nextNull();
+        return null;
+      }
+      String raw = in.nextString();
+      return MiniMessage.miniMessage().deserialize(raw);
     }
   }
 

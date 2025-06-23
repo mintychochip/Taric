@@ -8,11 +8,10 @@ public interface IRarity extends Keyed, Comparable<IRarity> {
 
   int getPriority();
 
+  @SuppressWarnings("unused")
   TextColor getTextColor();
 
-  double getBase();
-
-  double additive(double chance);
+  double getWeight();
 
   String getName();
 

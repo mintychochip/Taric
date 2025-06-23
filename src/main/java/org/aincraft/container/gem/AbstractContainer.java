@@ -1,13 +1,14 @@
-package org.aincraft.container.rework;
+package org.aincraft.container.gem;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 import java.util.UUID;
 import net.kyori.adventure.key.Key;
-import org.aincraft.effects.IGemEffect;
+import org.aincraft.api.container.gem.IItemContainer;
+import org.aincraft.api.container.gem.IItemContainerView;
 import org.bukkit.NamespacedKey;
 
-abstract class AbstractContainer<V extends IEffectContainerView> implements IEffectContainer<V> {
+abstract class AbstractContainer<V extends IItemContainerView> implements IItemContainer<V> {
 
   private V view = null;
 
@@ -34,16 +35,6 @@ abstract class AbstractContainer<V extends IEffectContainerView> implements IEff
   }
 
   protected abstract V buildView();
-
-  @Override
-  public boolean setEffect(IGemEffect effect, int rank) {
-    return setEffect(effect, rank, false);
-  }
-
-  @Override
-  public int getRank(IGemEffect effect) {
-    return getView().getRank(effect);
-  }
 
   @Override
   public V getView() {

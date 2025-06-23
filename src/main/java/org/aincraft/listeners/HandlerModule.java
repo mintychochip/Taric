@@ -7,7 +7,6 @@ public class HandlerModule extends AbstractModule {
 
   @Override
   protected void configure() {
-    bind(Shared.class).in(Singleton.class);
     bind(EffectListener.class).in(Singleton.class);
   }
 }

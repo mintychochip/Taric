@@ -1,7 +1,7 @@
 package org.aincraft.api.container.trigger;
 
 import java.util.List;
-import org.aincraft.api.container.receiver.IReceiveDrops;
+import org.aincraft.api.container.receiver.IDropContext;
 import org.aincraft.api.container.receiver.ITriggerContext;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockState;
@@ -12,7 +12,7 @@ public interface IOnBlockDrop {
 
   void onBlockDrop(IBlockDropContext context);
 
-  interface IBlockDropContext extends ITriggerContext, IReceiveDrops<List<ItemStack>> {
+  interface IBlockDropContext extends ITriggerContext, IDropContext<List<ItemStack>> {
 
     Player getPlayer();
 
