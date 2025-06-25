@@ -13,8 +13,9 @@ abstract class AbstractEffectContainer<V extends IEffectContainerView> extends
   }
 
   @Override
-  public boolean setEffect(IGemEffect effect, int rank) {
-    return setEffect(effect, rank, false);
+  public void applyEffect(IGemEffect effect, int rank)
+      throws IllegalArgumentException, NullPointerException {
+    applyEffect(effect, rank, false);
   }
 
   @Override

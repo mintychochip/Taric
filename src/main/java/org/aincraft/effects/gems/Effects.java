@@ -37,6 +37,12 @@ public final class Effects {
 
   public static IGemEffect GLIMMER;
 
+  public static IGemEffect HARDENED;
+
+  public static IGemEffect TILLER;
+
+  public static IGemEffect MANA_BORE;
+
   static {
     AUTO_SMELT = AutoSmelt.create(Taric.getConfiguration("gems"));
     BURROWING = new Burrowing();
@@ -54,5 +60,8 @@ public final class Effects {
     HARVEST = new Harvest();
     OVERFLOWING = new Overflowing();
     GLIMMER = new Glimmer();
+    HARDENED = new Hardened();
+    TILLER = new Tiller();
+    MANA_BORE = new ManaBore();
   }
 }

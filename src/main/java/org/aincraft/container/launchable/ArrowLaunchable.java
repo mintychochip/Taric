@@ -7,6 +7,7 @@ import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.AbstractArrow.PickupStatus;
 import org.bukkit.entity.Arrow;
 import org.bukkit.entity.LivingEntity;
+import org.bukkit.entity.Projectile;
 import org.bukkit.inventory.EntityEquipment;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.Vector;
@@ -27,8 +28,8 @@ class ArrowLaunchable extends Launchable implements IArrowLaunchable {
   }
 
   @Override
-  public void launch(LivingEntity shooter) {
-    shooter.launchProjectile(Arrow.class, velocity, a -> {
+  public Projectile launch(LivingEntity shooter) {
+    return shooter.launchProjectile(Arrow.class, velocity, a -> {
       EntityEquipment entityEquipment = shooter.getEquipment();
       if (entityEquipment != null) {
         ItemStack bow = entityEquipment.getItemInMainHand();

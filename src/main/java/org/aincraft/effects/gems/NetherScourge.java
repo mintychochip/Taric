@@ -5,6 +5,7 @@ import java.util.Set;
 import org.aincraft.Settings;
 import org.aincraft.Taric;
 import org.aincraft.api.container.TargetType;
+import org.aincraft.api.container.trigger.IEntityDamageEntityContext;
 import org.aincraft.api.container.trigger.IOnEntityHitEntity;
 import org.aincraft.api.container.trigger.TriggerType;
 import org.bukkit.Material;
@@ -21,7 +22,7 @@ final class NetherScourge extends AbstractGemEffect implements IOnEntityHitEntit
   }
 
   @Override
-  public void onHitEntity(IEntityHitEntityContext context) {
+  public void onHitEntity(IEntityDamageEntityContext context) {
     Entity damagee = context.getDamagee();
     if (!Settings.NETHER_SCOURGE_AFFECTED_TYPES.contains(damagee.getType())) {
       return;

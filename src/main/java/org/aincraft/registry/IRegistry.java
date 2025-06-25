@@ -15,6 +15,8 @@ public interface IRegistry<T extends Keyed> extends Iterable<T> {
   @Nullable
   T get(Key key);
 
+  int size();
+
   boolean isRegistered(Key key);
 
   boolean isRegistered(T object);

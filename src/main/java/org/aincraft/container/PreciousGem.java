@@ -10,13 +10,12 @@ import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextDecoration;
 import org.aincraft.Taric;
 import org.aincraft.api.container.IRarity;
-import org.aincraft.api.container.ISocketColor;
+import org.aincraft.api.container.gem.AppraisalState;
 import org.aincraft.api.container.gem.IPreciousGem;
 import org.aincraft.api.container.gem.IPreciousGem.IPreciousGemContainer;
 import org.aincraft.api.container.gem.IPreciousGem.IPreciousGemContainerView;
 import org.aincraft.api.container.util.IRandomSelector;
 import org.aincraft.registry.IRegistry;
-import org.aincraft.util.Utils;
 import org.bukkit.NamespacedKey;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
@@ -45,9 +44,15 @@ final class PreciousGem extends
 
     @Override
     protected Component toItemTitle() {
-      Component rarityLabel = Component.text(Utils.toTitleCase(container.rarity.getName()))
+      Component rarityLabel = Component.text(container.rarity.getName())
           .color(container.rarity.getTextColor());
-      return Component.empty()
+      Component label =
+          container.state == AppraisalState.GROUND ? Component.empty().append(
+              Component.text("Ground").color(NamedTextColor.GOLD)).append(Component.space())
+              : container.state == AppraisalState.CLEANED ? Component.empty()
+                  .append(Component.text("Cleaned").color(NamedTextColor.GOLD))
+                  .append(Component.space()) : Component.empty();
+      return label
           .append(Component.text("Unidentified Gem ("))
           .append(rarityLabel)
           .append(Component.text(")")).color(
@@ -58,14 +63,6 @@ final class PreciousGem extends
     protected ItemLore toItemLore() {
       ItemLore.Builder builder = ItemLore.lore();
       builder.addLine(Component.empty());
-      ISocketColor socketColor = container.color;
-      if (socketColor != null) {
-        Component colorLabel = Component.empty()
-            .append(Component.text(Utils.toTitleCase(socketColor.getName())))
-            .decoration(TextDecoration.ITALIC, false).color(socketColor.getTextColor());
-        builder.addLine(colorLabel);
-        builder.addLine(Component.empty());
-      }
       builder.addLine(Component.text("An unusually bright gem,")
           .color(NamedTextColor.DARK_GRAY));
       builder.addLine(Component.text("its luster untouched by soil or time.")
@@ -82,13 +79,13 @@ final class PreciousGem extends
     }
 
     @Override
-    public @NotNull ISocketColor getColor() {
-      return container.color;
+    public @NotNull IRarity getRarity() {
+      return container.rarity;
     }
 
     @Override
-    public @NotNull IRarity getRarity() {
-      return container.rarity;
+    public AppraisalState getState() {
+      return container.state;
     }
   }
 
@@ -101,18 +98,13 @@ final class PreciousGem extends
     private IRarity rarity;
 
     @Expose
-    @SerializedName("color")
-    private ISocketColor color;
+    @SerializedName("state")
+    private AppraisalState state;
 
-    Container(NamespacedKey containerKey, IRarity rarity, ISocketColor color) {
+    Container(NamespacedKey containerKey, IRarity rarity) {
       super(containerKey);
       this.rarity = rarity;
-      this.color = color;
-    }
-
-    @Override
-    public void setSocketColor(@NotNull ISocketColor color) {
-      this.color = color;
+      this.state = AppraisalState.INITIAL;
     }
 
     @Override
@@ -124,6 +116,11 @@ final class PreciousGem extends
     protected IPreciousGemContainerView buildView() {
       return new View(this);
     }
+
+    @Override
+    public void setState(AppraisalState state) {
+      this.state = state;
+    }
   }
 
   static final class Factory extends
@@ -131,17 +128,13 @@ final class PreciousGem extends
       IPreciousGemFactory {
 
     private final IRegistry<IRarity> rarityRegistry;
-    private final IRegistry<ISocketColor> colorRegistry;
     private final IRandomSelector<IRarity> raritySelector;
-    private final IRandomSelector<ISocketColor> colorSelector;
 
     @Inject
-    Factory(IRegistry<IRarity> rarityRegistry, IRegistry<ISocketColor> colorRegistry,
-        IRandomSelector<IRarity> raritySelector, IRandomSelector<ISocketColor> colorSelector) {
+    Factory(IRegistry<IRarity> rarityRegistry,
+        IRandomSelector<IRarity> raritySelector) {
       this.rarityRegistry = rarityRegistry;
-      this.colorRegistry = colorRegistry;
       this.raritySelector = raritySelector;
-      this.colorSelector = colorSelector;
     }
 
     @Override
@@ -160,26 +153,10 @@ final class PreciousGem extends
     }
 
     @Override
-    public IPreciousGem create(ItemStack stack, IRarity rarity, ISocketColor color)
-        throws IllegalArgumentException {
-      Preconditions.checkArgument(rarityRegistry.isRegistered(rarity));
-      Preconditions.checkArgument(colorRegistry.isRegistered(color));
-      Container container = new Container(this.getContainerKey(), rarity, color);
-      return new PreciousGem(stack, container);
-    }
-
-    @Override
-    public IPreciousGem create(ItemStack stack, ISocketColor color)
-        throws IllegalArgumentException {
-      //TODO: remove static call
-      IRarity rarity = raritySelector.getRandom(Taric.getRandom());
-      return create(stack, rarity, color);
-    }
-
-    @Override
     public IPreciousGem create(ItemStack stack, IRarity rarity) throws IllegalArgumentException {
-      ISocketColor color = colorSelector.getRandom(Taric.getRandom());
-      return create(stack, rarity, color);
+      Preconditions.checkArgument(rarityRegistry.isRegistered(rarity));
+      Container container = new Container(this.getContainerKey(), rarity);
+      return new PreciousGem(stack, container);
     }
 
     @Override

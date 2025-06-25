@@ -1,8 +1,11 @@
 package org.aincraft.container.rarity;
 
+import java.util.random.RandomGenerator;
 import net.kyori.adventure.key.Key;
 import net.kyori.adventure.text.format.TextColor;
+import net.minecraft.util.random.WeightedRandom;
 import org.aincraft.api.container.IRarity;
+import org.aincraft.api.container.util.IRandomSelector;
 import org.jetbrains.annotations.NotNull;
 
 final class Rarity extends AbstractRegisterable implements IRarity {
@@ -59,9 +62,9 @@ final class Rarity extends AbstractRegisterable implements IRarity {
         .append("base=").append(weight).append(", ")
         .append("priority=").append(priority).append(", ")
         .append("color=rgb(")
-          .append(textColor.red()).append(", ")
-          .append(textColor.green()).append(", ")
-          .append(textColor.blue()).append(")")
+        .append(textColor.red()).append(", ")
+        .append(textColor.green()).append(", ")
+        .append(textColor.blue()).append(")")
         .append(']').toString();
   }
 }

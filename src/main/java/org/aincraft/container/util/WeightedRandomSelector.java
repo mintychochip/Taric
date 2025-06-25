@@ -5,8 +5,9 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.random.RandomGenerator;
 import org.aincraft.api.container.util.IRandomSelector;
+import org.bukkit.Bukkit;
 
-class WeightedRandomSelector<T> extends
+public class WeightedRandomSelector<T> extends
     ForwardingMap<T, Double> implements
     IRandomSelector<T> {
 
@@ -18,9 +19,9 @@ class WeightedRandomSelector<T> extends
   }
 
   @Override
-  public T getRandom(RandomGenerator randomGenerator) {
+  public T getRandom(RandomGenerator randomGenerator) throws IllegalStateException {
     if (objects.isEmpty()) {
-      return null;
+      throw new IllegalStateException("objects cannot be empty");
     }
     double cumulativeSum = 0;
     for (Double weight : objects.values()) {
@@ -36,5 +37,19 @@ class WeightedRandomSelector<T> extends
       }
     }
     return null;
+  }
+
+  @Override
+  public String toString() {
+    StringBuilder sb = new StringBuilder("WeightedRandomSelector{\n");
+    for (Map.Entry<T, Double> entry : objects.entrySet()) {
+      sb.append("  ")
+          .append(entry.getKey())
+          .append(": ")
+          .append(entry.getValue())
+          .append("\n");
+    }
+    sb.append("}");
+    return sb.toString();
   }
 }

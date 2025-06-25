@@ -1,13 +1,14 @@
 package org.aincraft.container.trigger;
 
 import java.util.List;
+import org.aincraft.container.trigger.ShearEntityEvent.IPlayerShearEntityEvent;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerShearEntityEvent;
 import org.bukkit.inventory.ItemStack;
 
 final class PlayerShearEntityEventDecorator implements
-    org.aincraft.container.trigger.PlayerShearEntityEvent {
+    IPlayerShearEntityEvent {
 
   private final PlayerShearEntityEvent event;
 
@@ -22,7 +23,7 @@ final class PlayerShearEntityEventDecorator implements
 
   @Override
   public Entity getSheared() {
-    return null;
+    return event.getEntity();
   }
 
   @Override
@@ -33,11 +34,6 @@ final class PlayerShearEntityEventDecorator implements
   @Override
   public void setDrops(List<ItemStack> drops) {
     event.setDrops(drops);
-  }
-
-  @Override
-  public PlayerShearEntityEvent getHandle() {
-    return event;
   }
 
   @Override

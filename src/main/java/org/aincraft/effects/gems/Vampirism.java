@@ -4,6 +4,7 @@ import java.util.Map;
 import java.util.Set;
 import org.aincraft.Settings;
 import org.aincraft.api.container.TargetType;
+import org.aincraft.api.container.trigger.IEntityDamageEntityContext;
 import org.aincraft.api.container.trigger.IOnEntityHitEntity;
 import org.aincraft.api.container.trigger.TriggerType;
 import org.bukkit.Color;
@@ -41,7 +42,7 @@ public final class Vampirism extends AbstractGemEffect implements IOnEntityHitEn
   }
 
   @Override
-  public void onHitEntity(IEntityHitEntityContext context) {
+  public void onHitEntity(IEntityDamageEntityContext context) {
     Entity damager = context.getDamager();
     if (!(damager instanceof LivingEntity livingEntity)) {
       return;

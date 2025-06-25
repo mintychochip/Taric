@@ -1,13 +1,13 @@
 package org.aincraft.container.trigger;
 
-import org.aincraft.api.container.trigger.IOnEntityHitEntity.IEntityHitEntityContext;
+import org.aincraft.api.container.trigger.IEntityDamageEntityContext;
 import org.bukkit.entity.Entity;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent.DamageModifier;
 
-public final class EntityHitEntityContext extends
+public final class EntityDamageEntityContext extends
     AbstractTriggerContext<EntityDamageByEntityEvent> implements
-    IEntityHitEntityContext {
+    IEntityDamageEntityContext {
 
   @Override
   public Entity getDamager() {

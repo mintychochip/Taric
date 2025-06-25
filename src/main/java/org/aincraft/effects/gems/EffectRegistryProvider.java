@@ -47,7 +47,10 @@ public final class EffectRegistryProvider implements Provider<IRegistry<IGemEffe
         .register(Effects.MULTISHOT)
         .register(Effects.OVERFLOWING)
         .register(Effects.HARVEST)
-        .register(Effects.GLIMMER);
+        .register(Effects.GLIMMER)
+        .register(Effects.TILLER)
+        .register(Effects.MANA_BORE)
+        .register(Effects.HARDENED);
     GemMetaFactory factory = new GemMetaFactory(rarityRegistry, colorRegistry, plugin);
     for (String gemKey : gemConfiguration.getKeys(false)) {
       try {

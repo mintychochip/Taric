@@ -25,6 +25,11 @@ public class SharedRegistry<T extends Keyed> implements IRegistry<T> {
   }
 
   @Override
+  public int size() {
+    return registry.size();
+  }
+
+  @Override
   public @Nullable T get(Key key) {
     return registry.get(key);
   }

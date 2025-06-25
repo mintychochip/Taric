@@ -53,22 +53,23 @@ public final class RarityRegistryInitializer implements Provider<IRegistry<IRari
 
   private record RarityFactory(Plugin plugin) implements IConfigurationFactory<IRarity> {
 
+    private static int priority = 0;
+
     @Override
     public @NotNull IRarity createFromConfiguration(String shallowKey, ConfigurationSection section)
         throws IllegalArgumentException {
       Preconditions.checkNotNull(section);
-      Preconditions.checkArgument(section.contains("base"));
-      Preconditions.checkArgument(section.contains("color"));
-      Preconditions.checkArgument(section.contains("priority"));
+      Preconditions.checkArgument(section.contains("base"),"rarity: %s does not contain base".formatted(shallowKey));
+      Preconditions.checkArgument(section.contains("color"), "rarity: %s does not contain color section".formatted(shallowKey));
       List<Integer> colors = section.getIntegerList("color");
       if (colors.size() < 3) {
         throw new IllegalArgumentException("color must be at least size 3");
       }
       double base = section.getDouble("base");
       TextColor color = TextColor.color(colors.get(0), colors.get(1), colors.get(2));
-      int priority = section.getInt("priority");
+      String name = AbstractRegisterable.toTitleCase(shallowKey);
       return new Rarity(new NamespacedKey(plugin, shallowKey.toLowerCase()), color, base,
-          shallowKey, priority);
+          name, priority++);
     }
   }
 }

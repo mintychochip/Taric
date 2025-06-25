@@ -2,6 +2,7 @@ package org.aincraft.container.rarity;
 
 import net.kyori.adventure.key.Key;
 import net.kyori.adventure.key.Keyed;
+import org.aincraft.util.Utils;
 import org.jetbrains.annotations.NotNull;
 
 abstract class AbstractRegisterable implements Keyed {
@@ -28,5 +29,25 @@ abstract class AbstractRegisterable implements Keyed {
       return false;
     }
     return this == obj || keyed.key().equals(key());
+  }
+
+  static String toTitleCase(String input) {
+    if (input == null || input.isEmpty()) {
+      return input;
+    }
+
+    String[] split = input.split("-");
+    StringBuilder sb = new StringBuilder();
+
+    for (String str : split) {
+      if (str.isEmpty()) {
+        continue;
+      }
+      sb.append(Character.toUpperCase(str.charAt(0)))
+          .append(str.substring(1).toLowerCase())
+          .append(" ");
+    }
+
+    return !sb.isEmpty() ? sb.substring(0, sb.length() - 1) : "";
   }
 }

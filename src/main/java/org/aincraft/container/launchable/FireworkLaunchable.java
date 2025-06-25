@@ -5,6 +5,7 @@ import org.aincraft.api.container.launchable.ILaunchable;
 import org.bukkit.Location;
 import org.bukkit.entity.Firework;
 import org.bukkit.entity.LivingEntity;
+import org.bukkit.entity.Projectile;
 import org.bukkit.inventory.meta.FireworkMeta;
 import org.bukkit.util.Vector;
 
@@ -76,8 +77,8 @@ final class FireworkLaunchable extends Launchable implements IFireworkLaunchable
   }
 
   @Override
-  public void launch(LivingEntity shooter) {
-    shooter.launchProjectile(Firework.class, velocity, f -> {
+  public Projectile launch(LivingEntity shooter) {
+    return shooter.launchProjectile(Firework.class, velocity, f -> {
       f.setShotAtAngle(shotAtAngle);
       f.setTicksToDetonate(ticksToDetonate);
       f.setTicksFlown(ticksFlown);
@@ -87,6 +88,7 @@ final class FireworkLaunchable extends Launchable implements IFireworkLaunchable
 
   @Override
   public ILaunchable clone() {
-    return new FireworkLaunchable(velocity, location, shotAtAngle, ticksToDetonate, ticksFlown, meta);
+    return new FireworkLaunchable(velocity, location, shotAtAngle, ticksToDetonate, ticksFlown,
+        meta);
   }
 }

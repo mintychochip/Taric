@@ -3,7 +3,7 @@ package org.aincraft.container;
 import com.google.inject.AbstractModule;
 import com.google.inject.Singleton;
 import org.aincraft.api.container.IEquipment.IEquipmentFactory;
-import org.aincraft.api.container.gem.IGem.IGemFactory;
+import org.aincraft.api.container.gem.ISocketGem.ISocketGemFactory;
 import org.aincraft.api.container.gem.IGemInventoryFactory;
 import org.aincraft.api.container.gem.IGemItem.IGemItemFactory;
 import org.aincraft.api.container.gem.IPreciousGem.IPreciousGemFactory;
@@ -12,7 +12,7 @@ public final class ItemFactoryModule extends AbstractModule {
 
   @Override
   protected void configure() {
-    bind(IGemFactory.class).to(Gem.Factory.class).in(Singleton.class);
+    bind(ISocketGemFactory.class).to(SocketGem.Factory.class).in(Singleton.class);
     bind(IGemItemFactory.class).to(GemItem.Factory.class).in(Singleton.class);
     bind(IPreciousGemFactory.class).to(PreciousGem.Factory.class).in(Singleton.class);
     bind(IEquipmentFactory.class).to(EquipmentFactory.class).in(Singleton.class);

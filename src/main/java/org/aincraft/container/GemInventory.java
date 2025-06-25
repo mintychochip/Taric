@@ -19,7 +19,7 @@ import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 
-public class GemInventory implements IGemInventory {
+final class GemInventory implements IGemInventory {
 
   private final IEquipment equipment;
   private final Map<EquipmentSlot, IGemItem> inventory;

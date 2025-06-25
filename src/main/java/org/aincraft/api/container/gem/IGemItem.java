@@ -8,21 +8,24 @@ import org.aincraft.api.container.gem.IGemItem.IGemItemContainerView;
 import org.aincraft.effects.IGemEffect;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 public interface IGemItem extends IItemContainerHolder<IGemItemContainer, IGemItemContainerView> {
 
   interface IGemItemContainer extends IEffectContainer<IGemItemContainerView> {
 
-    boolean hasEffect(IGemEffect effect);
+    boolean hasEffect(@Nullable IGemEffect effect);
 
-    void initializeCounter(ISocketColor color, int max);
+    void initializeCounter(ISocketColor color, int max) throws IllegalStateException;
 
-    boolean counterIsInitialized(ISocketColor color);
+    boolean isCounterInitialized(ISocketColor color);
 
     void editCounter(ISocketColor color, Consumer<ISocketLimitCounter> counterConsumer);
 
-    void move(IGemEffect effect, IItemContainerHolder<? extends IEffectContainer<?>, ?> holder);
+    void move(@NotNull IGemEffect effect,
+        IItemContainerHolder<? extends IEffectContainer<?>, ?> holder)
+        throws IllegalArgumentException, IllegalStateException, NullPointerException;
 
     @Nullable
     ISocketLimitCounterView getCounter(ISocketColor color);
@@ -47,17 +50,17 @@ public interface IGemItem extends IItemContainerHolder<IGemItemContainer, IGemIt
 
   interface ISocketLimitCounter {
 
-    void setMax(int sockets);
-
-    void setCurrent(int sockets);
-
     void incrementCurrent();
 
     void decrementCurrent();
 
     int getMax();
 
+    void setMax(int sockets);
+
     int getCurrent();
+
+    void setCurrent(int sockets);
 
     int getRemaining();
 

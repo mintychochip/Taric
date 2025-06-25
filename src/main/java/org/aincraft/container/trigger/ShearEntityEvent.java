@@ -2,10 +2,10 @@ package org.aincraft.container.trigger;
 
 import java.util.List;
 import org.bukkit.entity.Entity;
-import org.bukkit.event.Event;
+import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
-interface ShearEntityEvent<E extends Event> {
+interface ShearEntityEvent {
 
   ItemStack getTool();
 
@@ -15,6 +15,7 @@ interface ShearEntityEvent<E extends Event> {
 
   void setDrops(List<ItemStack> drops);
 
-  E getHandle();
-
+  interface IPlayerShearEntityEvent extends ShearEntityEvent {
+    Player getPlayer();
+  }
 }

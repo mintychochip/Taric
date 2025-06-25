@@ -7,7 +7,7 @@ import org.bukkit.event.Event;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 
-abstract class ShearEntityContext<E extends ShearEntityEvent<H>, H extends Event> extends
+abstract class AbstractShearEntityContext<E extends ShearEntityEvent> extends
     AbstractTriggerContext<E> implements
     IShearEntityContext {
 

@@ -29,13 +29,10 @@ public class ContainerCommand implements CommandExecutor {
   public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command,
       @NotNull String label, @NotNull String @NotNull [] args) {
     if (sender instanceof Player player) {
-      IGemItem item = factory.create(player.getInventory().getItemInMainHand());
+      IGemItem item = factory.fromIfExists(player.getInventory().getItemInMainHand());
       if (item == null) {
         return false;
       }
-      ISocketLimitCounterView counter = item.getContainer()
-          .getCounter(colors.get(SocketColors.BLUE));
-      Bukkit.broadcastMessage(counter.getMax() + "");
       Bukkit.broadcastMessage(item.getContainer().toString());
     }
     return true;

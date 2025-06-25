@@ -4,6 +4,7 @@ import java.util.Map;
 import java.util.Set;
 import org.aincraft.Settings;
 import org.aincraft.api.container.TargetType;
+import org.aincraft.api.container.trigger.IEntityDamageEntityContext;
 import org.aincraft.api.container.trigger.IOnEntityHitEntity;
 import org.aincraft.api.container.trigger.TriggerType;
 import org.bukkit.Location;
@@ -32,7 +33,7 @@ final class Frostbite extends AbstractGemEffect implements IOnEntityHitEntity {
   }
 
   @Override
-  public void onHitEntity(IEntityHitEntityContext context) {
+  public void onHitEntity(IEntityDamageEntityContext context) {
     Entity damagee = context.getDamagee();
     int base = damagee.getFreezeTicks();
     damagee.setFreezeTicks(

@@ -10,17 +10,14 @@ class Launchable extends
     EntityProxy<Projectile> implements
     ILaunchable {
 
-  protected Vector velocity;
-
   Launchable(Class<? extends Projectile> entityClazz, Vector velocity,
       Location location) {
     super(entityClazz, velocity, location);
   }
 
-
   @Override
-  public void launch(LivingEntity shooter) {
-    shooter.launchProjectile(entityClazz, velocity);
+  public Projectile launch(LivingEntity shooter) {
+    return shooter.launchProjectile(entityClazz, velocity);
   }
 
   @Override

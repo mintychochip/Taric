@@ -7,7 +7,7 @@ import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 
-public final class EquipmentFactory implements IEquipmentFactory {
+final class EquipmentFactory implements IEquipmentFactory {
 
   @Override
   public IEquipment create(Entity entity) throws IllegalArgumentException {

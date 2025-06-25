@@ -1,7 +1,6 @@
 package org.aincraft.api.container.gem;
 
 import org.aincraft.api.container.IRarity;
-import org.aincraft.api.container.ISocketColor;
 import org.aincraft.api.container.gem.IPreciousGem.IPreciousGemContainer;
 import org.aincraft.api.container.gem.IPreciousGem.IPreciousGemContainerView;
 import org.bukkit.inventory.ItemStack;
@@ -13,28 +12,24 @@ public interface IPreciousGem extends
   interface IPreciousGemContainerView extends IItemContainerView {
 
     @NotNull
-    ISocketColor getColor();
-
-    @NotNull
     IRarity getRarity();
+
+    AppraisalState getState();
+
   }
 
   interface IPreciousGemContainer extends IItemContainer<IPreciousGemContainerView> {
 
-    void setSocketColor(@NotNull ISocketColor color);
-
     void setRarity(@NotNull IRarity rarity);
+
+    void setState(AppraisalState state);
   }
 
   interface IPreciousGemFactory extends
       IItemHolderFactory<IPreciousGem, IPreciousGemContainer, IPreciousGemContainerView> {
 
-    IPreciousGem create(ItemStack stack, IRarity rarity, ISocketColor color)
+    IPreciousGem create(ItemStack stack, IRarity rarity)
         throws IllegalArgumentException;
-
-    IPreciousGem create(ItemStack stack, ISocketColor color) throws IllegalArgumentException;
-
-    IPreciousGem create(ItemStack stack, IRarity rarity) throws IllegalArgumentException;
 
     IPreciousGem create(ItemStack stack) throws IllegalArgumentException;
   }

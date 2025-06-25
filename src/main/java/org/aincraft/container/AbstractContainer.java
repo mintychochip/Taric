@@ -2,11 +2,15 @@ package org.aincraft.container;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
+import java.util.function.Consumer;
 import net.kyori.adventure.key.Key;
 import org.aincraft.api.container.gem.IItemContainer;
 import org.aincraft.api.container.gem.IItemContainerView;
 import org.bukkit.NamespacedKey;
+import org.bukkit.inventory.ItemStack;
 
 abstract class AbstractContainer<V extends IItemContainerView> implements IItemContainer<V> {
 

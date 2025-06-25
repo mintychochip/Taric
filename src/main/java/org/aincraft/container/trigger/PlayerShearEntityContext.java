@@ -1,11 +1,12 @@
 package org.aincraft.container.trigger;
 
 import org.aincraft.api.container.trigger.IShearEntityContext.IPlayerShearContext;
+import org.aincraft.container.trigger.ShearEntityEvent.IPlayerShearEntityEvent;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
 public final class PlayerShearEntityContext extends
-    ShearEntityContext<PlayerShearEntityEvent, org.bukkit.event.player.PlayerShearEntityEvent> implements
+    AbstractShearEntityContext<IPlayerShearEntityEvent> implements
     IPlayerShearContext {
 
   @Override
@@ -13,7 +14,7 @@ public final class PlayerShearEntityContext extends
     return event.getPlayer();
   }
 
-  public static PlayerShearEntityEvent createEvent(
+  public static IPlayerShearEntityEvent createEvent(
       org.bukkit.event.player.PlayerShearEntityEvent event) {
     return new PlayerShearEntityEventDecorator(event);
   }

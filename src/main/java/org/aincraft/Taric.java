@@ -21,6 +21,7 @@ import org.aincraft.effects.IGemEffect;
 import org.aincraft.listeners.EffectListener;
 import org.aincraft.listeners.FakeEventListener;
 import org.aincraft.listeners.GemCacheListener;
+import org.aincraft.listeners.GeodeListener;
 import org.aincraft.listeners.HandlerModule;
 import org.aincraft.module.RuntimeModule;
 import org.aincraft.registry.IRegistry;
@@ -46,36 +47,8 @@ public class Taric {
     instance = this;
   }
 
-  void enable() {
-    Bukkit.getPluginManager()
-        .registerEvents(injector.getInstance(EffectListener.class), Taric.getPlugin());
-    Bukkit.getPluginManager()
-        .registerEvents(injector.getInstance(GemCacheListener.class), Taric.getPlugin());
-    Bukkit.getPluginManager()
-        .registerEvents(injector.getInstance(FakeEventListener.class), Taric.getPlugin());
-    //temporary
-    Bukkit.getPluginCommand("container").setExecutor(injector.getInstance(ContainerCommand.class));
-    Bukkit.getPluginCommand("gem").setExecutor(injector.getInstance(GemCommand.class));
-    Rarities.initialize(rarityRegistry);
-    SocketColors.initialize(socketColorRegistry);
-    Settings.initialize();
-  }
-
-  void disable() {
-    IDatabase database = Taric.getDatabase();
-    try {
-      database.shutdown();
-    } catch (SQLException e) {
-      throw new RuntimeException(e);
-    }
-  }
-
   public static Taric getInstance() {
     return instance;
-  }
-
-  public static Plugin getPlugin() {
-    return instance.injector.getInstance(Plugin.class);
   }
 
   public static IRegistry<IGemEffect> getEffects() {
@@ -101,17 +74,12 @@ public class Taric {
     return instance.injector.getInstance(Random.class);
   }
 
-
   public static Injector getPluginInjector() {
     return instance.injector;
   }
 
   public static Logger getLogger() {
     return Taric.getPlugin().getLogger();
-  }
-
-  public static IDatabase getDatabase() {
-    return instance.injector.getInstance(IDatabase.class);
   }
 
   @NotNull
@@ -123,5 +91,39 @@ public class Taric {
     }
     return instance.injector.getInstance(
         Key.get(IConfiguration.class, Names.named(configurationKey)));
+  }
+
+  void enable() {
+    Bukkit.getPluginManager()
+        .registerEvents(injector.getInstance(EffectListener.class), Taric.getPlugin());
+    Bukkit.getPluginManager()
+        .registerEvents(injector.getInstance(GemCacheListener.class), Taric.getPlugin());
+    Bukkit.getPluginManager()
+        .registerEvents(injector.getInstance(FakeEventListener.class), Taric.getPlugin());
+    Bukkit.getPluginManager()
+        .registerEvents(injector.getInstance(GeodeListener.class), Taric.getPlugin());
+    //temporary
+    Bukkit.getPluginCommand("container").setExecutor(injector.getInstance(ContainerCommand.class));
+    Bukkit.getPluginCommand("gem").setExecutor(injector.getInstance(GemCommand.class));
+    Rarities.initialize(rarityRegistry);
+    SocketColors.initialize(socketColorRegistry);
+    Settings.initialize();
+  }
+
+  public static Plugin getPlugin() {
+    return instance.injector.getInstance(Plugin.class);
+  }
+
+  void disable() {
+    IDatabase database = Taric.getDatabase();
+    try {
+      database.shutdown();
+    } catch (SQLException e) {
+      throw new RuntimeException(e);
+    }
+  }
+
+  public static IDatabase getDatabase() {
+    return instance.injector.getInstance(IDatabase.class);
   }
 }

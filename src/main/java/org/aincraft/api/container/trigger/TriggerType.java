@@ -12,10 +12,13 @@ public enum TriggerType {
   PLAYER_SHEAR(IOnPlayerShear.class),
   ACTIVATE(IOnActivate.class),
   INTERACT(IOnInteract.class),
-  SOCKET(IOnSocketEffect.class),
+  SOCKET(IOnSocket.class),
   BUCKET_EMPTY(IOnBucketEmpty.class),
-  FISH(IOnFish.class);
-
+  FISH(IOnFish.class),
+  ENTITY_HIT_BY_ENTITY(IOnEntityHitByEntity.class),
+  MOVE(IOnEntityMove.class),
+  PLAYER_DAMAGE_ITEM(IOnPlayerItemDamage.class),
+  ENTITY_DAMAGE_ITEM(IOnEntityItemDamage.class);
   private final Class<?> triggerClazz;
 
   TriggerType(Class<?> triggerClazz) {

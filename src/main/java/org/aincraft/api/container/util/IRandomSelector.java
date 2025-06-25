@@ -6,6 +6,6 @@ import org.jetbrains.annotations.Nullable;
 public interface IRandomSelector<T> {
 
   @Nullable
-  T getRandom(RandomGenerator randomGenerator);
+  T getRandom(RandomGenerator randomGenerator) throws IllegalStateException;
 
 }

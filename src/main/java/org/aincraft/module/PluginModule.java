@@ -18,6 +18,7 @@ import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import org.aincraft.Taric;
 import org.aincraft.api.config.IConfiguration;
+import org.aincraft.api.container.IRarity;
 import org.aincraft.api.container.ISocketColor;
 import org.aincraft.config.ConfigurationFactory;
 import org.aincraft.database.Extractor;
@@ -46,6 +47,7 @@ public final class PluginModule extends AbstractModule {
             .registerTypeAdapter(IGemEffect.class, new EffectAdapter())
             .registerTypeAdapter(ISocketColor.class, new ColorAdapter())
             .registerTypeAdapter(Component.class, new ComponentAdapter())
+            .registerTypeAdapter(IRarity.class,new RarityAdapter())
             .excludeFieldsWithoutExposeAnnotation()
             .create()
     );
@@ -134,6 +136,29 @@ public final class PluginModule extends AbstractModule {
       }
       NamespacedKey key = new NamespacedKey(parts[0], parts[1]);
       return Taric.getColors().get(key);
+    }
+  }
+
+  public static class RarityAdapter extends TypeAdapter<IRarity> {
+
+    @Override
+    public void write(JsonWriter out, IRarity rarity) throws IOException {
+      if (rarity == null) {
+        out.nullValue();
+        return;
+      }
+      out.value(rarity.key().toString());
+    }
+
+    @Override
+    public IRarity read(JsonReader in) throws IOException {
+      String raw = in.nextString();
+      String[] parts = raw.split(":", 2);
+      if (parts.length != 2) {
+        throw new JsonParseException("Invalid NamespacedKey: " + raw);
+      }
+      NamespacedKey key = new NamespacedKey(parts[0], parts[1]);
+      return Taric.getRarity().get(key);
     }
   }
 

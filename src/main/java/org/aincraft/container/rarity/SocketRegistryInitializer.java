@@ -30,9 +30,9 @@ public final class SocketRegistryInitializer implements Provider<IRegistry<ISock
 
   @Override
   public IRegistry<ISocketColor> get() {
-    Preconditions.checkArgument(generalConfiguration.contains("socket-colors"));
+    Preconditions.checkArgument(generalConfiguration.contains("colors"));
     ConfigurationSection colors = generalConfiguration.getConfigurationSection(
-        "socket-colors");
+        "colors");
     if (colors == null) {
       throw new IllegalArgumentException("color section cannot be null");
     }
@@ -62,7 +62,8 @@ public final class SocketRegistryInitializer implements Provider<IRegistry<ISock
         throw new IllegalArgumentException("color must be at least size of 3");
       }
       TextColor color = TextColor.color(colors.get(0), colors.get(1), colors.get(2));
-      return new SocketColor(new NamespacedKey(plugin, shallowKey.toLowerCase()), shallowKey,
+      String name = AbstractRegisterable.toTitleCase(shallowKey);
+      return new SocketColor(new NamespacedKey(plugin, shallowKey.toLowerCase()), name,
           color);
     }
   }

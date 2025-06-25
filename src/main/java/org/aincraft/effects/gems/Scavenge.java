@@ -64,7 +64,6 @@ final class Scavenge extends AbstractGemEffect implements IOnKillEntity, IOnPlay
     }
     int base = drop.getAmount();
     int looting = looting(base, context.getRank());
-    Bukkit.broadcastMessage(base + " " + looting);
     drop.setAmount(looting);
   }
 }
