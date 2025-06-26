@@ -18,7 +18,7 @@ import org.aincraft.container.EffectCooldown;
 import org.aincraft.effects.IGemEffect;
 import org.bukkit.entity.Player;
 
-public final class SQLDatabase implements IDatabase {
+final class SQLDatabase implements IDatabase {
 
   private static final String CREATE_COOLDOWN = """
       INSERT INTO taric_cooldowns (id,effect,last_used) VALUES (?,?,?);

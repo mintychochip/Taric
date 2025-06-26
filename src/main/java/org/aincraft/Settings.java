@@ -5,7 +5,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 import org.aincraft.api.config.IConfiguration;
 import org.aincraft.effects.IGemEffect;
-import org.aincraft.effects.gems.Effects;
+import org.aincraft.effects.Effects;
 import org.aincraft.registry.IRegistry;
 import org.bukkit.GameMode;
 import org.bukkit.Material;
@@ -119,13 +119,13 @@ public final class Settings {
     return section.getDouble(path, def);
   }
 
-  private static boolean isNotInCreative(Player player) {
-    return player.getGameMode() != GameMode.CREATIVE;
-  }
-
   public static boolean fakeEffectsShouldPlay(Player player) {
 
     return Settings.FAKE_EFFECTS_IN_CREATIVE || isNotInCreative(player);
+  }
+
+  private static boolean isNotInCreative(Player player) {
+    return player.getGameMode() != GameMode.CREATIVE;
   }
 
   public static boolean itemsShouldDrop(Player player) {

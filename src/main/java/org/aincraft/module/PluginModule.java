@@ -24,6 +24,7 @@ import org.aincraft.config.ConfigurationFactory;
 import org.aincraft.database.Extractor;
 import org.aincraft.database.Extractor.ResourceExtractor;
 import org.aincraft.database.IDatabase;
+import org.aincraft.database.StorageProvider;
 import org.aincraft.effects.IGemEffect;
 import org.bukkit.NamespacedKey;
 import org.bukkit.plugin.Plugin;
@@ -36,30 +37,6 @@ public final class PluginModule extends AbstractModule {
   public PluginModule(Plugin plugin, Map<String, String> configs) {
     this.plugin = plugin;
     this.configs = configs;
-  }
-
-  @Override
-  protected void configure() {
-    bind(Gson.class).toInstance(
-        new GsonBuilder()
-            .enableComplexMapKeySerialization()
-            .registerTypeAdapter(Key.class, new KeyAdapter())
-            .registerTypeAdapter(IGemEffect.class, new EffectAdapter())
-            .registerTypeAdapter(ISocketColor.class, new ColorAdapter())
-            .registerTypeAdapter(Component.class, new ComponentAdapter())
-            .registerTypeAdapter(IRarity.class,new RarityAdapter())
-            .excludeFieldsWithoutExposeAnnotation()
-            .create()
-    );
-    bind(Plugin.class).toInstance(plugin);
-    bind(Taric.class).asEagerSingleton();
-    ConfigurationFactory configurationFactory = new ConfigurationFactory(plugin);
-    for (Entry<String, String> entry : configs.entrySet()) {
-      bind(IConfiguration.class).annotatedWith(Names.named(entry.getKey()))
-          .toInstance(configurationFactory.yaml(entry.getValue()));
-    }
-    bind(IDatabase.class).toProvider(StorageProvider.class).in(Singleton.class);
-    bind(Extractor.class).to(ResourceExtractor.class);
   }
 
   public static class KeyAdapter extends TypeAdapter<Key> {
@@ -183,5 +160,29 @@ public final class PluginModule extends AbstractModule {
       NamespacedKey key = new NamespacedKey(parts[0], parts[1]);
       return Taric.getEffects().get(key);
     }
+  }
+
+  @Override
+  protected void configure() {
+    bind(Gson.class).toInstance(
+        new GsonBuilder()
+            .enableComplexMapKeySerialization()
+            .registerTypeAdapter(Key.class, new KeyAdapter())
+            .registerTypeAdapter(IGemEffect.class, new EffectAdapter())
+            .registerTypeAdapter(ISocketColor.class, new ColorAdapter())
+            .registerTypeAdapter(Component.class, new ComponentAdapter())
+            .registerTypeAdapter(IRarity.class, new RarityAdapter())
+            .excludeFieldsWithoutExposeAnnotation()
+            .create()
+    );
+    bind(Plugin.class).toInstance(plugin);
+    bind(Taric.class).asEagerSingleton();
+    ConfigurationFactory configurationFactory = new ConfigurationFactory(plugin);
+    for (Entry<String, String> entry : configs.entrySet()) {
+      bind(IConfiguration.class).annotatedWith(Names.named(entry.getKey()))
+          .toInstance(configurationFactory.yaml(entry.getValue()));
+    }
+    bind(IDatabase.class).toProvider(StorageProvider.class).in(Singleton.class);
+    bind(Extractor.class).to(ResourceExtractor.class);
   }
 }

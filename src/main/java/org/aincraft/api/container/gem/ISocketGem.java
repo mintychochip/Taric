@@ -77,6 +77,9 @@ public interface ISocketGem extends
 
     @NotNull
     ISocketGem create(Material material, IGemEffect effect, int rank, boolean force);
+
+    @NotNull
+    ISocketGem create(Material material, IGemEffect effect);
   }
 
   @NotNull

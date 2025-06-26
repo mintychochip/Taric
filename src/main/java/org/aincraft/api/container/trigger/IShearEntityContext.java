@@ -2,23 +2,22 @@ package org.aincraft.api.container.trigger;
 
 import java.util.List;
 import org.aincraft.api.container.context.IDropContext;
-import org.aincraft.api.container.context.ITriggerContext;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 
-public interface IShearEntityContext extends ITriggerContext, IDropContext<List<ItemStack>> {
-
-  @NotNull
-  ItemStack getTool();
-
-  @NotNull
-  Entity getSheared();
+public interface IShearEntityContext extends IDropContext<List<ItemStack>> {
 
   interface IPlayerShearContext extends IShearEntityContext {
 
     @NotNull
     Player getPlayer();
   }
+
+  @NotNull
+  ItemStack getTool();
+
+  @NotNull
+  Entity getSheared();
 }

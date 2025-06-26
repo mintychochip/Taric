@@ -3,13 +3,16 @@ package org.aincraft.container.trigger;
 import java.util.List;
 import org.aincraft.api.container.trigger.IShearEntityContext;
 import org.bukkit.entity.Entity;
-import org.bukkit.event.Event;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 
 abstract class AbstractShearEntityContext<E extends ShearEntityEvent> extends
-    AbstractTriggerContext<E> implements
+    AbstractContext<E> implements
     IShearEntityContext {
+
+  AbstractShearEntityContext(E event) {
+    super(event);
+  }
 
   @Override
   public @NotNull ItemStack getTool() {

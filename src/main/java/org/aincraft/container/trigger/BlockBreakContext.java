@@ -8,29 +8,21 @@ import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
 
-public class BlockBreakContext extends AbstractTriggerContext<BlockBreakEvent> implements
+final class BlockBreakContext extends AbstractContext<BlockBreakEvent> implements
     IBlockBreakContext {
 
-  private boolean initial = false;
+  private final boolean fake;
 
   private BlockFace blockFace = null;
 
-  public void setInitial(boolean initial) {
-    this.initial = initial;
-  }
-
-  public void setBlockFace(BlockFace blockFace) {
-    this.blockFace = blockFace;
+  public BlockBreakContext(BlockBreakEvent event, boolean fake) {
+    super(event);
+    this.fake = fake;
   }
 
   @Override
   public Player getPlayer() {
     return event.getPlayer();
-  }
-
-  @Override
-  public boolean isInitial() {
-    return initial;
   }
 
   @Override
@@ -45,12 +37,19 @@ public class BlockBreakContext extends AbstractTriggerContext<BlockBreakEvent> i
     return blockFace;
   }
 
+  public void setBlockFace(BlockFace blockFace) {
+    this.blockFace = blockFace;
+  }
+
   @Override
   public Block getBlock() {
     return event.getBlock();
   }
 
   @Override
+  public boolean isFake() {
+    return fake;
+  }  @Override
   public void setExperience(int exp) {
     event.setExpToDrop(exp);
   }
@@ -59,4 +58,6 @@ public class BlockBreakContext extends AbstractTriggerContext<BlockBreakEvent> i
   public int getExperience() {
     return event.getExpToDrop();
   }
+
+
 }

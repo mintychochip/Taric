@@ -4,6 +4,7 @@ import com.google.common.base.Preconditions;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 import com.google.inject.Inject;
+import com.google.inject.name.Named;
 import io.papermc.paper.datacomponent.item.ItemLore;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
@@ -27,11 +28,6 @@ final class PreciousGem extends
 
   public PreciousGem(ItemStack stack, IPreciousGemContainer container) {
     super(stack, container);
-  }
-
-  @Override
-  public @NotNull ItemStack getStack() {
-    return stack;
   }
 
   private static final class View extends
@@ -113,13 +109,13 @@ final class PreciousGem extends
     }
 
     @Override
-    protected IPreciousGemContainerView buildView() {
-      return new View(this);
+    public void setState(AppraisalState state) {
+      this.state = state;
     }
 
     @Override
-    public void setState(AppraisalState state) {
-      this.state = state;
+    protected IPreciousGemContainerView buildView() {
+      return new View(this);
     }
   }
 
@@ -132,7 +128,7 @@ final class PreciousGem extends
 
     @Inject
     Factory(IRegistry<IRarity> rarityRegistry,
-        IRandomSelector<IRarity> raritySelector) {
+        @Named("rarity-selector") IRandomSelector<IRarity> raritySelector) {
       this.rarityRegistry = rarityRegistry;
       this.raritySelector = raritySelector;
     }
@@ -164,5 +160,10 @@ final class PreciousGem extends
       IRarity rarity = raritySelector.getRandom(Taric.getRandom());
       return create(stack, rarity);
     }
+  }
+
+  @Override
+  public @NotNull ItemStack getStack() {
+    return stack;
   }
 }

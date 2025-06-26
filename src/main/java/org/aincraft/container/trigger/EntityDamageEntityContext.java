@@ -5,9 +5,13 @@ import org.bukkit.entity.Entity;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent.DamageModifier;
 
-public final class EntityDamageEntityContext extends
-    AbstractTriggerContext<EntityDamageByEntityEvent> implements
+final class EntityDamageEntityContext extends
+    AbstractContext<EntityDamageByEntityEvent> implements
     IEntityDamageEntityContext {
+
+  public EntityDamageEntityContext(EntityDamageByEntityEvent event) {
+    super(event);
+  }
 
   @Override
   public Entity getDamager() {
@@ -17,11 +21,6 @@ public final class EntityDamageEntityContext extends
   @Override
   public Entity getDamagee() {
     return event.getEntity();
-  }
-
-  @Override
-  public void setDamage(double damage) {
-    event.setDamage(damage);
   }
 
   @Override
@@ -37,5 +36,10 @@ public final class EntityDamageEntityContext extends
   @Override
   public double getDamage() {
     return event.getDamage();
+  }
+
+  @Override
+  public void setDamage(double damage) {
+    event.setDamage(damage);
   }
 }

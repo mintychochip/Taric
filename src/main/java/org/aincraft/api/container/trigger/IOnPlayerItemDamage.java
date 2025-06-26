@@ -4,5 +4,5 @@ import org.aincraft.api.container.trigger.IItemDamageContext.IPlayerItemDamageCo
 
 public interface IOnPlayerItemDamage {
 
-  void onPlayerItemDamage(IPlayerItemDamageContext context);
+  void onPlayerItemDamage(IPlayerItemDamageContext context, int rank);
 }

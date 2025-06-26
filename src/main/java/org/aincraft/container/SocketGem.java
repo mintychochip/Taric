@@ -325,6 +325,11 @@ final class SocketGem extends
       });
       return gem;
     }
+
+    @Override
+    public @NotNull ISocketGem create(Material material, IGemEffect effect) {
+      return create(material, effect, effect.getMaxRank(), false);
+    }
   }
 
   @Override

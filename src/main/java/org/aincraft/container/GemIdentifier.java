@@ -15,7 +15,6 @@ import org.aincraft.api.container.gem.ISocketGem.ISocketGemFactory;
 import org.aincraft.container.util.ExponentialRandomSelector;
 import org.aincraft.effects.IGemEffect;
 import org.aincraft.registry.IRegistry;
-import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 
@@ -42,7 +41,6 @@ public class GemIdentifier implements IGemIdentifier {
     IIdentificationTable identificationTable = identificationTableRegistry.get(rarity.key());
     Preconditions.checkNotNull(identificationTable,
         "identification table for rarity: %s is not registered".formatted(rarity.getName()));
-    Bukkit.broadcastMessage(identificationTable.toString());
     IRarity selectedRarity = identificationTable.getRandom(Taric.getRandom());
     IGemEffect effect = selectEffect(selectedRarity, Taric.getRandom());
     ISocketGem gem = gemFactory.create(Material.EMERALD, effect.getSocketColor());

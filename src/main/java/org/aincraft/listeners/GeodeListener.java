@@ -123,14 +123,7 @@ public class GeodeListener implements Listener {
         return;
       }
 
-      final ISocketGemContainerView view = socketGem.getContainer();
-      final IGemEffect effect = view.getEffect();
-
-      if (effect == null) {
-        player.setItemOnCursor(null);
-        player.playSound(player.getLocation(), Sound.BLOCK_ANVIL_USE, 1.0f, 1.0f);
-      }
-      event.setCancelled(true);
+      playEffects(event, socketGem, player);
     }
     if (socketGem != null && otherGem != null) {
       try {
@@ -142,14 +135,18 @@ public class GeodeListener implements Listener {
         return;
       }
 
-      final ISocketGemContainerView view = socketGem.getContainer();
-      final IGemEffect effect = view.getEffect();
-
-      if (effect == null) {
-        player.setItemOnCursor(null);
-        player.playSound(player.getLocation(), Sound.BLOCK_ANVIL_USE, 1.0f, 1.0f);
-      }
-      event.setCancelled(true);
+      playEffects(event, socketGem, player);
     }
+  }
+
+  private void playEffects(InventoryClickEvent event, ISocketGem socketGem, Player player) {
+    final ISocketGemContainerView view = socketGem.getContainer();
+    final IGemEffect effect = view.getEffect();
+
+    if (effect == null) {
+      player.setItemOnCursor(null);
+      player.playSound(player.getLocation(), Sound.BLOCK_ANVIL_USE, 1.0f, 1.0f);
+    }
+    event.setCancelled(true);
   }
 }

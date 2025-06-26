@@ -14,7 +14,7 @@ import org.aincraft.container.rarity.RarityRegistryInitializer;
 import org.aincraft.container.rarity.SocketRegistryInitializer;
 import org.aincraft.container.util.SelectorModule;
 import org.aincraft.effects.IGemEffect;
-import org.aincraft.effects.gems.EffectRegistryProvider;
+import org.aincraft.effects.EffectRegistryProvider;
 import org.aincraft.registry.IRegistry;
 
 public final class ContainerModule extends AbstractModule {

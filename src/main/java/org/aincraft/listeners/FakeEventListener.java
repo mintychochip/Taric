@@ -8,10 +8,11 @@ import java.util.stream.Collectors;
 import org.aincraft.Settings;
 import org.aincraft.api.container.gem.IGemInventory;
 import org.aincraft.api.container.trigger.IOnBlockBreak;
+import org.aincraft.api.container.trigger.IOnBlockBreak.IBlockBreakContext;
 import org.aincraft.api.container.trigger.IOnBlockDrop;
+import org.aincraft.api.container.trigger.IOnBlockDrop.IBlockDropContext;
 import org.aincraft.api.container.trigger.TriggerType;
-import org.aincraft.container.trigger.BlockBreakContext;
-import org.aincraft.container.trigger.BlockDropContext;
+import org.aincraft.container.trigger.ContextProviders;
 import org.aincraft.effects.EffectQueuePool;
 import org.aincraft.effects.EffectQueuePool.EffectInstance;
 import org.aincraft.effects.EffectQueuePool.EffectQueue;
@@ -51,9 +52,6 @@ public class FakeEventListener implements Listener {
   private void onFakeBlockBreak(final FakeBlockBreakEvent event) {
     Block block = event.getBlock();
     Material material = block.getType();
-    if (block.isLiquid() || material.isAir()) {
-      return;
-    }
     Location location = block.getLocation();
     World world = location.getWorld();
     Player player = event.getPlayer();
@@ -82,11 +80,12 @@ public class FakeEventListener implements Listener {
     }
     BlockState state = block.getState();
     Location center = location.clone().add(0.5, 0.5, 0.5);
-    List<Item> list = block.getDrops(player.getInventory().getItemInMainHand(), player).stream().map(stack -> {
-      Item item = world.createEntity(center, Item.class);
-      item.setItemStack(stack);
-      return item;
-    }).collect(Collectors.toList());
+    List<Item> list = block.getDrops(player.getInventory().getItemInMainHand(), player).stream()
+        .map(stack -> {
+          Item item = world.createEntity(center, Item.class);
+          item.setItemStack(stack);
+          return item;
+        }).collect(Collectors.toList());
     block.setType(Material.AIR);
     if (event.getExpToDrop() > 0) {
       world.spawn(center, ExperienceOrb.class,
@@ -101,18 +100,21 @@ public class FakeEventListener implements Listener {
   @EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
   private void onFakeBlockDrop(final FakeBlockBreakEvent event) {
     Player player = event.getPlayer();
+    Block block = event.getBlock();
+    Material material = block.getType();
+    float hardness = material.getHardness();
+    if (block.isLiquid() || block.getType().isAir() || hardness == -1.0f) {
+      event.setCancelled(true);
+      return;
+    }
     try {
       EffectQueue<EffectInstance> queue = queuePool.acquireAndFill(TriggerType.BLOCK_BREAK,
           inventoryCache.get(player));
       if (!queue.isEmpty()) {
-        BlockBreakContext receiver = new BlockBreakContext();
-        receiver.setHandle(event);
-        receiver.setInitial(false);
-        receiver.setBlockFace(null);
+        IBlockBreakContext context = ContextProviders.BLOCK_BREAK.create(event);
         for (EffectInstance instance : queue) {
           if (instance.getEffect() instanceof IOnBlockBreak trigger) {
-            receiver.setRank(instance.getRank());
-            trigger.onBlockBreak(receiver);
+            trigger.onBlockBreak(context, instance.getRank(), null);
           }
         }
       }
@@ -129,12 +131,10 @@ public class FakeEventListener implements Listener {
           inventoryCache.get(
               event.getPlayer()));
       if (!queue.isEmpty()) {
-        BlockDropContext receiver = new BlockDropContext();
-        receiver.setHandle(event);
+        IBlockDropContext context = ContextProviders.BLOCK_DROP.create(event);
         for (EffectInstance instance : queue) {
           if (instance.getEffect() instanceof IOnBlockDrop trigger) {
-            receiver.setRank(instance.getRank());
-            trigger.onBlockDrop(receiver);
+            trigger.onBlockDrop(context, instance.getRank());
           }
         }
       }

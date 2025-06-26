@@ -13,8 +13,12 @@ import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-public final class InteractContext extends AbstractTriggerContext<PlayerInteractEvent> implements
+final class InteractContext extends AbstractContext<PlayerInteractEvent> implements
     IInteractContext {
+
+  public InteractContext(PlayerInteractEvent event) {
+    super(event);
+  }
 
   @Override
   public @NotNull Player getPlayer() {

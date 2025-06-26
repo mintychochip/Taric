@@ -4,7 +4,11 @@ import org.aincraft.api.container.trigger.IItemDamageContext;
 import org.bukkit.inventory.ItemStack;
 
 abstract class AbstractItemDamageContext<E extends ItemDamageEvent> extends
-    AbstractTriggerContext<E> implements IItemDamageContext {
+    AbstractContext<E> implements IItemDamageContext {
+
+  AbstractItemDamageContext(E event) {
+    super(event);
+  }
 
   @Override
   public ItemStack getItem() {

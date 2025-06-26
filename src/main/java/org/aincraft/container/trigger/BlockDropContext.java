@@ -13,8 +13,12 @@ import org.bukkit.event.block.BlockDropItemEvent;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 
-public final class BlockDropContext extends AbstractTriggerContext<BlockDropItemEvent> implements
+final class BlockDropContext extends AbstractContext<BlockDropItemEvent> implements
     IBlockDropContext {
+
+  public BlockDropContext(BlockDropItemEvent event) {
+    super(event);
+  }
 
   @Override
   public Player getPlayer() {

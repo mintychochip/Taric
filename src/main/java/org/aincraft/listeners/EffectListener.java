@@ -5,7 +5,6 @@ import static org.bukkit.event.EventPriority.HIGH;
 
 import com.google.common.cache.LoadingCache;
 import com.google.inject.Inject;
-import io.papermc.paper.event.entity.EntityMoveEvent;
 import java.time.Duration;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -20,31 +19,30 @@ import org.aincraft.api.container.Mutable;
 import org.aincraft.api.container.TargetType;
 import org.aincraft.api.container.gem.IGemInventory;
 import org.aincraft.api.container.launchable.ILaunchable;
+import org.aincraft.api.container.trigger.IEntityDamageEntityContext;
+import org.aincraft.api.container.trigger.IItemDamageContext.IPlayerItemDamageContext;
 import org.aincraft.api.container.trigger.IOnActivate;
 import org.aincraft.api.container.trigger.IOnBlockBreak;
+import org.aincraft.api.container.trigger.IOnBlockBreak.IBlockBreakContext;
 import org.aincraft.api.container.trigger.IOnBlockDrop;
+import org.aincraft.api.container.trigger.IOnBlockDrop.IBlockDropContext;
 import org.aincraft.api.container.trigger.IOnBucketEmpty;
 import org.aincraft.api.container.trigger.IOnEntityHitByEntity;
 import org.aincraft.api.container.trigger.IOnEntityHitEntity;
 import org.aincraft.api.container.trigger.IOnFish;
+import org.aincraft.api.container.trigger.IOnFish.IFishContext;
 import org.aincraft.api.container.trigger.IOnInteract;
+import org.aincraft.api.container.trigger.IOnInteract.IInteractContext;
 import org.aincraft.api.container.trigger.IOnKillEntity;
+import org.aincraft.api.container.trigger.IOnKillEntity.IKillEntityContext;
 import org.aincraft.api.container.trigger.IOnPlayerItemDamage;
 import org.aincraft.api.container.trigger.IOnPlayerShear;
 import org.aincraft.api.container.trigger.IOnShootBow;
+import org.aincraft.api.container.trigger.IShearEntityContext.IPlayerShearContext;
 import org.aincraft.api.container.trigger.TriggerType;
 import org.aincraft.container.EffectCooldown;
 import org.aincraft.container.launchable.LaunchableFactory;
-import org.aincraft.container.trigger.BlockBreakContext;
-import org.aincraft.container.trigger.BlockDropContext;
-import org.aincraft.container.trigger.EntityDamageEntityContext;
-import org.aincraft.container.trigger.EntityMoveContext;
-import org.aincraft.container.trigger.FishContext;
-import org.aincraft.container.trigger.InteractContext;
-import org.aincraft.container.trigger.KillTriggerContext;
-import org.aincraft.container.trigger.PlayerItemDamageContext;
-import org.aincraft.container.trigger.PlayerItemDamageEventDecorator;
-import org.aincraft.container.trigger.PlayerShearEntityContext;
+import org.aincraft.container.trigger.ContextProviders;
 import org.aincraft.database.IDatabase;
 import org.aincraft.effects.EffectQueuePool;
 import org.aincraft.effects.EffectQueuePool.EffectInstance;
@@ -58,7 +56,6 @@ import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.damage.DamageSource;
 import org.bukkit.entity.Entity;
-import org.bukkit.entity.FishHook;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Mob;
 import org.bukkit.entity.Player;
@@ -116,8 +113,7 @@ public class EffectListener implements Listener {
     if (!(damageSource.getCausingEntity() instanceof Player player)) {
       return;
     }
-    KillTriggerContext receiver = new KillTriggerContext();
-    receiver.setHandle(event);
+    IKillEntityContext context = ContextProviders.KILL.create(event);
     try {
 
       EffectQueue<EffectInstance> queue = effectQueuePool.acquireAndFill(
@@ -129,8 +125,7 @@ public class EffectListener implements Listener {
 
       for (EffectInstance instance : queue) {
         if (instance.getEffect() instanceof IOnKillEntity trigger) {
-          receiver.setRank(instance.getRank());
-          trigger.onKillEntity(receiver);
+          trigger.onKillEntity(context, instance.getRank());
         }
       }
       effectQueuePool.release(queue);
@@ -180,16 +175,15 @@ public class EffectListener implements Listener {
     if (!(event.getEntity() instanceof LivingEntity livingEntity)) {
       return;
     }
-    EntityDamageEntityContext receiver = new EntityDamageEntityContext();
-    receiver.setHandle(event);
+    IEntityDamageEntityContext context = ContextProviders.ENTITY_DAMAGE_BY_ENTITY.create(
+        event);
     try {
       EffectQueue<EffectInstance> queue = effectQueuePool.acquireAndFill(
           TriggerType.ENTITY_HIT_ENTITY, inventoryCache.get((LivingEntity) damager));
       if (!queue.isEmpty()) {
         for (EffectInstance instance : queue) {
           if (instance.getEffect() instanceof IOnEntityHitEntity trigger) {
-            receiver.setRank(instance.getRank());
-            trigger.onHitEntity(receiver);
+            trigger.onHitEntity(context, instance.getRank());
           }
         }
       }
@@ -199,8 +193,7 @@ public class EffectListener implements Listener {
       if (!queue.isEmpty()) {
         for (EffectInstance instance : queue) {
           if (instance.getEffect() instanceof IOnEntityHitByEntity trigger) {
-            receiver.setRank(instance.getRank());
-            trigger.onHitByEntity(receiver);
+            trigger.onHitByEntity(context, instance.getRank());
           }
         }
       }
@@ -220,12 +213,10 @@ public class EffectListener implements Listener {
         effectQueuePool.release(queue);
         return;
       }
-      PlayerShearEntityContext receiver = new PlayerShearEntityContext();
-      receiver.setHandle(PlayerShearEntityContext.createEvent(event));
+      IPlayerShearContext context = ContextProviders.PLAYER_SHEAR.create(event);
       for (EffectInstance instance : queue) {
         if (instance.getEffect() instanceof IOnPlayerShear trigger) {
-          receiver.setRank(instance.getRank());
-          trigger.onPlayerShear(receiver);
+          trigger.onPlayerShear(context, instance.getRank());
         }
       }
       effectQueuePool.release(queue);
@@ -245,16 +236,14 @@ public class EffectListener implements Listener {
       return;
     }
     blocksDestroyed.remove(location);
-    BlockDropContext receiver = new BlockDropContext();
-    receiver.setHandle(event);
+    IBlockDropContext context = ContextProviders.BLOCK_DROP.create(event);
     try {
       EffectQueue<EffectInstance> queue = effectQueuePool.acquireAndFill(TriggerType.BLOCK_DROP,
           inventoryCache.get(event.getPlayer()));
       if (!queue.isEmpty()) {
         for (EffectInstance instance : queue) {
           if (instance.getEffect() instanceof IOnBlockDrop trigger) {
-            receiver.setRank(instance.getRank());
-            trigger.onBlockDrop(receiver);
+            trigger.onBlockDrop(context, instance.getRank());
           }
         }
       }
@@ -274,14 +263,10 @@ public class EffectListener implements Listener {
       EffectQueue<EffectInstance> queue = effectQueuePool.acquireAndFill(TriggerType.BLOCK_BREAK,
           inventoryCache.get(player));
       if (!queue.isEmpty()) {
-        BlockBreakContext receiver = new BlockBreakContext();
-        receiver.setHandle(event);
-        receiver.setBlockFace(lastClickedFace.get(player));
-        receiver.setInitial(true);
+        IBlockBreakContext context = ContextProviders.BLOCK_BREAK.create(event);
         for (EffectInstance instance : queue) {
           if (instance.getEffect() instanceof IOnBlockBreak trigger) {
-            receiver.setRank(instance.getRank());
-            trigger.onBlockBreak(receiver);
+            trigger.onBlockBreak(context, instance.getRank(), lastClickedFace.get(player));
           }
         }
       }
@@ -298,12 +283,10 @@ public class EffectListener implements Listener {
       EffectQueue<EffectInstance> queue = effectQueuePool.acquireAndFill(
           TriggerType.INTERACT, inventoryCache.get(player));
       if (!queue.isEmpty()) {
-        InteractContext receiver = new InteractContext();
-        receiver.setHandle(event);
+        IInteractContext context = ContextProviders.INTERACT.create(event);
         for (EffectInstance instance : queue) {
           if (instance.getEffect() instanceof IOnInteract trigger) {
-            receiver.setRank(instance.getRank());
-            trigger.onInteract(receiver);
+            trigger.onInteract(context, instance.getRank());
           }
         }
       }
@@ -319,14 +302,10 @@ public class EffectListener implements Listener {
       EffectQueue<EffectInstance> queue = effectQueuePool.acquireAndFill(TriggerType.FISH,
           inventoryCache.get(player));
       if (!queue.isEmpty()) {
-        FishContext receiver = new FishContext();
-        receiver.setHandle(event);
-        FishHook hook = event.getHook();
-        hook.setGlowing(true);
+        IFishContext context = ContextProviders.FISH.create(event);
         for (EffectInstance instance : queue) {
           if (instance.getEffect() instanceof IOnFish trigger) {
-            receiver.setRank(instance.getRank());
-            trigger.onFish(receiver);
+            trigger.onFish(context, instance.getRank());
           }
         }
       }
@@ -436,15 +415,9 @@ public class EffectListener implements Listener {
   }
 
   @EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
-  private void onEntityMove(final EntityMoveEvent event) {
-    EntityMoveContext context = new EntityMoveContext();
-    context.setHandle(event);
-  }
-
-  @EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
   private void onPlayerItemDamage(final PlayerItemDamageEvent event) {
-    PlayerItemDamageContext context = new PlayerItemDamageContext();
-    context.setHandle(new PlayerItemDamageEventDecorator(event));
+    IPlayerItemDamageContext context = ContextProviders.PLAYER_ITEM_DAMAGE.create(
+        event);
     try {
       EffectQueue<EffectInstance> queue = effectQueuePool.acquireAndFill(
           TriggerType.PLAYER_DAMAGE_ITEM, inventoryCache.get(
@@ -452,8 +425,7 @@ public class EffectListener implements Listener {
       if (!queue.isEmpty()) {
         for (EffectInstance instance : queue) {
           if (instance.getEffect() instanceof IOnPlayerItemDamage trigger) {
-            context.setRank(instance.getRank());
-            trigger.onPlayerItemDamage(context);
+            trigger.onPlayerItemDamage(context, instance.getRank());
           }
         }
       }

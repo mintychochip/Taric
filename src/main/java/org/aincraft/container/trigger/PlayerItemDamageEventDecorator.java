@@ -5,7 +5,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerItemDamageEvent;
 import org.bukkit.inventory.ItemStack;
 
-public final class PlayerItemDamageEventDecorator implements IPlayerItemDamageEvent {
+final class PlayerItemDamageEventDecorator implements IPlayerItemDamageEvent {
 
   private final PlayerItemDamageEvent event;
 
@@ -16,6 +16,11 @@ public final class PlayerItemDamageEventDecorator implements IPlayerItemDamageEv
   @Override
   public Player getPlayer() {
     return event.getPlayer();
+  }
+
+  @Override
+  public double getOriginalDamage() {
+    return event.getOriginalDamage();
   }
 
   @Override

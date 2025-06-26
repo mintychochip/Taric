@@ -10,8 +10,12 @@ import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.Nullable;
 
-public final class FishContext extends AbstractTriggerContext<PlayerFishEvent> implements
+final class FishContext extends AbstractContext<PlayerFishEvent> implements
     IFishContext {
+
+  public FishContext(PlayerFishEvent event) {
+    super(event);
+  }
 
   @Override
   public Player getPlayer() {

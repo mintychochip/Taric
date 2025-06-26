@@ -1,16 +1,19 @@
 package org.aincraft.container.trigger;
 
-import io.papermc.paper.event.entity.EntityDamageItemEvent;
 import org.aincraft.api.container.trigger.IOnEntityItemDamage.IEntityDamageItemContext;
+import org.aincraft.container.trigger.ItemDamageEvent.IEntityDamageItemEvent;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
-import org.bukkit.entity.Player;
-import org.bukkit.event.player.PlayerItemDamageEvent;
 import org.bukkit.inventory.ItemStack;
 
-public class EntityDamageItemContext extends
-    AbstractTriggerContext<EntityDamageItemEvent> implements
+final class EntityDamageItemContext extends
+    AbstractContext<IEntityDamageItemEvent> implements
     IEntityDamageItemContext {
+
+
+  EntityDamageItemContext(IEntityDamageItemEvent event) {
+    super(event);
+  }
 
   @Override
   public double getDamage() {

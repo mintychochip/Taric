@@ -1,23 +1,10 @@
 package org.aincraft.api.container.trigger;
 
-import org.aincraft.api.container.context.ITriggerContext;
 import org.bukkit.Location;
 
 public interface IOnEntityMove {
 
-  void onEntityMove(IEntityMoveContext context);
-
-  interface IEntityMoveContext extends ITriggerContext {
-
-    void setFrom(Location from);
-
-    void setTo(Location to);
-
-    Location getFrom();
-
-    Location getTo();
-
-    boolean hasChanged(ChangeType type);
+  interface IEntityMoveContext {
 
     enum ChangeType {
       ORIENTATION,
@@ -26,5 +13,17 @@ public interface IOnEntityMove {
       EXPLICITLY_BLOCK,
       EXPLICITLY_POSITION
     }
+
+    Location getFrom();
+
+    void setFrom(Location from);
+
+    Location getTo();
+
+    void setTo(Location to);
+
+    boolean hasChanged(ChangeType type);
   }
+
+  void onEntityMove(IEntityMoveContext context);
 }

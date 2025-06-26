@@ -5,23 +5,13 @@ import com.google.inject.Inject;
 import com.google.inject.Provider;
 import com.google.inject.Singleton;
 import com.google.inject.TypeLiteral;
-import com.google.inject.name.Named;
+import com.google.inject.name.Names;
 import org.aincraft.api.container.IRarity;
 import org.aincraft.api.container.ISocketColor;
 import org.aincraft.api.container.util.IRandomSelector;
 import org.aincraft.registry.IRegistry;
 
 public final class SelectorModule extends AbstractModule {
-
-  @Override
-  protected void configure() {
-    bind(new TypeLiteral<IRandomSelector<IRarity>>() {
-    }).toProvider(SelectorModule.RaritySelectorInitializer.class)
-        .in(Singleton.class);
-    bind(new TypeLiteral<IRandomSelector<ISocketColor>>() {
-    }).toProvider(SelectorModule.ColorSelectorInitializer.class)
-        .in(Singleton.class);
-  }
 
   static final class RaritySelectorInitializer implements Provider<IRandomSelector<IRarity>> {
 
@@ -57,6 +47,18 @@ public final class SelectorModule extends AbstractModule {
       colorRegistry.forEach(randomSelector::add);
       return randomSelector;
     }
+  }
+
+  @Override
+  protected void configure() {
+    bind(new TypeLiteral<IRandomSelector<IRarity>>() {
+    }).annotatedWith(Names.named("rarity-selector"))
+        .toProvider(SelectorModule.RaritySelectorInitializer.class)
+        .in(Singleton.class);
+    bind(new TypeLiteral<IRandomSelector<ISocketColor>>() {
+    }).annotatedWith(Names.named("color-selector"))
+        .toProvider(SelectorModule.ColorSelectorInitializer.class)
+        .in(Singleton.class);
   }
 
 }

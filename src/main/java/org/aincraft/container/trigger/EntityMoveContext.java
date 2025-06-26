@@ -4,17 +4,11 @@ import io.papermc.paper.event.entity.EntityMoveEvent;
 import org.aincraft.api.container.trigger.IOnEntityMove.IEntityMoveContext;
 import org.bukkit.Location;
 
-public class EntityMoveContext extends AbstractTriggerContext<EntityMoveEvent> implements
+final class EntityMoveContext extends AbstractContext<EntityMoveEvent> implements
     IEntityMoveContext {
 
-  @Override
-  public void setFrom(Location from) {
-    event.setFrom(from);
-  }
-
-  @Override
-  public void setTo(Location to) {
-    event.setTo(to);
+  EntityMoveContext(EntityMoveEvent event) {
+    super(event);
   }
 
   @Override
@@ -23,8 +17,18 @@ public class EntityMoveContext extends AbstractTriggerContext<EntityMoveEvent> i
   }
 
   @Override
+  public void setFrom(Location from) {
+    event.setFrom(from);
+  }
+
+  @Override
   public Location getTo() {
     return event.getTo();
+  }
+
+  @Override
+  public void setTo(Location to) {
+    event.setTo(to);
   }
 
   @Override

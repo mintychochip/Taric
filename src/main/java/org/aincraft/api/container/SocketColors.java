@@ -11,7 +11,6 @@ public final class SocketColors {
   public static ISocketColor YELLOW;
   public static ISocketColor GREEN;
   public static ISocketColor BLUE;
-  public static ISocketColor PURPLE;
 
   private static boolean initialized = false;
 
@@ -25,10 +24,9 @@ public final class SocketColors {
     YELLOW = registry.get(Key.key("taric:yellow"));
     GREEN = registry.get(Key.key("taric:green"));
     BLUE = registry.get(Key.key("taric:blue"));
-    PURPLE = registry.get(Key.key("taric:purple"));
   }
 
   public static List<ISocketColor> values() {
-    return List.of(RED, ORANGE, YELLOW, GREEN, BLUE, PURPLE);
+    return List.of(RED, ORANGE, YELLOW, GREEN, BLUE);
   }
 }

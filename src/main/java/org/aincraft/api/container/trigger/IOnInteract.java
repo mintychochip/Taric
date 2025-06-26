@@ -1,6 +1,5 @@
 package org.aincraft.api.container.trigger;
 
-import org.aincraft.api.container.context.ITriggerContext;
 import org.bukkit.Location;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
@@ -14,9 +13,7 @@ import org.jetbrains.annotations.Nullable;
 
 public interface IOnInteract {
 
-  void onInteract(IInteractContext context);
-
-  interface IInteractContext extends ITriggerContext {
+  interface IInteractContext {
 
     @NotNull
     Player getPlayer();
@@ -52,4 +49,6 @@ public interface IOnInteract {
 
     boolean isBlockInHand();
   }
+
+  void onInteract(IInteractContext context, int rank);
 }

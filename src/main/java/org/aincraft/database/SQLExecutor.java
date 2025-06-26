@@ -12,7 +12,7 @@ import java.util.List;
 import java.util.function.Function;
 import java.util.logging.Logger;
 
-public class SQLExecutor {
+final class SQLExecutor {
 
   private final IConnectionSource source;
   private final Logger logger;
