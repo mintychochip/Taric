@@ -62,13 +62,14 @@ public class Tiller extends AbstractGemEffect implements IOnInteract, IOnPlayerI
   }
 
   @Override
-  public void onPlayerItemDamage(IPlayerItemDamageContext context, int rank) {
+  public void onPlayerItemDamage(IPlayerItemDamageContext context, EffectInstanceMeta meta) {
     ItemStack item = context.getItem();
     int hash = item.hashCode();
     if (!used.containsKey(hash)) {
       return;
     }
     Location location = used.remove(hash);
+    int rank = meta.getRank();
     for (int u = -rank; u <= rank; ++u) {
       for (int v = -rank; v <= rank; ++v) {
         for (int w = 1; w >= -1; --w) {

@@ -17,6 +17,7 @@ public final class TriggerTypes {
   public static final ITriggerType<IOnEntityKill> ENTITY_KILL;
   public static final ITriggerType<IOnPlayerItemDamage> PLAYER_ITEM_DAMAGE;
   public static final ITriggerType<IOnEntityItemDamage> ENTITY_ITEM_DAMAGE;
+  public static final ITriggerType<IOnEntityMove> ENTITY_MOVE;
 
   static {
     BLOCK_BREAK = new TriggerType<>(Key.key("taric:block_break"), IOnBlockBreak.class);
@@ -35,6 +36,7 @@ public final class TriggerTypes {
         IOnPlayerItemDamage.class);
     ENTITY_ITEM_DAMAGE = new TriggerType<>(Key.key("taric:entity_item_damage"),
         IOnEntityItemDamage.class);
+    ENTITY_MOVE = new TriggerType<>(Key.key("taric:entity_move"), IOnEntityMove.class);
   }
 
   private TriggerTypes() {
@@ -53,6 +55,7 @@ public final class TriggerTypes {
     registry.register(ENTITY_KILL);
     registry.register(PLAYER_ITEM_DAMAGE);
     registry.register(ENTITY_ITEM_DAMAGE);
+    registry.register(ENTITY_MOVE);
   }
 
   private static final class TriggerType<T> extends AbstractRegisterable implements

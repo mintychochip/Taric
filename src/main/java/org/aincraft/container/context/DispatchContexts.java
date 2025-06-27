@@ -1,21 +1,26 @@
 package org.aincraft.container.context;
 
+import io.papermc.paper.event.entity.EntityMoveEvent;
 import org.aincraft.api.container.EffectInstanceMeta;
-import org.aincraft.api.context.IEntityDamageEntityContext;
-import org.aincraft.api.trigger.IOnBlockBreak;
 import org.aincraft.api.context.IBlockBreakContext;
-import org.aincraft.api.trigger.IOnBlockDrop;
 import org.aincraft.api.context.IBlockDropContext;
+import org.aincraft.api.context.IEntityDamageEntityContext;
+import org.aincraft.api.context.IEntityKillContext;
+import org.aincraft.api.context.IEntityMoveContext;
+import org.aincraft.api.context.IItemDamageContext.IPlayerItemDamageContext;
+import org.aincraft.api.context.IPlayerFishContext;
+import org.aincraft.api.context.IShearEntityContext.IPlayerShearEntityContext;
+import org.aincraft.api.trigger.IOnBlockBreak;
+import org.aincraft.api.trigger.IOnBlockDrop;
 import org.aincraft.api.trigger.IOnEntityHitByEntity;
 import org.aincraft.api.trigger.IOnEntityHitEntity;
 import org.aincraft.api.trigger.IOnEntityKill;
-import org.aincraft.api.context.IEntityKillContext;
+import org.aincraft.api.trigger.IOnEntityMove;
 import org.aincraft.api.trigger.IOnInteract;
 import org.aincraft.api.trigger.IOnInteract.IInteractContext;
 import org.aincraft.api.trigger.IOnPlayerFish;
-import org.aincraft.api.context.IPlayerFishContext;
+import org.aincraft.api.trigger.IOnPlayerItemDamage;
 import org.aincraft.api.trigger.IOnPlayerShearEntity;
-import org.aincraft.api.context.IShearEntityContext.IPlayerShearEntityContext;
 import org.aincraft.api.trigger.ITriggerType;
 import org.aincraft.api.trigger.TriggerTypes;
 import org.bukkit.event.Event;
@@ -25,6 +30,7 @@ import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDeathEvent;
 import org.bukkit.event.player.PlayerFishEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
+import org.bukkit.event.player.PlayerItemDamageEvent;
 import org.bukkit.event.player.PlayerShearEntityEvent;
 
 public final class DispatchContexts {
@@ -49,6 +55,13 @@ public final class DispatchContexts {
 
   public static final IDispatchContext<IOnEntityKill, IEntityKillContext, EntityDeathEvent> KILL_ENTITY = new DispatchContext<>(
       TriggerTypes.ENTITY_KILL, ContextProviders.ENTITY_KILL, IOnEntityKill::onKillEntity);
+
+  public static final IDispatchContext<IOnEntityMove, IEntityMoveContext, EntityMoveEvent> ENTITY_MOVE = new DispatchContext<>(
+      TriggerTypes.ENTITY_MOVE, ContextProviders.ENTITY_MOVE, IOnEntityMove::onEntityMove);
+
+  public static final IDispatchContext<IOnPlayerItemDamage, IPlayerItemDamageContext, PlayerItemDamageEvent> PLAYER_ITEM_DAMAGE = new DispatchContext<>(
+      TriggerTypes.PLAYER_ITEM_DAMAGE, ContextProviders.PLAYER_ITEM_DAMAGE,
+      IOnPlayerItemDamage::onPlayerItemDamage);
 
   private DispatchContexts() {
     throw new UnsupportedOperationException("This class should not be instantiated.");

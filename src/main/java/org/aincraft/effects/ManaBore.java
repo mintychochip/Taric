@@ -2,9 +2,10 @@ package org.aincraft.effects;
 
 import java.util.Map;
 import java.util.Set;
+import org.aincraft.api.container.EffectInstanceMeta;
 import org.aincraft.api.container.TargetType;
-import org.aincraft.api.context.IItemDamageContext.IPlayerItemDamageContext;
 import org.aincraft.api.context.IEntityItemDamageContext;
+import org.aincraft.api.context.IItemDamageContext.IPlayerItemDamageContext;
 import org.aincraft.api.trigger.IOnEntityItemDamage;
 import org.aincraft.api.trigger.IOnPlayerItemDamage;
 import org.aincraft.api.trigger.ITriggerType;
@@ -76,7 +77,7 @@ final class ManaBore extends AbstractGemEffect implements IOnEntityItemDamage, I
   }
 
   @Override
-  public void onPlayerItemDamage(IPlayerItemDamageContext context, int rank) {
+  public void onPlayerItemDamage(IPlayerItemDamageContext context, EffectInstanceMeta meta) {
     Player player = context.getPlayer();
     int damage = context.getDamage();
     int currentXp = player.calculateTotalExperiencePoints();
