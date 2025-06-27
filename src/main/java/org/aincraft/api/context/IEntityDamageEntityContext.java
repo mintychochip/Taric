@@ -9,8 +9,10 @@ public interface IEntityDamageEntityContext {
 
   Entity getDamagee();
 
+  @SuppressWarnings("deprecation")
   void setDamage(DamageModifier modifier, double value);
 
+  @SuppressWarnings("deprecation")
   double getDamage(DamageModifier modifier);
 
   double getDamage();

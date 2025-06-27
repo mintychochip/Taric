@@ -4,7 +4,7 @@ import java.util.Map;
 import java.util.Set;
 import org.aincraft.api.container.EffectInstanceMeta;
 import org.aincraft.api.container.TargetType;
-import org.aincraft.api.context.IEntityItemDamageContext;
+import org.aincraft.api.context.IItemDamageContext.IEntityItemDamageContext;
 import org.aincraft.api.context.IItemDamageContext.IPlayerItemDamageContext;
 import org.aincraft.api.trigger.IOnEntityItemDamage;
 import org.aincraft.api.trigger.IOnPlayerItemDamage;

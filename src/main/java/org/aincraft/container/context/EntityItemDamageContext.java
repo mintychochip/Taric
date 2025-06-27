@@ -1,9 +1,8 @@
 package org.aincraft.container.context;
 
-import org.aincraft.api.context.IEntityItemDamageContext;
+import org.aincraft.api.context.IItemDamageContext.IEntityItemDamageContext;
 import org.aincraft.container.context.ItemDamageEvent.IEntityDamageItemEvent;
 import org.bukkit.entity.Entity;
-import org.bukkit.entity.EntityType;
 import org.bukkit.inventory.ItemStack;
 
 final class EntityItemDamageContext extends
@@ -16,7 +15,12 @@ final class EntityItemDamageContext extends
   }
 
   @Override
-  public double getDamage() {
+  public ItemStack getItem() {
+    return event.getItem();
+  }
+
+  @Override
+  public int getDamage() {
     return event.getDamage();
   }
 
@@ -26,17 +30,8 @@ final class EntityItemDamageContext extends
   }
 
   @Override
-  public ItemStack getItem() {
-    return event.getItem();
-  }
-
-  @Override
   public Entity getEntity() {
     return event.getEntity();
   }
 
-  @Override
-  public EntityType getEntityType() {
-    return event.getEntityType();
-  }
 }
