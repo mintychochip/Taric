@@ -13,7 +13,6 @@ import org.aincraft.api.trigger.TriggerTypes;
 import org.aincraft.container.context.DispatchContexts;
 import org.aincraft.container.context.IDispatch;
 import org.aincraft.container.context.IEffectQueueLoader;
-import org.aincraft.database.IDatabase;
 import org.aincraft.events.FakeBlockBreakEvent;
 import org.aincraft.events.FakeBlockDropItemEvent;
 import org.bukkit.Location;
@@ -36,26 +35,22 @@ import org.bukkit.event.player.PlayerFishEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerItemDamageEvent;
 import org.bukkit.event.player.PlayerShearEntityEvent;
-import org.bukkit.plugin.Plugin;
 
 public class EffectListener implements Listener {
 
-  private final Plugin plugin;
   private final LoadingCache<LivingEntity, IGemInventory> inventoryCache;
   private final Set<Location> blocksDestroyed = new HashSet<>();
-  private final IDatabase cooldownDatabase;
   private final IDispatch dispatch;
 
   @Inject
-  public EffectListener(Plugin plugin,
-      LoadingCache<LivingEntity, IGemInventory> inventoryCache, IDatabase cooldownDatabase,
+  public EffectListener(
+      LoadingCache<LivingEntity, IGemInventory> inventoryCache,
       IDispatch dispatch) {
-    this.plugin = plugin;
     this.inventoryCache = inventoryCache;
-    this.cooldownDatabase = cooldownDatabase;
     this.dispatch = dispatch;
   }
 
+  @SuppressWarnings("UnstableApiUsage")
   @EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
   private void onKillEntity(final EntityDeathEvent event) {
     DamageSource damageSource = event.getDamageSource();
@@ -285,19 +280,10 @@ public class EffectListener implements Listener {
 //
   @EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
   private void onPlayerItemDamage(final PlayerItemDamageEvent event) {
-    IPlayerItemDamageContext context = ContextProviders.PLAYER_ITEM_DAMAGE.create(
-        event);
     try {
-      EffectQueue<EffectInstance> queue = effectQueuePool.acquireAndFill(
-          TriggerType.PLAYER_DAMAGE_ITEM, inventoryCache.get(
-              event.getPlayer()));
-      if (!queue.isEmpty()) {
-        for (EffectInstance instance : queue) {
-          if (instance.getEffect() instanceof IOnPlayerItemDamage trigger) {
-            trigger.onPlayerItemDamage(context, instance.getRank());
-          }
-        }
-      }
+      IGemInventory inventory = inventoryCache.get(event.getPlayer());
+      IEffectQueueLoader loader = inventory.getLoader(TriggerTypes.PLAYER_ITEM_DAMAGE);
+      dispatch.dispatch(DispatchContexts.PLAYER_ITEM_DAMAGE, loader, event);
     } catch (ExecutionException e) {
       throw new RuntimeException(e);
     }
