@@ -8,7 +8,7 @@ import java.util.Set;
 import org.aincraft.Taric;
 import org.aincraft.api.container.IRarity;
 import org.aincraft.api.container.ISocketColor;
-import org.aincraft.container.registerable.ITriggerType;
+import org.aincraft.api.trigger.ITriggerType;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.inventory.EquipmentSlot;

@@ -7,7 +7,7 @@ import org.aincraft.Taric;
 import org.aincraft.api.config.IConfiguration;
 import org.aincraft.api.container.IRarity;
 import org.aincraft.api.container.ISocketColor;
-import org.aincraft.container.registerable.ITriggerType;
+import org.aincraft.api.trigger.ITriggerType;
 import org.aincraft.registry.IRegistry;
 import org.aincraft.registry.SharedRegistry;
 import org.bukkit.NamespacedKey;

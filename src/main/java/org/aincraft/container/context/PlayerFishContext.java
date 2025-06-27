@@ -1,6 +1,6 @@
 package org.aincraft.container.context;
 
-import org.aincraft.api.container.trigger.IOnPlayerFish.IPlayerFishContext;
+import org.aincraft.api.context.IPlayerFishContext;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.FishHook;
 import org.bukkit.entity.Item;
@@ -13,7 +13,7 @@ import org.jetbrains.annotations.Nullable;
 final class PlayerFishContext extends AbstractContext<PlayerFishEvent> implements
     IPlayerFishContext {
 
-  public PlayerFishContext(PlayerFishEvent event) {
+  PlayerFishContext(PlayerFishEvent event) {
     super(event);
   }
 

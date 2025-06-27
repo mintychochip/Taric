@@ -8,11 +8,10 @@ import org.aincraft.api.container.gem.IGemItem;
 import org.aincraft.api.container.gem.IGemItem.IGemItemFactory;
 import org.aincraft.api.container.gem.IPreciousGem.IPreciousGemFactory;
 import org.aincraft.api.container.gem.ISocketGem.ISocketGemFactory;
-import org.aincraft.container.registerable.ITriggerType;
+import org.aincraft.api.trigger.ITriggerType;
 import org.aincraft.effects.Effects;
 import org.aincraft.effects.IGemEffect;
 import org.aincraft.registry.IRegistry;
-import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -52,15 +51,13 @@ public class GemCommand implements CommandExecutor {
   public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command,
       @NotNull String label, @NotNull String @NotNull [] args) {
     if (sender instanceof Player player) {
-      IGemItem item = itemFactory.create(ItemStack.of(Material.SHEARS));
+      IGemItem item = itemFactory.create(ItemStack.of(Material.DIAMOND_PICKAXE));
       item.editContainer(container -> {
-        container.applyEffect(Effects.PRISMATIC, new EffectInstanceMeta(3), true);
+        container.applyEffect(Effects.BURROWING, new EffectInstanceMeta(3), true);
+        container.applyEffect(Effects.VEIN_MINER, new EffectInstanceMeta(3), true);
+        container.applyEffect(Effects.AUTO_SMELT, new EffectInstanceMeta(3), true);
       });
       player.getInventory().addItem(item.getStack());
-      for (ITriggerType<?> type : triggerRegistry) {
-        Bukkit.broadcastMessage(type.key().toString());
-      }
-
     }
     return false;
   }

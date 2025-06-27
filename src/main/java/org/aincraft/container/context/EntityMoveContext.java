@@ -1,7 +1,7 @@
 package org.aincraft.container.context;
 
 import io.papermc.paper.event.entity.EntityMoveEvent;
-import org.aincraft.api.container.trigger.IOnEntityMove.IEntityMoveContext;
+import org.aincraft.api.context.IEntityMoveContext;
 import org.bukkit.Location;
 
 final class EntityMoveContext extends AbstractContext<EntityMoveEvent> implements

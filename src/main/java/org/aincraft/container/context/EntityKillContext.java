@@ -1,7 +1,7 @@
 package org.aincraft.container.context;
 
 import java.util.List;
-import org.aincraft.api.container.trigger.IOnEntityKill.IEntityKillContext;
+import org.aincraft.api.context.IEntityKillContext;
 import org.bukkit.damage.DamageSource;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.event.entity.EntityDeathEvent;
@@ -11,7 +11,7 @@ import org.jetbrains.annotations.NotNull;
 final class EntityKillContext extends AbstractContext<EntityDeathEvent> implements
     IEntityKillContext {
 
-  public EntityKillContext(EntityDeathEvent event) {
+  EntityKillContext(EntityDeathEvent event) {
     super(event);
   }
 

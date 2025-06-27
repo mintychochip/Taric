@@ -8,9 +8,10 @@ import java.util.Set;
 import org.aincraft.Settings;
 import org.aincraft.api.container.EffectInstanceMeta;
 import org.aincraft.api.container.TargetType;
-import org.aincraft.api.container.trigger.IOnBlockBreak;
-import org.aincraft.container.registerable.ITriggerType;
-import org.aincraft.container.registerable.TriggerTypes;
+import org.aincraft.api.context.IBlockBreakContext;
+import org.aincraft.api.trigger.IOnBlockBreak;
+import org.aincraft.api.trigger.ITriggerType;
+import org.aincraft.api.trigger.TriggerTypes;
 import org.aincraft.events.FakeBlockBreakEvent;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -36,7 +37,7 @@ final class VeinMiner extends AbstractGemEffect implements IOnBlockBreak {
 
   @Override
   public void onBlockBreak(IBlockBreakContext context, EffectInstanceMeta meta) {
-    if (!context.isFake()) {
+    if (context.isFake()) {
       return;
     }
     Block block = context.getBlock();

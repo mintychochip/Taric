@@ -2,7 +2,7 @@ package org.aincraft.container.context;
 
 import java.util.List;
 import java.util.stream.Collectors;
-import org.aincraft.api.container.trigger.IOnBlockDrop.IBlockDropContext;
+import org.aincraft.api.context.IBlockDropContext;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.block.Block;
@@ -16,7 +16,7 @@ import org.jetbrains.annotations.NotNull;
 final class BlockDropContext extends AbstractContext<BlockDropItemEvent> implements
     IBlockDropContext {
 
-  public BlockDropContext(BlockDropItemEvent event) {
+  BlockDropContext(BlockDropItemEvent event) {
     super(event);
   }
 

@@ -4,7 +4,7 @@ import net.kyori.adventure.key.Key;
 import net.kyori.adventure.key.Keyed;
 import org.jetbrains.annotations.NotNull;
 
-abstract class AbstractRegisterable implements Keyed {
+public abstract class AbstractRegisterable implements Keyed {
 
   protected final Key key;
 

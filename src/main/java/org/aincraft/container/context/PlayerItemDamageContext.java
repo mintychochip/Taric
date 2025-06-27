@@ -1,6 +1,6 @@
 package org.aincraft.container.context;
 
-import org.aincraft.api.container.trigger.IItemDamageContext.IPlayerItemDamageContext;
+import org.aincraft.api.context.IItemDamageContext.IPlayerItemDamageContext;
 import org.aincraft.container.context.ItemDamageEvent.IPlayerItemDamageEvent;
 import org.bukkit.entity.Player;
 
@@ -8,7 +8,7 @@ final class PlayerItemDamageContext extends
     AbstractItemDamageContext<IPlayerItemDamageEvent> implements
     IPlayerItemDamageContext {
 
-  public PlayerItemDamageContext(IPlayerItemDamageEvent event) {
+  PlayerItemDamageContext(IPlayerItemDamageEvent event) {
     super(event);
   }
 

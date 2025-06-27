@@ -1,6 +1,6 @@
 package org.aincraft.container.context;
 
-import org.aincraft.api.container.trigger.IOnEntityItemDamage.IEntityItemDamageContext;
+import org.aincraft.api.context.IEntityItemDamageContext;
 import org.aincraft.container.context.ItemDamageEvent.IEntityDamageItemEvent;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;

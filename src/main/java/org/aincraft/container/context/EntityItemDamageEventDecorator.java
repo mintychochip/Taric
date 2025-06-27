@@ -10,7 +10,7 @@ final class EntityItemDamageEventDecorator implements IEntityDamageItemEvent {
 
   private final EntityDamageItemEvent event;
 
-  public EntityItemDamageEventDecorator(EntityDamageItemEvent event) {
+  EntityItemDamageEventDecorator(EntityDamageItemEvent event) {
     this.event = event;
   }
 

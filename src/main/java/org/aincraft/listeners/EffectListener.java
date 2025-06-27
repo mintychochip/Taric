@@ -10,10 +10,10 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ExecutionException;
 import org.aincraft.api.container.gem.IGemInventory;
-import org.aincraft.container.dispatch.DispatchContexts;
-import org.aincraft.container.dispatch.IDispatch;
-import org.aincraft.container.dispatch.IEffectQueueLoader;
-import org.aincraft.container.registerable.TriggerTypes;
+import org.aincraft.container.context.DispatchContexts;
+import org.aincraft.container.context.IDispatch;
+import org.aincraft.container.context.IEffectQueueLoader;
+import org.aincraft.api.trigger.TriggerTypes;
 import org.aincraft.database.IDatabase;
 import org.aincraft.events.FakeBlockBreakEvent;
 import org.aincraft.events.FakeBlockDropItemEvent;
@@ -187,7 +187,7 @@ public class EffectListener implements Listener {
   private void onInteract(final PlayerInteractEvent event) {
     try {
       IGemInventory inventory = inventoryCache.get(event.getPlayer());
-      IEffectQueueLoader loader = inventory.getLoader(TriggerTypes.BLOCK_BREAK);
+      IEffectQueueLoader loader = inventory.getLoader(TriggerTypes.INTERACT);
       dispatch.dispatch(DispatchContexts.INTERACT, loader, event);
     } catch (ExecutionException e) {
       throw new RuntimeException(e);

@@ -1,6 +1,6 @@
 package org.aincraft.container.context;
 
-import org.aincraft.api.container.trigger.IEntityDamageEntityContext;
+import org.aincraft.api.context.IEntityDamageEntityContext;
 import org.bukkit.entity.Entity;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent.DamageModifier;
@@ -9,7 +9,7 @@ final class EntityDamageEntityContext extends
     AbstractContext<EntityDamageByEntityEvent> implements
     IEntityDamageEntityContext {
 
-  public EntityDamageEntityContext(EntityDamageByEntityEvent event) {
+  EntityDamageEntityContext(EntityDamageByEntityEvent event) {
     super(event);
   }
 

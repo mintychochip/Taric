@@ -7,7 +7,7 @@ import org.aincraft.api.config.IConfiguration;
 import org.aincraft.api.container.IRarity;
 import org.aincraft.api.container.ISocketColor;
 import org.aincraft.api.container.IWeighable;
-import org.aincraft.container.registerable.ITriggerType;
+import org.aincraft.api.trigger.ITriggerType;
 import org.bukkit.Keyed;
 import org.bukkit.Material;
 import org.bukkit.inventory.EquipmentSlot;

@@ -1,6 +1,6 @@
 package org.aincraft.container.context;
 
-import org.aincraft.api.container.trigger.IOnBlockBreak.IBlockBreakContext;
+import org.aincraft.api.context.IBlockBreakContext;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.entity.Player;
@@ -15,7 +15,7 @@ final class BlockBreakContext extends AbstractContext<BlockBreakEvent> implement
 
   private BlockFace blockFace = null;
 
-  public BlockBreakContext(BlockBreakEvent event, boolean fake) {
+  BlockBreakContext(BlockBreakEvent event, boolean fake) {
     super(event);
     this.fake = fake;
   }

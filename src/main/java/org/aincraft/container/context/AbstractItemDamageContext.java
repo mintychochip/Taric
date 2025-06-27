@@ -1,6 +1,6 @@
 package org.aincraft.container.context;
 
-import org.aincraft.api.container.trigger.IItemDamageContext;
+import org.aincraft.api.context.IItemDamageContext;
 import org.bukkit.inventory.ItemStack;
 
 abstract class AbstractItemDamageContext<E extends ItemDamageEvent> extends

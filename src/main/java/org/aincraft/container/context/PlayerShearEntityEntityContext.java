@@ -1,6 +1,6 @@
 package org.aincraft.container.context;
 
-import org.aincraft.api.container.trigger.IShearEntityContext.IPlayerShearEntityContext;
+import org.aincraft.api.context.IShearEntityContext.IPlayerShearEntityContext;
 import org.aincraft.container.context.ShearEntityEvent.IPlayerShearEntityEvent;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
@@ -9,7 +9,7 @@ final class PlayerShearEntityEntityContext extends
     AbstractShearEntityContext<IPlayerShearEntityEvent> implements
     IPlayerShearEntityContext {
 
-  public PlayerShearEntityEntityContext(IPlayerShearEntityEvent event) {
+  PlayerShearEntityEntityContext(IPlayerShearEntityEvent event) {
     super(event);
   }
 

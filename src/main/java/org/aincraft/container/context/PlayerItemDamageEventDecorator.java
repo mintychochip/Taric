@@ -9,7 +9,7 @@ final class PlayerItemDamageEventDecorator implements IPlayerItemDamageEvent {
 
   private final PlayerItemDamageEvent event;
 
-  public PlayerItemDamageEventDecorator(PlayerItemDamageEvent event) {
+  PlayerItemDamageEventDecorator(PlayerItemDamageEvent event) {
     this.event = event;
   }
 

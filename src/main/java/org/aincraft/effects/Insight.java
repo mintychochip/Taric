@@ -8,11 +8,14 @@ import org.aincraft.api.container.EffectInstanceMeta;
 import org.aincraft.api.container.TargetType;
 import org.aincraft.api.container.TypeSet;
 import org.aincraft.api.container.context.IExperienceContext;
-import org.aincraft.api.container.trigger.IOnBlockBreak;
-import org.aincraft.api.container.trigger.IOnEntityKill;
-import org.aincraft.api.container.trigger.IOnPlayerFish;
-import org.aincraft.container.registerable.TriggerTypes;
-import org.aincraft.container.registerable.ITriggerType;
+import org.aincraft.api.context.IBlockBreakContext;
+import org.aincraft.api.context.IEntityKillContext;
+import org.aincraft.api.trigger.IOnBlockBreak;
+import org.aincraft.api.trigger.IOnEntityKill;
+import org.aincraft.api.trigger.IOnPlayerFish;
+import org.aincraft.api.context.IPlayerFishContext;
+import org.aincraft.api.trigger.TriggerTypes;
+import org.aincraft.api.trigger.ITriggerType;
 import org.bukkit.Material;
 
 final class Insight extends AbstractGemEffect implements IOnEntityKill, IOnBlockBreak,

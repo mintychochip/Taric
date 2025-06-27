@@ -2,16 +2,16 @@ package org.aincraft.container.context;
 
 import io.papermc.paper.event.entity.EntityDamageItemEvent;
 import io.papermc.paper.event.entity.EntityMoveEvent;
-import org.aincraft.api.container.trigger.IEntityDamageEntityContext;
-import org.aincraft.api.container.trigger.IItemDamageContext.IPlayerItemDamageContext;
-import org.aincraft.api.container.trigger.IOnBlockBreak.IBlockBreakContext;
-import org.aincraft.api.container.trigger.IOnBlockDrop.IBlockDropContext;
-import org.aincraft.api.container.trigger.IOnEntityItemDamage.IEntityItemDamageContext;
-import org.aincraft.api.container.trigger.IOnEntityKill.IEntityKillContext;
-import org.aincraft.api.container.trigger.IOnEntityMove.IEntityMoveContext;
-import org.aincraft.api.container.trigger.IOnInteract.IInteractContext;
-import org.aincraft.api.container.trigger.IOnPlayerFish.IPlayerFishContext;
-import org.aincraft.api.container.trigger.IShearEntityContext.IPlayerShearEntityContext;
+import org.aincraft.api.context.IEntityDamageEntityContext;
+import org.aincraft.api.context.IItemDamageContext.IPlayerItemDamageContext;
+import org.aincraft.api.context.IBlockBreakContext;
+import org.aincraft.api.context.IBlockDropContext;
+import org.aincraft.api.context.IEntityItemDamageContext;
+import org.aincraft.api.context.IEntityKillContext;
+import org.aincraft.api.context.IEntityMoveContext;
+import org.aincraft.api.trigger.IOnInteract.IInteractContext;
+import org.aincraft.api.context.IPlayerFishContext;
+import org.aincraft.api.context.IShearEntityContext.IPlayerShearEntityContext;
 import org.aincraft.events.FakeBlockBreakEvent;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockDropItemEvent;
@@ -24,7 +24,7 @@ import org.bukkit.event.player.PlayerShearEntityEvent;
 import org.jetbrains.annotations.ApiStatus.Internal;
 
 @Internal
-public final class ContextProviders {
+final class ContextProviders {
 
   public static final IContextProvider<IEntityDamageEntityContext, EntityDamageByEntityEvent> ENTITY_DAMAGE_BY_ENTITY;
   public static final IContextProvider<IEntityKillContext, EntityDeathEvent> ENTITY_KILL;
