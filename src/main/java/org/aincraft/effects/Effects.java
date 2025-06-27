@@ -66,4 +66,8 @@ public final class Effects {
     MANA_BORE = new ManaBore();
     CRUSH = new Crush();
   }
+
+  private Effects() {
+    throw new UnsupportedOperationException("This class should not be instantiated.");
+  }
 }

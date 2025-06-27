@@ -2,13 +2,10 @@ package org.aincraft.container.context;
 
 abstract class AbstractContext<H> {
 
-  protected H event;
+  protected final H event;
 
   AbstractContext(H event) {
     this.event = event;
   }
 
-  public void setHandle(H event) {
-    this.event = event;
-  }
 }

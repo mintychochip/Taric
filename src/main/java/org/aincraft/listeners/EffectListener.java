@@ -3,17 +3,16 @@ package org.aincraft.listeners;
 
 import com.google.common.cache.LoadingCache;
 import com.google.inject.Inject;
-import java.util.HashMap;
 import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ExecutionException;
 import org.aincraft.api.container.gem.IGemInventory;
+import org.aincraft.api.container.launchable.ILaunchable;
+import org.aincraft.api.context.IShootBowContext;
+import org.aincraft.api.trigger.TriggerTypes;
 import org.aincraft.container.context.DispatchContexts;
 import org.aincraft.container.context.IDispatch;
 import org.aincraft.container.context.IEffectQueueLoader;
-import org.aincraft.api.trigger.TriggerTypes;
 import org.aincraft.database.IDatabase;
 import org.aincraft.events.FakeBlockBreakEvent;
 import org.aincraft.events.FakeBlockDropItemEvent;
@@ -32,8 +31,10 @@ import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockDropItemEvent;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDeathEvent;
+import org.bukkit.event.entity.EntityShootBowEvent;
 import org.bukkit.event.player.PlayerFishEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
+import org.bukkit.event.player.PlayerItemDamageEvent;
 import org.bukkit.event.player.PlayerShearEntityEvent;
 import org.bukkit.plugin.Plugin;
 
@@ -44,7 +45,6 @@ public class EffectListener implements Listener {
   private final Set<Location> blocksDestroyed = new HashSet<>();
   private final IDatabase cooldownDatabase;
   private final IDispatch dispatch;
-  private final Map<LivingEntity, List<Projectile>> projectileStore = new HashMap<>();
 
   @Inject
   public EffectListener(Plugin plugin,
@@ -56,16 +56,7 @@ public class EffectListener implements Listener {
     this.dispatch = dispatch;
   }
 
-  //  @EventHandler(priority = HIGH, ignoreCancelled = true)
-//  private void checkFaceBeforeBlockBreak(final PlayerInteractEvent event) {
-//    Action action = event.getAction();
-//    if (!action.isLeftClick()) {
-//      return;
-//    }
-//    lastClickedFace.put(event.getPlayer(), event.getBlockFace());
-//  }
-//
-  @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
+  @EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
   private void onKillEntity(final EntityDeathEvent event) {
     DamageSource damageSource = event.getDamageSource();
     Entity causingEntity = damageSource.getCausingEntity();
@@ -81,39 +72,26 @@ public class EffectListener implements Listener {
     }
   }
 
-  //
-//  @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
-//  private void onEntityBowShoot(final EntityShootBowEvent event) {
-//    LivingEntity shooter = event.getEntity();
-//    if (!(event.getProjectile() instanceof Projectile projectile)) {
-//      return;
-//    }
-//    List<Projectile> projectiles = projectileStore.computeIfAbsent(shooter,
-//        key -> new ArrayList<>());
-//    projectiles.clear();
-//    try {
-//      EffectQueue<EffectInstance> queue = effectQueuePool.acquireAndFill(TriggerType.SHOOT_BOW,
-//          inventoryCache.get(shooter));
-//      if (!queue.isEmpty()) {
-//        List<ILaunchable> launchables = new ArrayList<>();
-//        launchables.add(LaunchableFactory.create(projectile));
-//        projectile.remove();
-//        for (EffectInstance instance : queue) {
-//          if (instance.getEffect() instanceof IOnShootBow trigger) {
-//            trigger.onShootBow(instance.getRank(), shooter, launchables);
-//          }
-//        }
-//        for (ILaunchable launchable : launchables) {
-//          Projectile launched = launchable.launch(shooter);
-//          projectiles.add(launched);
-//        }
-//      }
-//      effectQueuePool.release(queue);
-//    } catch (ExecutionException e) {
-//      throw new RuntimeException(e);
-//    }
-//  }
-//
+
+  @EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
+  private void onEntityBowShoot(final EntityShootBowEvent event) {
+    LivingEntity shooter = event.getEntity();
+    try {
+      IGemInventory inventory = inventoryCache.get(shooter);
+      IEffectQueueLoader loader = inventory.getLoader(TriggerTypes.SHOOT_BOW);
+      IShootBowContext context = dispatch.dispatch(DispatchContexts.SHOOT_BOW, loader, event,
+          e -> {
+            Projectile p = (Projectile) e.getProjectile();
+            p.remove();
+          });
+      for (ILaunchable launchable : context.getLaunchables()) {
+        launchable.launch(shooter);
+      }
+    } catch (ExecutionException e) {
+      throw new RuntimeException(e);
+    }
+  }
+
   @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
   private void onPlayerHitEntity(final EntityDamageByEntityEvent event) {
     Entity damager = event.getDamager();
@@ -204,7 +182,8 @@ public class EffectListener implements Listener {
       throw new RuntimeException(e);
     }
   }
-//
+
+  //
 //
 //  //TODO: fix api, usage is trash rn
 //  @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
@@ -304,23 +283,23 @@ public class EffectListener implements Listener {
 //    });
 //  }
 //
-//  @EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
-//  private void onPlayerItemDamage(final PlayerItemDamageEvent event) {
-//    IPlayerItemDamageContext context = ContextProviders.PLAYER_ITEM_DAMAGE.create(
-//        event);
-//    try {
-//      EffectQueue<EffectInstance> queue = effectQueuePool.acquireAndFill(
-//          TriggerType.PLAYER_DAMAGE_ITEM, inventoryCache.get(
-//              event.getPlayer()));
-//      if (!queue.isEmpty()) {
-//        for (EffectInstance instance : queue) {
-//          if (instance.getEffect() instanceof IOnPlayerItemDamage trigger) {
-//            trigger.onPlayerItemDamage(context, instance.getRank());
-//          }
-//        }
-//      }
-//    } catch (ExecutionException e) {
-//      throw new RuntimeException(e);
-//    }
-//  }
+  @EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
+  private void onPlayerItemDamage(final PlayerItemDamageEvent event) {
+    IPlayerItemDamageContext context = ContextProviders.PLAYER_ITEM_DAMAGE.create(
+        event);
+    try {
+      EffectQueue<EffectInstance> queue = effectQueuePool.acquireAndFill(
+          TriggerType.PLAYER_DAMAGE_ITEM, inventoryCache.get(
+              event.getPlayer()));
+      if (!queue.isEmpty()) {
+        for (EffectInstance instance : queue) {
+          if (instance.getEffect() instanceof IOnPlayerItemDamage trigger) {
+            trigger.onPlayerItemDamage(context, instance.getRank());
+          }
+        }
+      }
+    } catch (ExecutionException e) {
+      throw new RuntimeException(e);
+    }
+  }
 }

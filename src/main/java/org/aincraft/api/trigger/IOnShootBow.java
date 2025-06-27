@@ -1,10 +1,9 @@
 package org.aincraft.api.trigger;
 
-import java.util.List;
-import org.aincraft.api.container.launchable.ILaunchable;
-import org.bukkit.entity.LivingEntity;
+import org.aincraft.api.container.EffectInstanceMeta;
+import org.aincraft.api.context.IShootBowContext;
 
 public interface IOnShootBow {
 
-  void onShootBow(int rank, LivingEntity launcher, List<ILaunchable> instances);
+  void onShootBow(IShootBowContext context, EffectInstanceMeta meta);
 }

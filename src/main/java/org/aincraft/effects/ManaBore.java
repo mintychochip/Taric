@@ -20,7 +20,7 @@ import org.bukkit.entity.Tameable;
 final class ManaBore extends AbstractGemEffect implements IOnEntityItemDamage, IOnPlayerItemDamage {
 
   @Override
-  public void onEntityItemDamage(IEntityItemDamageContext context) {
+  public void onEntityItemDamage(IEntityItemDamageContext context, EffectInstanceMeta meta) {
     double damage = context.getDamage();
     Entity entity = context.getEntity();
     Player player = getPlayerOrOwner(entity);

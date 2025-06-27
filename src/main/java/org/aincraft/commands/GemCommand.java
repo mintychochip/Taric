@@ -51,11 +51,10 @@ public class GemCommand implements CommandExecutor {
   public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command,
       @NotNull String label, @NotNull String @NotNull [] args) {
     if (sender instanceof Player player) {
-      IGemItem item = itemFactory.create(ItemStack.of(Material.DIAMOND_PICKAXE));
+      IGemItem item = itemFactory.create(ItemStack.of(Material.BOW));
       item.editContainer(container -> {
-        container.applyEffect(Effects.BURROWING, new EffectInstanceMeta(3), true);
-        container.applyEffect(Effects.VEIN_MINER, new EffectInstanceMeta(3), true);
-        container.applyEffect(Effects.AUTO_SMELT, new EffectInstanceMeta(3), true);
+        container.applyEffect(Effects.MULTISHOT, new EffectInstanceMeta(3), true);
+        container.applyEffect(Effects.FLARE, new EffectInstanceMeta(3), true);
       });
       player.getInventory().addItem(item.getStack());
     }
