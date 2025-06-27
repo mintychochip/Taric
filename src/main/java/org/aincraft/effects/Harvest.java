@@ -3,17 +3,18 @@ package org.aincraft.effects;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
+import org.aincraft.api.container.EffectInstanceMeta;
 import org.aincraft.api.container.TargetType;
 import org.aincraft.api.container.trigger.IOnBlockBreak;
 import org.aincraft.api.container.trigger.IOnBlockDrop;
 import org.aincraft.api.container.trigger.IOnInteract;
-import org.aincraft.api.container.trigger.TriggerType;
+import org.aincraft.container.registerable.ITriggerType;
+import org.aincraft.container.registerable.TriggerTypes;
 import org.aincraft.events.FakeBlockBreakEvent;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
-import org.bukkit.block.BlockFace;
 import org.bukkit.block.data.Ageable;
 import org.bukkit.block.data.BlockData;
 import org.bukkit.event.block.Action;
@@ -24,16 +25,16 @@ final class Harvest extends AbstractGemEffect implements IOnBlockBreak, IOnBlock
   private final Set<Location> harvested = new HashSet<>();
 
   @Override
-  protected Map<TriggerType, Set<Material>> buildValidTargets() {
+  protected Map<ITriggerType<?>, Set<Material>> buildValidTargets() {
     return Map.ofEntries(
-        Map.entry(TriggerType.BLOCK_BREAK, TargetType.HOE),
-        Map.entry(TriggerType.BLOCK_DROP, TargetType.HOE),
-        Map.entry(TriggerType.INTERACT, TargetType.HOE)
+        Map.entry(TriggerTypes.BLOCK_BREAK, TargetType.HOE),
+        Map.entry(TriggerTypes.BLOCK_DROP, TargetType.HOE),
+        Map.entry(TriggerTypes.INTERACT, TargetType.HOE)
     );
   }
 
   @Override
-  public void onInteract(IInteractContext context, int rank) {
+  public void onInteract(IInteractContext context, EffectInstanceMeta meta) {
     Block block = context.getBlock();
     Action action = context.getAction();
     if (block == null || (action.isLeftClick() || action == Action.PHYSICAL) || shouldNotHarvest(
@@ -55,7 +56,7 @@ final class Harvest extends AbstractGemEffect implements IOnBlockBreak, IOnBlock
   }
 
   @Override
-  public void onBlockDrop(IBlockDropContext context, int rank) {
+  public void onBlockDrop(IBlockDropContext context, EffectInstanceMeta meta) {
     Block block = context.getBlock();
     Location location = block.getLocation();
     if (!harvested.contains(location)) {
@@ -73,7 +74,7 @@ final class Harvest extends AbstractGemEffect implements IOnBlockBreak, IOnBlock
   }
 
   @Override
-  public void onBlockBreak(IBlockBreakContext context, int rank, BlockFace blockFace) {
+  public void onBlockBreak(IBlockBreakContext context, EffectInstanceMeta meta) {
     if (shouldNotHarvest(context.getBlock())) {
       return;
     }

@@ -6,7 +6,7 @@ import org.bukkit.inventory.ItemStack;
 
 public interface IOnEntityItemDamage {
 
-  interface IEntityDamageItemContext {
+  interface IEntityItemDamageContext {
 
     double getDamage();
 
@@ -19,5 +19,5 @@ public interface IOnEntityItemDamage {
     EntityType getEntityType();
   }
 
-  void onEntityItemDamage(IEntityDamageItemContext context);
+  void onEntityItemDamage(IEntityItemDamageContext context);
 }

@@ -6,9 +6,11 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 import org.aincraft.Settings;
+import org.aincraft.api.container.EffectInstanceMeta;
 import org.aincraft.api.container.TargetType;
 import org.aincraft.api.container.trigger.IOnBlockBreak;
-import org.aincraft.api.container.trigger.TriggerType;
+import org.aincraft.container.registerable.ITriggerType;
+import org.aincraft.container.registerable.TriggerTypes;
 import org.aincraft.events.FakeBlockBreakEvent;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -26,14 +28,14 @@ final class VeinMiner extends AbstractGemEffect implements IOnBlockBreak {
   }
 
   @Override
-  protected Map<TriggerType, Set<Material>> buildValidTargets() {
+  protected Map<ITriggerType<?>, Set<Material>> buildValidTargets() {
     return Map.ofEntries(
-        Map.entry(TriggerType.BLOCK_BREAK, TargetType.PICKAXE)
+        Map.entry(TriggerTypes.BLOCK_BREAK, TargetType.PICKAXE)
     );
   }
 
   @Override
-  public void onBlockBreak(IBlockBreakContext context, int rank, BlockFace blockFace) {
+  public void onBlockBreak(IBlockBreakContext context, EffectInstanceMeta meta) {
     if (!context.isFake()) {
       return;
     }
@@ -46,7 +48,7 @@ final class VeinMiner extends AbstractGemEffect implements IOnBlockBreak {
     if (!VISITED.isEmpty()) {
       VISITED.clear();
     }
-    veinMine(VISITED, STACK, block, rank * Settings.VEIN_MINER_DEPTH_RANK, material);
+    veinMine(VISITED, STACK, block, meta.getRank() * Settings.VEIN_MINER_DEPTH_RANK, material);
     VISITED.remove(block);
     for (Block b : VISITED) {
       Bukkit.getPluginManager().callEvent(new FakeBlockBreakEvent(b, player));

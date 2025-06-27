@@ -4,25 +4,27 @@ import java.util.Map;
 import java.util.Set;
 import org.aincraft.Settings;
 import org.aincraft.Taric;
+import org.aincraft.api.container.EffectInstanceMeta;
 import org.aincraft.api.container.TargetType;
-import org.aincraft.api.container.trigger.IOnKillEntity;
-import org.aincraft.api.container.trigger.TriggerType;
+import org.aincraft.api.container.trigger.IOnEntityKill;
+import org.aincraft.container.registerable.TriggerTypes;
+import org.aincraft.container.registerable.ITriggerType;
 import org.bukkit.Material;
 import org.bukkit.entity.EntityType;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.Nullable;
 
-final class Vorpal extends AbstractGemEffect implements IOnKillEntity {
+final class Vorpal extends AbstractGemEffect implements IOnEntityKill {
 
   @Override
-  protected Map<TriggerType, Set<Material>> buildValidTargets() {
+  protected Map<ITriggerType<?>, Set<Material>> buildValidTargets() {
     return Map.ofEntries(
-        Map.entry(TriggerType.KILL_ENTITY, TargetType.MELEE_WEAPON)
+        Map.entry(TriggerTypes.ENTITY_KILL, TargetType.MELEE_WEAPON)
     );
   }
 
   @Override
-  public void onKillEntity(IKillEntityContext context, int rank) {
+  public void onKillEntity(IEntityKillContext context, EffectInstanceMeta meta) {
     EntityType type = context.getSlain().getType();
     if (!(type == EntityType.ZOMBIE || type == EntityType.SKELETON || type == EntityType.CREEPER
         || type == EntityType.WITHER_SKELETON || type == EntityType.PIGLIN)) {
@@ -37,7 +39,7 @@ final class Vorpal extends AbstractGemEffect implements IOnKillEntity {
         }
       }
     }
-    if (Taric.getRandom().nextDouble() <= Settings.VORPAL_CHANCE_RANK * rank) {
+    if (Taric.getRandom().nextDouble() <= Settings.VORPAL_CHANCE_RANK * meta.getRank()) {
       Material material = getHeadFromType(type);
       if (material == null) {
         return;

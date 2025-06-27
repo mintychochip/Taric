@@ -3,10 +3,8 @@ package org.aincraft.effects;
 import java.time.Duration;
 import java.util.Map;
 import java.util.Set;
-import org.aincraft.api.container.TargetType;
-import org.aincraft.api.container.TypeSet;
 import org.aincraft.api.container.trigger.IOnActivate;
-import org.aincraft.api.container.trigger.TriggerType;
+import org.aincraft.container.registerable.ITriggerType;
 import org.bukkit.FluidCollisionMode;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -15,12 +13,18 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.RayTraceResult;
 
 final class Blink extends AbstractGemEffect implements IOnActivate {
+//
+//  @Override
+//  protected Map<TriggerType, Set<Material>> buildValidTargets() {
+//    return Map.of(
+//        TriggerType.ACTIVATE, TypeSet.builder().union(TargetType.TOOL, TargetType.WEAPON).build()
+//    );
+//  }
+
 
   @Override
-  protected Map<TriggerType, Set<Material>> buildValidTargets() {
-    return Map.of(
-        TriggerType.ACTIVATE, TypeSet.builder().union(TargetType.TOOL, TargetType.WEAPON).build()
-    );
+  protected Map<ITriggerType<?>, Set<Material>> buildValidTargets() {
+    return Map.of();
   }
 
   @Override

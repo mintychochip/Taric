@@ -2,11 +2,15 @@ package org.aincraft.api.container.gem;
 
 import java.util.Map.Entry;
 import java.util.function.Consumer;
+import org.aincraft.api.container.EffectInstanceMeta;
 import org.aincraft.api.container.ISocketColor;
 import org.aincraft.api.container.gem.IGemItem.IGemItemContainer;
 import org.aincraft.api.container.gem.IGemItem.IGemItemContainerView;
+import org.aincraft.container.dispatch.IEffectQueueLoader;
+import org.aincraft.container.registerable.ITriggerType;
 import org.aincraft.effects.IGemEffect;
 import org.bukkit.Material;
+import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -32,7 +36,7 @@ public interface IGemItem extends IItemContainerHolder<IGemItemContainer, IGemIt
   }
 
   interface IGemItemContainerView extends IEffectContainerView,
-      Iterable<Entry<IGemEffect, Integer>> {
+      Iterable<Entry<IGemEffect, EffectInstanceMeta>> {
 
     boolean hasEffect(IGemEffect effect);
 
@@ -74,4 +78,6 @@ public interface IGemItem extends IItemContainerHolder<IGemItemContainer, IGemIt
 
     IGemItem create(ItemStack stack) throws IllegalArgumentException;
   }
+
+  IEffectQueueLoader getLoader(ITriggerType<?> trigger, EquipmentSlot slot);
 }

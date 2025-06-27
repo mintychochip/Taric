@@ -6,7 +6,8 @@ import org.aincraft.api.container.TargetType;
 import org.aincraft.api.container.trigger.IItemDamageContext.IPlayerItemDamageContext;
 import org.aincraft.api.container.trigger.IOnEntityItemDamage;
 import org.aincraft.api.container.trigger.IOnPlayerItemDamage;
-import org.aincraft.api.container.trigger.TriggerType;
+import org.aincraft.container.registerable.ITriggerType;
+import org.aincraft.container.registerable.TriggerTypes;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.AnimalTamer;
@@ -17,7 +18,7 @@ import org.bukkit.entity.Tameable;
 final class ManaBore extends AbstractGemEffect implements IOnEntityItemDamage, IOnPlayerItemDamage {
 
   @Override
-  public void onEntityItemDamage(IEntityDamageItemContext context) {
+  public void onEntityItemDamage(IEntityItemDamageContext context) {
     double damage = context.getDamage();
     Entity entity = context.getEntity();
     Player player = getPlayerOrOwner(entity);
@@ -67,9 +68,9 @@ final class ManaBore extends AbstractGemEffect implements IOnEntityItemDamage, I
   }
 
   @Override
-  protected Map<TriggerType, Set<Material>> buildValidTargets() {
+  protected Map<ITriggerType<?>, Set<Material>> buildValidTargets() {
     return Map.ofEntries(
-        Map.entry(TriggerType.PLAYER_DAMAGE_ITEM, TargetType.ALL)
+        Map.entry(TriggerTypes.PLAYER_ITEM_DAMAGE, TargetType.ALL)
     );
   }
 

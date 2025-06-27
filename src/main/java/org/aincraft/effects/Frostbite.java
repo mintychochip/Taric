@@ -3,10 +3,12 @@ package org.aincraft.effects;
 import java.util.Map;
 import java.util.Set;
 import org.aincraft.Settings;
+import org.aincraft.api.container.EffectInstanceMeta;
 import org.aincraft.api.container.TargetType;
 import org.aincraft.api.container.trigger.IEntityDamageEntityContext;
 import org.aincraft.api.container.trigger.IOnEntityHitEntity;
-import org.aincraft.api.container.trigger.TriggerType;
+import org.aincraft.container.registerable.ITriggerType;
+import org.aincraft.container.registerable.TriggerTypes;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.Particle;
@@ -18,11 +20,11 @@ import org.jetbrains.annotations.NotNull;
 final class Frostbite extends AbstractGemEffect implements IOnEntityHitEntity {
 
   @Override
-  public void onHitEntity(IEntityDamageEntityContext context, int rank) {
+  public void onHitEntity(IEntityDamageEntityContext context, EffectInstanceMeta meta) {
     Entity damagee = context.getDamagee();
     int base = damagee.getFreezeTicks();
     damagee.setFreezeTicks(
-        Math.min(base + rank * Settings.COLD_ASPECT_FREEZE_TICKS_RANK,
+        Math.min(base + meta.getRank() * Settings.COLD_ASPECT_FREEZE_TICKS_RANK,
             Settings.COLD_ASPECT_MAX_FREEZE_TICKS));
     if (damagee instanceof LivingEntity livingEntity) {
       playEffects(livingEntity.getEyeLocation());
@@ -45,9 +47,9 @@ final class Frostbite extends AbstractGemEffect implements IOnEntityHitEntity {
   }
 
   @Override
-  protected Map<TriggerType, Set<Material>> buildValidTargets() {
+  protected Map<ITriggerType<?>, Set<Material>> buildValidTargets() {
     return Map.ofEntries(
-        Map.entry(TriggerType.ENTITY_HIT_ENTITY, TargetType.MELEE_WEAPON)
+        Map.entry(TriggerTypes.ENTITY_HIT_ENTITY, TargetType.MELEE_WEAPON)
     );
   }
 }

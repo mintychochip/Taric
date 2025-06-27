@@ -2,25 +2,30 @@ package org.aincraft.effects;
 
 import java.util.Map;
 import java.util.Set;
+import net.kyori.adventure.text.Component;
 import org.aincraft.Taric;
+import org.aincraft.api.container.EffectInstanceMeta;
 import org.aincraft.api.container.TypeSet;
-import org.aincraft.api.container.trigger.IOnPlayerShear;
-import org.aincraft.api.container.trigger.IShearEntityContext.IPlayerShearContext;
-import org.aincraft.api.container.trigger.TriggerType;
+import org.aincraft.api.container.trigger.IOnPlayerShearEntity;
+import org.aincraft.api.container.trigger.IShearEntityContext.IPlayerShearEntityContext;
+import org.aincraft.container.registerable.ITriggerType;
+import org.aincraft.container.registerable.TriggerTypes;
+import org.bukkit.Bukkit;
 import org.bukkit.DyeColor;
 import org.bukkit.Material;
 import org.bukkit.entity.Sheep;
 
-final class Prismatic extends AbstractGemEffect implements IOnPlayerShear {
+final class Prismatic extends AbstractGemEffect implements IOnPlayerShearEntity {
 
   @Override
-  protected Map<TriggerType, Set<Material>> buildValidTargets() {
-    return Map.of(TriggerType.PLAYER_SHEAR, TypeSet.single(Material.SHEARS));
+  protected Map<ITriggerType<?>, Set<Material>> buildValidTargets() {
+    return Map.of(TriggerTypes.PLAYER_SHEAR_ENTITY, TypeSet.single(Material.SHEARS));
   }
 
 
   @Override
-  public void onPlayerShear(IPlayerShearContext context, int rank) {
+  public void onPlayerShear(IPlayerShearEntityContext context, EffectInstanceMeta meta) {
+    Bukkit.broadcast(Component.text("here"));
     if (!(context.getSheared() instanceof Sheep sheep)) {
       return;
     }

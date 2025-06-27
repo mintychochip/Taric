@@ -9,7 +9,7 @@ import org.jetbrains.annotations.NotNull;
 
 public interface IShearEntityContext extends IDropContext<List<ItemStack>> {
 
-  interface IPlayerShearContext extends IShearEntityContext {
+  interface IPlayerShearEntityContext extends IShearEntityContext {
 
     @NotNull
     Player getPlayer();

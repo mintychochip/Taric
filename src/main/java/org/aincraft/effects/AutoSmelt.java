@@ -5,9 +5,11 @@ import java.util.Map;
 import java.util.Set;
 import org.aincraft.Taric;
 import org.aincraft.api.config.IConfiguration;
+import org.aincraft.api.container.EffectInstanceMeta;
 import org.aincraft.api.container.TargetType;
 import org.aincraft.api.container.trigger.IOnBlockDrop;
-import org.aincraft.api.container.trigger.TriggerType;
+import org.aincraft.container.registerable.ITriggerType;
+import org.aincraft.container.registerable.TriggerTypes;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.Particle;
@@ -73,7 +75,9 @@ final class AutoSmelt extends AbstractGemEffect implements IOnBlockDrop {
     }
 
     @Override
-    protected boolean conversionPredicate(IBlockDropContext context, int rank, ItemStack stack) {
+    protected boolean conversionPredicate(IBlockDropContext context, EffectInstanceMeta meta,
+        ItemStack stack) {
+      int rank = meta.getRank();
       Material material = stack.getType();
       return conversions.containsKey(material) && rank >= maxRank
           || Taric.getRandom().nextInt(rank) != 0;
@@ -111,15 +115,22 @@ final class AutoSmelt extends AbstractGemEffect implements IOnBlockDrop {
   }
 
   @Override
-  protected Map<TriggerType, Set<Material>> buildValidTargets() {
+  protected Map<ITriggerType<?>, Set<Material>> buildValidTargets() {
     return Map.ofEntries(
-        Map.entry(TriggerType.BLOCK_DROP, TargetType.TOOL)
+        Map.entry(TriggerTypes.BLOCK_BREAK, TargetType.TOOL)
     );
   }
 
+  //  @Override
+//  protected Map<TriggerType, Set<Material>> buildValidTargets() {
+//    return Map.ofEntries(
+//        Map.entry(TriggerType.BLOCK_DROP, TargetType.TOOL)
+//    );
+//  }
+
   @Override
-  public void onBlockDrop(IBlockDropContext context, int rank) {
+  public void onBlockDrop(IBlockDropContext context, EffectInstanceMeta meta) {
     helper.setMaxRank(this.getMaxRank());
-    helper.onBlockDrop(context, rank);
+    helper.onBlockDrop(context, meta);
   }
 }

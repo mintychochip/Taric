@@ -6,30 +6,33 @@ import java.util.Map;
 import java.util.Set;
 import org.aincraft.Settings;
 import org.aincraft.Taric;
+import org.aincraft.api.container.EffectInstanceMeta;
 import org.aincraft.api.container.TargetType;
 import org.aincraft.api.container.TypeSet;
-import org.aincraft.api.container.trigger.IOnFish;
-import org.aincraft.api.container.trigger.IOnKillEntity;
-import org.aincraft.api.container.trigger.IOnPlayerShear;
-import org.aincraft.api.container.trigger.IShearEntityContext.IPlayerShearContext;
-import org.aincraft.api.container.trigger.TriggerType;
+import org.aincraft.api.container.trigger.IOnEntityKill;
+import org.aincraft.api.container.trigger.IOnPlayerFish;
+import org.aincraft.api.container.trigger.IOnPlayerShearEntity;
+import org.aincraft.api.container.trigger.IShearEntityContext.IPlayerShearEntityContext;
+import org.aincraft.container.registerable.TriggerTypes;
+import org.aincraft.container.registerable.ITriggerType;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 
-final class Scavenge extends AbstractGemEffect implements IOnKillEntity, IOnPlayerShear, IOnFish {
+final class Scavenge extends AbstractGemEffect implements IOnEntityKill, IOnPlayerShearEntity,
+    IOnPlayerFish {
 
   @Override
-  protected Map<TriggerType, Set<Material>> buildValidTargets() {
+  protected Map<ITriggerType<?>, Set<Material>> buildValidTargets() {
     return Map.ofEntries(
-        Map.entry(TriggerType.KILL_ENTITY, TargetType.RANGED_WEAPON),
-        Map.entry(TriggerType.PLAYER_SHEAR, TypeSet.single(Material.SHEARS)),
-        Map.entry(TriggerType.FISH, TypeSet.single(Material.FISHING_ROD))
+        Map.entry(TriggerTypes.ENTITY_KILL, TargetType.RANGED_WEAPON),
+        Map.entry(TriggerTypes.PLAYER_SHEAR_ENTITY, TypeSet.single(Material.SHEARS)),
+        Map.entry(TriggerTypes.PLAYER_FISH, TypeSet.single(Material.FISHING_ROD))
     );
   }
 
   @Override
-  public void onPlayerShear(IPlayerShearContext context, int rank) {
-    context.setDrops(scavenge(rank, context.getDrops()));
+  public void onPlayerShear(IPlayerShearEntityContext context, EffectInstanceMeta meta) {
+    context.setDrops(scavenge(meta.getRank(), context.getDrops()));
   }
 
   private static List<ItemStack> scavenge(int rank, List<ItemStack> drops) {
@@ -51,18 +54,18 @@ final class Scavenge extends AbstractGemEffect implements IOnKillEntity, IOnPlay
   }
 
   @Override
-  public void onFish(IFishContext context, int rank) {
+  public void onPlayerFish(IPlayerFishContext context, EffectInstanceMeta meta) {
     ItemStack drop = context.getDrops();
     if (drop == null) {
       return;
     }
     int base = drop.getAmount();
-    int looting = looting(base, rank);
+    int looting = looting(base, meta.getRank());
     drop.setAmount(looting);
   }
 
   @Override
-  public void onKillEntity(IKillEntityContext context, int rank) {
-    context.setDrops(scavenge(rank, context.getDrops()));
+  public void onKillEntity(IEntityKillContext context, EffectInstanceMeta meta) {
+    context.setDrops(scavenge(meta.getRank(), context.getDrops()));
   }
 }

@@ -1,5 +1,6 @@
 package org.aincraft.api.container.trigger;
 
+import org.aincraft.api.container.EffectInstanceMeta;
 import org.bukkit.Location;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
@@ -50,5 +51,5 @@ public interface IOnInteract {
     boolean isBlockInHand();
   }
 
-  void onInteract(IInteractContext context, int rank);
+  void onInteract(IInteractContext context, EffectInstanceMeta meta);
 }

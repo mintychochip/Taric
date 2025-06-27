@@ -7,7 +7,7 @@ import org.aincraft.api.config.IConfiguration;
 import org.aincraft.api.container.IRarity;
 import org.aincraft.api.container.ISocketColor;
 import org.aincraft.api.container.IWeighable;
-import org.aincraft.api.container.trigger.TriggerType;
+import org.aincraft.container.registerable.ITriggerType;
 import org.bukkit.Keyed;
 import org.bukkit.Material;
 import org.bukkit.inventory.EquipmentSlot;
@@ -15,13 +15,13 @@ import org.jetbrains.annotations.NotNull;
 
 public interface IGemEffect extends Keyed, IWeighable {
 
-  int getPriority(TriggerType triggerType);
+  int getPriority(ITriggerType<?> triggerType);
 
   IRarity getRarity();
 
   ISocketColor getSocketColor();
 
-  boolean isValidTarget(TriggerType triggerType, Material material);
+  boolean isValidTarget(ITriggerType<?> trigger, Material material);
 
   boolean isValidTarget(Material material);
 
@@ -50,6 +50,10 @@ public interface IGemEffect extends Keyed, IWeighable {
       return defaultValue;
     }
     return config.getDouble(path);
+  }
+
+  static void logMissing(String type, String path, Object fallback) {
+    Taric.getLogger().warning(type + " not found at '" + path + "', using default: " + fallback);
   }
 
   default int loadInt(IConfiguration config, String subPath, int defaultValue) {
@@ -88,9 +92,5 @@ public interface IGemEffect extends Keyed, IWeighable {
     }
     List<String> list = config.getStringList(path);
     return list != null ? list : defaultValue;
-  }
-
-  static void logMissing(String type, String path, Object fallback) {
-    Taric.getLogger().warning(type + " not found at '" + path + "', using default: " + fallback);
   }
 }

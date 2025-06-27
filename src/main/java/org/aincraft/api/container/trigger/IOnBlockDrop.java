@@ -1,6 +1,7 @@
 package org.aincraft.api.container.trigger;
 
 import java.util.List;
+import org.aincraft.api.container.EffectInstanceMeta;
 import org.aincraft.api.container.context.IDropContext;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockState;
@@ -18,5 +19,5 @@ public interface IOnBlockDrop {
     BlockState getBlockState();
   }
 
-  void onBlockDrop(IBlockDropContext context, int rank);
+  void onBlockDrop(IBlockDropContext context, EffectInstanceMeta meta);
 }

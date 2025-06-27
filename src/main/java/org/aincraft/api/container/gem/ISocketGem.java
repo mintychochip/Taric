@@ -28,10 +28,7 @@ public interface ISocketGem extends
     /**
      * Determines whether this gem can be merged with another specified gem.
      * <p>
-     * Mergability is implementation-dependent and may involve factors like gem type, tier, effects,
-     * or affinity.
-     * <p>
-     * The merge check does modify either gem's state.
+     * The merge check should not modify either gem's state.
      *
      * @param other the other gem to check against
      * @return true if this gem can be mergeable, false otherwise
@@ -42,8 +39,8 @@ public interface ISocketGem extends
     /**
      * Merges the specified gem into this one, increasing the rank by one.
      * <p>
-     * The operation is associative and commutative, e.g. merging gem A with B should yield the same
-     * result as merging B with A, assuming both targets are valid.
+     * The operation should be associative and commutative, e.g. merging gem A with B should yield
+     * the same result as merging B with A, assuming both targets are valid.
      * <p>
      * It is advised to check first whether gems are mergeable by calling
      * {@link #canMerge(ISocketGem)}.
@@ -51,8 +48,9 @@ public interface ISocketGem extends
      * @param other the gem being merged
      * @throws IllegalArgumentException some merging criteria failed, e.g. a gem must have the same
      *                                  effect as the other
-     * @throws IllegalStateException    the current effect or rank is less than or equal to 0
-     * @throws NullPointerException     the other gem or it's effect are null
+     * @throws IllegalStateException    the current effect is null or rank is less than or equal to
+     *                                  0
+     * @throws NullPointerException     the other gem or it's effect is null
      */
     void merge(ISocketGem other)
         throws IllegalArgumentException, IllegalStateException, NullPointerException;

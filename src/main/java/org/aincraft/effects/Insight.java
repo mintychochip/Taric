@@ -4,30 +4,32 @@ import java.util.Map;
 import java.util.Set;
 import org.aincraft.Settings;
 import org.aincraft.Taric;
+import org.aincraft.api.container.EffectInstanceMeta;
 import org.aincraft.api.container.TargetType;
 import org.aincraft.api.container.TypeSet;
 import org.aincraft.api.container.context.IExperienceContext;
 import org.aincraft.api.container.trigger.IOnBlockBreak;
-import org.aincraft.api.container.trigger.IOnFish;
-import org.aincraft.api.container.trigger.IOnKillEntity;
-import org.aincraft.api.container.trigger.TriggerType;
+import org.aincraft.api.container.trigger.IOnEntityKill;
+import org.aincraft.api.container.trigger.IOnPlayerFish;
+import org.aincraft.container.registerable.TriggerTypes;
+import org.aincraft.container.registerable.ITriggerType;
 import org.bukkit.Material;
-import org.bukkit.block.BlockFace;
 
-final class Insight extends AbstractGemEffect implements IOnKillEntity, IOnBlockBreak, IOnFish {
+final class Insight extends AbstractGemEffect implements IOnEntityKill, IOnBlockBreak,
+    IOnPlayerFish {
 
   @Override
-  protected Map<TriggerType, Set<Material>> buildValidTargets() {
+  protected Map<ITriggerType<?>, Set<Material>> buildValidTargets() {
     return Map.ofEntries(
-        Map.entry(TriggerType.KILL_ENTITY, TargetType.MELEE_WEAPON),
-        Map.entry(TriggerType.BLOCK_BREAK, TargetType.PICKAXE),
-        Map.entry(TriggerType.FISH, TypeSet.single(Material.FISHING_ROD))
+        Map.entry(TriggerTypes.ENTITY_KILL, TargetType.MELEE_WEAPON),
+        Map.entry(TriggerTypes.BLOCK_BREAK, TargetType.PICKAXE),
+        Map.entry(TriggerTypes.PLAYER_FISH, TypeSet.single(Material.FISHING_ROD))
     );
   }
 
   @Override
-  public void onKillEntity(IKillEntityContext context, int rank) {
-    echoes(context, rank);
+  public void onBlockBreak(IBlockBreakContext context, EffectInstanceMeta meta) {
+    echoes(context, meta.getRank());
   }
 
   private static void echoes(IExperienceContext context, int rank) {
@@ -42,12 +44,13 @@ final class Insight extends AbstractGemEffect implements IOnKillEntity, IOnBlock
   }
 
   @Override
-  public void onFish(IFishContext context, int rank) {
-    echoes(context, rank);
+  public void onPlayerFish(IPlayerFishContext context, EffectInstanceMeta meta) {
+    echoes(context, meta.getRank());
   }
 
+
   @Override
-  public void onBlockBreak(IBlockBreakContext context, int rank, BlockFace blockFace) {
-    echoes(context, rank);
+  public void onKillEntity(IEntityKillContext context, EffectInstanceMeta meta) {
+    echoes(context, meta.getRank());
   }
 }

@@ -7,7 +7,8 @@ import org.aincraft.Settings;
 import org.aincraft.api.container.TargetType;
 import org.aincraft.api.container.launchable.ILaunchable;
 import org.aincraft.api.container.trigger.IOnShootBow;
-import org.aincraft.api.container.trigger.TriggerType;
+import org.aincraft.container.registerable.ITriggerType;
+import org.aincraft.container.registerable.TriggerTypes;
 import org.bukkit.Material;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.util.Vector;
@@ -15,9 +16,9 @@ import org.bukkit.util.Vector;
 final class Multishot extends AbstractGemEffect implements IOnShootBow {
 
   @Override
-  protected Map<TriggerType, Set<Material>> buildValidTargets() {
+  protected Map<ITriggerType<?>, Set<Material>> buildValidTargets() {
     return Map.ofEntries(
-        Map.entry(TriggerType.SHOOT_BOW, TargetType.RANGED_WEAPON)
+        Map.entry(TriggerTypes.SHOOT_BOW, TargetType.RANGED_WEAPON)
     );
   }
 

@@ -3,25 +3,22 @@ package org.aincraft.effects;
 import io.papermc.paper.datacomponent.DataComponentTypes;
 import java.util.Map;
 import java.util.Set;
+import org.aincraft.api.container.EffectInstanceMeta;
 import org.aincraft.api.container.TypeSet;
-import org.aincraft.api.container.trigger.IOnFish;
+import org.aincraft.api.container.trigger.IOnPlayerFish;
 import org.aincraft.api.container.trigger.IOnSocket;
-import org.aincraft.api.container.trigger.TriggerType;
+import org.aincraft.container.registerable.ITriggerType;
+import org.aincraft.container.registerable.TriggerTypes;
 import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.ItemStack;
 
-final class Glimmer extends AbstractGemEffect implements IOnFish, IOnSocket {
+final class Glimmer extends AbstractGemEffect implements IOnPlayerFish, IOnSocket {
 
   @Override
-  public void onFish(IFishContext context, int rank) {
-    context.getHook().setGlowing(true);
-  }
-
-  @Override
-  protected Map<TriggerType, Set<Material>> buildValidTargets() {
+  protected Map<ITriggerType<?>, Set<Material>> buildValidTargets() {
     return Map.ofEntries(
-        Map.entry(TriggerType.FISH, TypeSet.single(Material.FISHING_ROD))
+        Map.entry(TriggerTypes.PLAYER_FISH, TypeSet.single(Material.FISHING_ROD))
     );
   }
 
@@ -41,5 +38,10 @@ final class Glimmer extends AbstractGemEffect implements IOnFish, IOnSocket {
       return;
     }
     stack.setData(DataComponentTypes.ENCHANTMENT_GLINT_OVERRIDE, false);
+  }
+
+  @Override
+  public void onPlayerFish(IPlayerFishContext context, EffectInstanceMeta meta) {
+    context.getHook().setGlowing(true);
   }
 }

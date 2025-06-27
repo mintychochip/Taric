@@ -5,6 +5,7 @@ import com.google.inject.Inject;
 import java.util.List;
 import java.util.random.RandomGenerator;
 import org.aincraft.Taric;
+import org.aincraft.api.container.EffectInstanceMeta;
 import org.aincraft.api.container.IIdentificationTable;
 import org.aincraft.api.container.IRarity;
 import org.aincraft.api.container.gem.IGemIdentifier;
@@ -48,7 +49,7 @@ public class GemIdentifier implements IGemIdentifier {
     addRange(selector, 1, effect.getMaxRank());
     Integer random = selector.getRandom(Taric.getRandom());
     gem.editContainer(container -> {
-      container.applyEffect(effect, random);
+      container.applyEffect(effect, new EffectInstanceMeta(random));
     });
     return gem;
   }

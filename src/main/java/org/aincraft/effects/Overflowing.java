@@ -3,9 +3,8 @@ package org.aincraft.effects;
 import java.util.Map;
 import java.util.Set;
 import org.aincraft.api.container.Mutable;
-import org.aincraft.api.container.TypeSet;
 import org.aincraft.api.container.trigger.IOnBucketEmpty;
-import org.aincraft.api.container.trigger.TriggerType;
+import org.aincraft.container.registerable.ITriggerType;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.EquipmentSlot;
@@ -15,9 +14,9 @@ import org.jetbrains.annotations.Nullable;
 public class Overflowing extends AbstractGemEffect implements IOnBucketEmpty {
 
   @Override
-  protected Map<TriggerType, Set<Material>> buildValidTargets() {
+  protected Map<ITriggerType<?>, Set<Material>> buildValidTargets() {
     return Map.ofEntries(
-        Map.entry(TriggerType.BUCKET_EMPTY, TypeSet.single(Material.WATER_BUCKET))
+//        Map.entry(TriggerTypes.BUCKET_EMPTY, TypeSet.single(Material.WATER_BUCKET))
     );
   }
 

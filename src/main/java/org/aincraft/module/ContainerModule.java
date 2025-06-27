@@ -9,12 +9,16 @@ import org.aincraft.api.container.ISocketColor;
 import org.aincraft.api.container.gem.IGemIdentifier;
 import org.aincraft.container.GemIdentifier;
 import org.aincraft.container.ItemFactoryModule;
-import org.aincraft.container.rarity.IdentificationTableRegistryInitializer;
-import org.aincraft.container.rarity.RarityRegistryInitializer;
-import org.aincraft.container.rarity.SocketRegistryInitializer;
+import org.aincraft.container.dispatch.DispatchProvider;
+import org.aincraft.container.dispatch.IDispatch;
+import org.aincraft.container.registerable.ITriggerType;
+import org.aincraft.container.registerable.IdentificationTableRegistryInitializer;
+import org.aincraft.container.registerable.RarityRegistryInitializer;
+import org.aincraft.container.registerable.SocketRegistryInitializer;
+import org.aincraft.container.registerable.TriggerRegistryInitializer;
 import org.aincraft.container.util.SelectorModule;
-import org.aincraft.effects.IGemEffect;
 import org.aincraft.effects.EffectRegistryProvider;
+import org.aincraft.effects.IGemEffect;
 import org.aincraft.registry.IRegistry;
 
 public final class ContainerModule extends AbstractModule {
@@ -32,6 +36,9 @@ public final class ContainerModule extends AbstractModule {
     bind(new TypeLiteral<IRegistry<IIdentificationTable>>() {
     }).toProvider(
         IdentificationTableRegistryInitializer.class).in(Singleton.class);
+    bind(new TypeLiteral<IRegistry<ITriggerType<?>>>() {
+    }).toProvider(TriggerRegistryInitializer.class).in(Singleton.class);
     bind(IGemIdentifier.class).to(GemIdentifier.class).in(Singleton.class);
+    bind(IDispatch.class).toProvider(DispatchProvider.class).in(Singleton.class);
   }
 }

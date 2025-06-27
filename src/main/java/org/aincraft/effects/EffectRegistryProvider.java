@@ -7,6 +7,7 @@ import org.aincraft.Taric;
 import org.aincraft.api.config.IConfiguration;
 import org.aincraft.api.container.IRarity;
 import org.aincraft.api.container.ISocketColor;
+import org.aincraft.container.registerable.ITriggerType;
 import org.aincraft.registry.IRegistry;
 import org.aincraft.registry.SharedRegistry;
 import org.bukkit.NamespacedKey;
@@ -17,14 +18,17 @@ public final class EffectRegistryProvider implements Provider<IRegistry<IGemEffe
   private final IConfiguration gemConfiguration;
   private final IRegistry<IRarity> rarityRegistry;
   private final IRegistry<ISocketColor> colorRegistry;
+  private final IRegistry<ITriggerType<?>> triggerRegistry;
   private final Plugin plugin;
 
   @Inject
   public EffectRegistryProvider(@Named("gems") IConfiguration gemConfiguration,
-      IRegistry<IRarity> rarityRegistry, IRegistry<ISocketColor> colorRegistry, Plugin plugin) {
+      IRegistry<IRarity> rarityRegistry, IRegistry<ISocketColor> colorRegistry,
+      IRegistry<ITriggerType<?>> triggerRegistry, Plugin plugin) {
     this.gemConfiguration = gemConfiguration;
     this.rarityRegistry = rarityRegistry;
     this.colorRegistry = colorRegistry;
+    this.triggerRegistry = triggerRegistry;
     this.plugin = plugin;
   }
 
@@ -51,7 +55,8 @@ public final class EffectRegistryProvider implements Provider<IRegistry<IGemEffe
         .register(Effects.MANA_BORE)
         .register(Effects.CRUSH)
         .register(Effects.HARDENED);
-    GemMetaFactory factory = new GemMetaFactory(rarityRegistry, colorRegistry, plugin);
+    GemMetaFactory factory = new GemMetaFactory(rarityRegistry, colorRegistry, triggerRegistry,
+        plugin);
     for (String gemKey : gemConfiguration.getKeys(false)) {
       try {
         Taric.getLogger().info(gemKey);

@@ -3,17 +3,14 @@ package org.aincraft.container;
 import com.google.inject.Inject;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Map.Entry;
-import java.util.Queue;
 import org.aincraft.api.container.IEquipment;
 import org.aincraft.api.container.IEquipment.IEquipmentFactory;
 import org.aincraft.api.container.gem.IGemInventory;
 import org.aincraft.api.container.gem.IGemInventoryFactory;
 import org.aincraft.api.container.gem.IGemItem;
 import org.aincraft.api.container.gem.IGemItem.IGemItemFactory;
-import org.aincraft.api.container.trigger.TriggerType;
-import org.aincraft.effects.EffectQueuePool.EffectInstance;
-import org.aincraft.effects.IGemEffect;
+import org.aincraft.container.dispatch.IEffectQueueLoader;
+import org.aincraft.container.registerable.ITriggerType;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
@@ -24,35 +21,9 @@ final class GemInventory implements IGemInventory {
   private final IEquipment equipment;
   private final Map<EquipmentSlot, IGemItem> inventory;
 
-  private final Map<TriggerType, IQueueLoader<EffectInstance>> loaders = new HashMap<>();
-
   GemInventory(IEquipment equipment, Map<EquipmentSlot, IGemItem> inventory) {
     this.equipment = equipment;
     this.inventory = inventory;
-  }
-
-  @Override
-  public IQueueLoader<EffectInstance> getLoader(TriggerType triggerType) {
-    return loaders.computeIfAbsent(triggerType, t -> queue -> fillQueue(t, queue));
-  }
-
-  @Override
-  public IEquipment getEquipment() {
-    return equipment;
-  }
-
-  public void fillQueue(TriggerType triggerType, Queue<EffectInstance> queue) {
-    for (Map.Entry<EquipmentSlot, IGemItem> itemEntry : inventory.entrySet()) {
-      IGemItem gemItem = itemEntry.getValue();
-      for (Entry<IGemEffect, Integer> entry : gemItem.getContainer()) {
-        int rank = entry.getValue();
-        IGemEffect effect = entry.getKey();
-        if (triggerType.hasTriggerType(effect) && effect.isValidSlot(itemEntry.getKey())
-            && effect.isValidTarget(triggerType, gemItem.getStack().getType())) {
-          queue.add(new EffectInstance(effect, rank));
-        }
-      }
-    }
   }
 
   static final class GemInventoryFactory implements IGemInventoryFactory {
@@ -84,5 +55,22 @@ final class GemInventory implements IGemInventory {
       }
       return new GemInventory(equipment, inventory);
     }
+  }
+
+  @Override
+  public IEquipment getEquipment() {
+    return equipment;
+  }
+
+  @Override
+  public IEffectQueueLoader getLoader(ITriggerType<?> trigger) {
+    return queue -> {
+      for (Map.Entry<EquipmentSlot, IGemItem> itemEntry : inventory.entrySet()) {
+        EquipmentSlot slot = itemEntry.getKey();
+        IGemItem gemItem = itemEntry.getValue();
+        IEffectQueueLoader loader = gemItem.getLoader(trigger, slot);
+        loader.load(queue);
+      }
+    };
   }
 }

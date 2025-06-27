@@ -7,15 +7,10 @@ import java.util.concurrent.ExecutionException;
 import java.util.stream.Collectors;
 import org.aincraft.Settings;
 import org.aincraft.api.container.gem.IGemInventory;
-import org.aincraft.api.container.trigger.IOnBlockBreak;
-import org.aincraft.api.container.trigger.IOnBlockBreak.IBlockBreakContext;
-import org.aincraft.api.container.trigger.IOnBlockDrop;
-import org.aincraft.api.container.trigger.IOnBlockDrop.IBlockDropContext;
-import org.aincraft.api.container.trigger.TriggerType;
-import org.aincraft.container.trigger.ContextProviders;
-import org.aincraft.effects.EffectQueuePool;
-import org.aincraft.effects.EffectQueuePool.EffectInstance;
-import org.aincraft.effects.EffectQueuePool.EffectQueue;
+import org.aincraft.container.dispatch.DispatchContexts;
+import org.aincraft.container.dispatch.IDispatch;
+import org.aincraft.container.dispatch.IEffectQueueLoader;
+import org.aincraft.container.registerable.TriggerTypes;
 import org.aincraft.events.FakeBlockBreakEvent;
 import org.aincraft.events.FakeBlockDropItemEvent;
 import org.bukkit.Bukkit;
@@ -39,13 +34,13 @@ import org.bukkit.inventory.PlayerInventory;
 public class FakeEventListener implements Listener {
 
   private final LoadingCache<LivingEntity, IGemInventory> inventoryCache;
-  private final EffectQueuePool<EffectInstance> queuePool;
+  private final IDispatch dispatch;
 
   @Inject
   public FakeEventListener(LoadingCache<LivingEntity, IGemInventory> inventoryCache,
-      EffectQueuePool<EffectInstance> queuePool) {
+      IDispatch dispatch) {
     this.inventoryCache = inventoryCache;
-    this.queuePool = queuePool;
+    this.dispatch = dispatch;
   }
 
   @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
@@ -108,17 +103,9 @@ public class FakeEventListener implements Listener {
       return;
     }
     try {
-      EffectQueue<EffectInstance> queue = queuePool.acquireAndFill(TriggerType.BLOCK_BREAK,
-          inventoryCache.get(player));
-      if (!queue.isEmpty()) {
-        IBlockBreakContext context = ContextProviders.BLOCK_BREAK.create(event);
-        for (EffectInstance instance : queue) {
-          if (instance.getEffect() instanceof IOnBlockBreak trigger) {
-            trigger.onBlockBreak(context, instance.getRank(), null);
-          }
-        }
-      }
-      queuePool.release(queue);
+      IGemInventory inventory = inventoryCache.get(event.getPlayer());
+      IEffectQueueLoader loader = inventory.getLoader(TriggerTypes.BLOCK_BREAK);
+      dispatch.dispatch(DispatchContexts.BLOCK_BREAK, loader, event);
     } catch (ExecutionException e) {
       throw new RuntimeException(e);
     }
@@ -127,18 +114,9 @@ public class FakeEventListener implements Listener {
   @EventHandler(priority = EventPriority.MONITOR)
   private void onFakeBlockDropItem(final FakeBlockDropItemEvent event) {
     try {
-      EffectQueue<EffectInstance> queue = queuePool.acquireAndFill(TriggerType.BLOCK_DROP,
-          inventoryCache.get(
-              event.getPlayer()));
-      if (!queue.isEmpty()) {
-        IBlockDropContext context = ContextProviders.BLOCK_DROP.create(event);
-        for (EffectInstance instance : queue) {
-          if (instance.getEffect() instanceof IOnBlockDrop trigger) {
-            trigger.onBlockDrop(context, instance.getRank());
-          }
-        }
-      }
-      queuePool.release(queue);
+      IGemInventory inventory = inventoryCache.get(event.getPlayer());
+      IEffectQueueLoader loader = inventory.getLoader(TriggerTypes.BLOCK_DROP);
+      dispatch.dispatch(DispatchContexts.BLOCK_DROP, loader, event);
     } catch (ExecutionException e) {
       throw new RuntimeException(e);
     }

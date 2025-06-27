@@ -1,12 +1,14 @@
 package org.aincraft.container;
 
 import com.google.common.base.Preconditions;
+import com.google.gson.JsonObject;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 import io.papermc.paper.datacomponent.item.ItemLore;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextDecoration;
+import org.aincraft.api.container.EffectInstanceMeta;
 import org.aincraft.api.container.ISocketColor;
 import org.aincraft.api.container.gem.IEffectContainer;
 import org.aincraft.api.container.gem.IEffectContainerView;
@@ -139,17 +141,17 @@ final class SocketGem extends
     @SerializedName("effect")
     private IGemEffect effect;
     @Expose
-    @SerializedName("rank")
-    private int rank;
+    @SerializedName("meta")
+    private EffectInstanceMeta meta;
 
-    Container(NamespacedKey containerKey, ISocketColor socketColor) {
+    private Container(NamespacedKey containerKey, ISocketColor socketColor) {
       super(containerKey);
       this.socketColor = socketColor;
     }
 
     @Override
-    public boolean canApplyEffect(IGemEffect effect, int rank) {
-      if (effect == null || rank == 0) {
+    public boolean canApplyEffect(IGemEffect effect, EffectInstanceMeta meta) {
+      if (effect == null || meta.getRank() == 0) {
         return false;
       }
       ISocketColor socketColor = effect.getSocketColor();
@@ -157,18 +159,20 @@ final class SocketGem extends
     }
 
     @Override
-    public void applyEffect(@NotNull IGemEffect effect, int rank, boolean force)
+    public void applyEffect(@NotNull IGemEffect effect, EffectInstanceMeta meta, boolean force)
         throws IllegalArgumentException, NullPointerException {
       if (!force) {
         Preconditions.checkNotNull(effect, "effect cannot be null");
-        Preconditions.checkArgument(rank > 0, "rank: %d must be greater than 0".formatted(rank));
-        Preconditions.checkArgument(rank <= effect.getMaxRank(),
-            "rank: %d cannot be greater than max rank: %d".formatted(rank, effect.getMaxRank()));
+        Preconditions.checkArgument(meta.getRank() > 0,
+            "rank: %d must be greater than 0".formatted(meta.getRank()));
+        Preconditions.checkArgument(meta.getRank() <= effect.getMaxRank(),
+            "rank: %d cannot be greater than max rank: %d".formatted(meta.getRank(),
+                effect.getMaxRank()));
         Preconditions.checkArgument(effect.getSocketColor().equals(socketColor),
             "gem colors must be the same");
       }
       this.effect = effect;
-      this.rank = rank;
+      this.meta = meta.copy();
     }
 
     @Override
@@ -195,7 +199,7 @@ final class SocketGem extends
     @Override
     public void clear() {
       this.effect = null;
-      this.rank = 0;
+      this.meta = null;
     }
 
     @Override
@@ -210,7 +214,7 @@ final class SocketGem extends
 
     @Override
     public int getRank() {
-      return rank;
+      return meta.getRank();
     }
 
     @Override
@@ -219,29 +223,36 @@ final class SocketGem extends
         throws IllegalArgumentException, NullPointerException, IllegalStateException {
       Preconditions.checkNotNull(holder);
       Preconditions.checkNotNull(effect);
-      Preconditions.checkState(rank > 0);
+      Preconditions.checkState(meta.getRank() > 0);
       holder.editContainer(container -> {
-        container.applyEffect(effect, rank);
+        container.applyEffect(effect, meta);
         this.clear();
       });
     }
 
     @Override
     public boolean canMerge(ISocketGem other) {
-      if (effect == null || rank == 0) {
+      if (effect == null || meta.getRank() == 0) {
         return false;
       }
       ISocketGemContainerView view = other.getContainer();
-      if (!view.getEffect().equals(effect) || view.getRank() != rank) {
+      if (view == null) {
         return false;
       }
-      return (rank + 1) <= effect.getMaxRank();
+      IGemEffect viewEffect = view.getEffect();
+      if (viewEffect == null) {
+        return false;
+      }
+      if (!viewEffect.equals(effect) || view.getRank() != meta.getRank()) {
+        return false;
+      }
+      return (meta.getRank() + 1) <= effect.getMaxRank();
     }
 
     @Override
     public void merge(ISocketGem other)
         throws IllegalArgumentException, IllegalStateException, NullPointerException {
-      if (effect == null || rank == 0) {
+      if (effect == null || meta == null) {
         throw new IllegalStateException("cannot merge a null effect");
       }
       Preconditions.checkNotNull(other);
@@ -250,18 +261,26 @@ final class SocketGem extends
       int otherRank = otherView.getRank();
       Preconditions.checkNotNull(otherEffect, "cannot merge a null effect");
       Preconditions.checkArgument(otherRank > 0, "cannot merge a null effect");
-      if (!otherEffect.equals(effect) || otherRank != rank) {
+      if (!otherEffect.equals(effect) || otherRank != meta.getRank()) {
         throw new IllegalArgumentException("other gem must have the same effect and rank");
       }
-      int newRank = rank + 1;
+      int newRank = meta.getRank() + 1;
+      JsonObject extra = meta.getExtra();
+      EffectInstanceMeta instanceMeta = new EffectInstanceMeta(newRank);
       if (newRank > otherEffect.getMaxRank()) {
         throw new IllegalArgumentException(
             "failed to merge gems, the resulting combination would be over the max rank");
       }
-      this.applyEffect(effect, newRank);
+      this.applyEffect(effect, instanceMeta);
       other.editContainer(container -> {
         container.removeEffect(effect);
       });
+    }
+
+    @Override
+    public void applyEffect(IGemEffect effect, EffectInstanceMeta meta)
+        throws IllegalArgumentException, NullPointerException {
+
     }
 
     @Override
@@ -269,7 +288,7 @@ final class SocketGem extends
       if (this.effect == null) {
         return 0;
       }
-      return this.effect.equals(effect) ? rank : 0;
+      return this.effect.equals(effect) ? meta.getRank() : 0;
     }
 
     @Override
@@ -282,8 +301,8 @@ final class SocketGem extends
       return new StringBuilder(this.getClass().getSimpleName())
           .append("{effect=")
           .append(effect != null ? effect.getName() : "null")
-          .append(", rank=")
-          .append(rank)
+          .append(", meta=")
+          .append(meta)
           .append(", socketColor=")
           .append(socketColor)
           .append('}')
@@ -320,8 +339,9 @@ final class SocketGem extends
         boolean force) {
       ISocketColor socketColor = effect.getSocketColor();
       ISocketGem gem = create(material, socketColor);
+      EffectInstanceMeta meta = new EffectInstanceMeta(rank);
       gem.editContainer(container -> {
-        container.applyEffect(effect, rank, force);
+        container.applyEffect(effect, meta, force);
       });
       return gem;
     }

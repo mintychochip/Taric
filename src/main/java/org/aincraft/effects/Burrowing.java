@@ -1,11 +1,15 @@
 package org.aincraft.effects;
 
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
+import org.aincraft.api.container.EffectInstanceMeta;
 import org.aincraft.api.container.TargetType;
 import org.aincraft.api.container.TypeSet;
 import org.aincraft.api.container.trigger.IOnBlockBreak;
-import org.aincraft.api.container.trigger.TriggerType;
+import org.aincraft.api.container.trigger.IOnInteract;
+import org.aincraft.container.registerable.ITriggerType;
+import org.aincraft.container.registerable.TriggerTypes;
 import org.aincraft.events.FakeBlockBreakEvent;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -14,19 +18,24 @@ import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.entity.Player;
 
-final class Burrowing extends AbstractGemEffect implements IOnBlockBreak {
+final class Burrowing extends AbstractGemEffect implements IOnBlockBreak, IOnInteract {
+
+  private final Map<Player, BlockFace> lastClicked = new HashMap<>();
+
 
   @Override
-  protected Map<TriggerType, Set<Material>> buildValidTargets() {
+  protected Map<ITriggerType<?>, Set<Material>> buildValidTargets() {
     return Map.ofEntries(
-        Map.entry(TriggerType.BLOCK_BREAK,
+        Map.entry(TriggerTypes.BLOCK_BREAK,
+            TypeSet.builder().union(TargetType.PICKAXE, TargetType.SHOVEL).build()),
+        Map.entry(TriggerTypes.INTERACT,
             TypeSet.builder().union(TargetType.PICKAXE, TargetType.SHOVEL).build())
     );
   }
 
   @Override
-  public void onBlockBreak(IBlockBreakContext context, int rank, BlockFace blockFace) {
-    if (!context.isFake()) {
+  public void onBlockBreak(IBlockBreakContext context, EffectInstanceMeta meta) {
+    if (context.isFake()) {
       return;
     }
     Block origin = context.getBlock();
@@ -34,6 +43,11 @@ final class Burrowing extends AbstractGemEffect implements IOnBlockBreak {
     float originHardness = material.getHardness();
     Player player = context.getPlayer();
     Location location = origin.getLocation();
+    int rank = meta.getRank();
+    BlockFace blockFace = lastClicked.get(context.getPlayer());
+    if (blockFace == null) {
+      return;
+    }
     for (int v = -rank; v <= rank; v++) {
       for (int u = -rank; u <= rank; u++) {
         if (u == 0 && v == 0) {
@@ -57,5 +71,12 @@ final class Burrowing extends AbstractGemEffect implements IOnBlockBreak {
         }
       }
     }
+  }
+
+  @Override
+  public void onInteract(IInteractContext context, EffectInstanceMeta meta) {
+    BlockFace blockFace = context.getBlockFace();
+    Player player = context.getPlayer();
+    lastClicked.put(player, blockFace);
   }
 }

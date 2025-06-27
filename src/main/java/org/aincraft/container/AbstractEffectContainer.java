@@ -1,5 +1,6 @@
 package org.aincraft.container;
 
+import org.aincraft.api.container.EffectInstanceMeta;
 import org.aincraft.api.container.gem.IEffectContainer;
 import org.aincraft.api.container.gem.IEffectContainerView;
 import org.aincraft.effects.IGemEffect;
@@ -13,9 +14,15 @@ abstract class AbstractEffectContainer<V extends IEffectContainerView> extends
   }
 
   @Override
+  public void applyEffect(IGemEffect effect, EffectInstanceMeta meta)
+      throws IllegalArgumentException, NullPointerException {
+    applyEffect(effect, meta, false);
+  }
+
+  @Override
   public void applyEffect(IGemEffect effect, int rank)
       throws IllegalArgumentException, NullPointerException {
-    applyEffect(effect, rank, false);
+    applyEffect(effect, new EffectInstanceMeta(rank));
   }
 
   @Override

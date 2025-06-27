@@ -3,10 +3,12 @@ package org.aincraft.effects;
 import java.util.Map;
 import java.util.Set;
 import org.aincraft.Settings;
+import org.aincraft.api.container.EffectInstanceMeta;
 import org.aincraft.api.container.TargetType;
 import org.aincraft.api.container.trigger.IEntityDamageEntityContext;
 import org.aincraft.api.container.trigger.IOnEntityHitEntity;
-import org.aincraft.api.container.trigger.TriggerType;
+import org.aincraft.container.registerable.ITriggerType;
+import org.aincraft.container.registerable.TriggerTypes;
 import org.bukkit.Color;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -27,7 +29,7 @@ public final class Vampirism extends AbstractGemEffect implements IOnEntityHitEn
       1.5f);
 
   @Override
-  public void onHitEntity(IEntityDamageEntityContext context, int rank) {
+  public void onHitEntity(IEntityDamageEntityContext context, EffectInstanceMeta meta) {
     Entity damager = context.getDamager();
     if (!(damager instanceof LivingEntity livingEntity)) {
       return;
@@ -69,9 +71,9 @@ public final class Vampirism extends AbstractGemEffect implements IOnEntityHitEn
   }
 
   @Override
-  protected Map<TriggerType, Set<Material>> buildValidTargets() {
+  protected Map<ITriggerType<?>, Set<Material>> buildValidTargets() {
     return Map.ofEntries(
-        Map.entry(TriggerType.ENTITY_HIT_ENTITY, TargetType.MELEE_WEAPON)
+        Map.entry(TriggerTypes.ENTITY_HIT_ENTITY, TargetType.MELEE_WEAPON)
     );
   }
 }

@@ -1,5 +1,6 @@
 package org.aincraft.api.container.trigger;
 
+import org.aincraft.api.container.EffectInstanceMeta;
 import org.aincraft.api.container.context.IExperienceContext;
 import org.aincraft.events.IFakeContext;
 import org.bukkit.block.Block;
@@ -20,5 +21,5 @@ public interface IOnBlockBreak {
     Block getBlock();
   }
 
-  void onBlockBreak(IBlockBreakContext context, int rank, BlockFace blockFace);
+  void onBlockBreak(IBlockBreakContext context, EffectInstanceMeta meta);
 }
