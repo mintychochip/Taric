@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.random.RandomGenerator;
 import org.aincraft.api.container.util.IRandomSelector;
+import org.jetbrains.annotations.NotNull;
 
 public class UniformRandomSelector<T> extends ForwardingList<T> implements IRandomSelector<T> {
 
@@ -16,7 +17,7 @@ public class UniformRandomSelector<T> extends ForwardingList<T> implements IRand
   }
 
   @Override
-  public T getRandom(RandomGenerator randomGenerator) throws IllegalStateException {
+  public @NotNull T getRandom(RandomGenerator randomGenerator) throws IllegalStateException {
     if (objects.isEmpty()) {
       throw new IllegalStateException("no elements to select from");
     }

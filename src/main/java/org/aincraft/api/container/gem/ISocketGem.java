@@ -1,28 +1,21 @@
 package org.aincraft.api.container.gem;
 
 import org.aincraft.api.container.ISocketColor;
+import org.aincraft.api.container.gem.IGem.IGemContainer;
+import org.aincraft.api.container.gem.IGem.IGemContainerView;
 import org.aincraft.api.container.gem.ISocketGem.ISocketGemContainer;
-import org.aincraft.api.container.gem.ISocketGem.ISocketGemContainerView;
 import org.aincraft.effects.IGemEffect;
 import org.bukkit.Material;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 public interface ISocketGem extends
-    IItemContainerHolder<ISocketGemContainer, ISocketGemContainerView> {
+    IContainerHolder<ISocketGemContainer, IGemContainerView> {
 
-  interface ISocketGemContainer extends IEffectContainer<ISocketGemContainerView> {
-
-    @NotNull
-    ISocketColor getSocketColor();
-
-    @Nullable
-    IGemEffect getEffect();
-
-    int getRank();
+  interface ISocketGemContainer extends IGemContainer<IGemContainerView> {
 
     void move(
-        @NotNull IItemContainerHolder<? extends IEffectContainer<?>, ? extends IEffectContainerView> holder)
+        @NotNull IContainerHolder<? extends IEffectContainer<?>, ? extends IEffectContainerView> holder)
         throws IllegalArgumentException, NullPointerException, IllegalStateException;
 
     /**
@@ -56,19 +49,8 @@ public interface ISocketGem extends
         throws IllegalArgumentException, IllegalStateException, NullPointerException;
   }
 
-  interface ISocketGemContainerView extends IEffectContainerView {
-
-    @NotNull
-    ISocketColor getSocketColor();
-
-    @Nullable
-    IGemEffect getEffect();
-
-    int getRank();
-  }
-
   interface ISocketGemFactory extends
-      IItemHolderFactory<ISocketGem, ISocketGemContainer, ISocketGemContainerView> {
+      IContainerHolderFactory<ISocketGem, ISocketGemContainer, IGemContainerView> {
 
     @NotNull
     ISocketGem create(Material material, ISocketColor socketColor);
@@ -81,5 +63,5 @@ public interface ISocketGem extends
   }
 
   @NotNull
-  ISocketColor getSocketColor();
+  ISocketColor getColor();
 }

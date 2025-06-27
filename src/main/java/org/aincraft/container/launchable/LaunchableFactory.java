@@ -3,7 +3,6 @@ package org.aincraft.container.launchable;
 import org.aincraft.api.container.launchable.IArrowLaunchable;
 import org.aincraft.api.container.launchable.IFireworkLaunchable;
 import org.aincraft.api.container.launchable.ILaunchable;
-import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.entity.Arrow;
 import org.bukkit.entity.Firework;
@@ -32,8 +31,16 @@ public final class LaunchableFactory {
   }
 
   @NotNull
-  public static IArrowLaunchable createArrow(Vector velocity, Location location, boolean critical, double damage) {
+  public static IArrowLaunchable createArrow(Vector velocity, Location location, boolean critical,
+      double damage) {
     return new ArrowLaunchable(velocity, location, critical, damage);
+  }
+
+  @NotNull
+  public static IFireworkLaunchable createFirework(Vector velocity, Location location,
+      boolean shotAtAngle,
+      int ticksToDetonate, FireworkMeta meta) {
+    return createFirework(velocity, location, shotAtAngle, ticksToDetonate, 0, meta);
   }
 
   @NotNull
@@ -42,12 +49,5 @@ public final class LaunchableFactory {
       int ticksToDetonate, int ticksFlown, FireworkMeta meta) {
     return new FireworkLaunchable(velocity, location, shotAtAngle, ticksToDetonate, ticksFlown,
         meta);
-  }
-
-  @NotNull
-  public static IFireworkLaunchable createFirework(Vector velocity, Location location,
-      boolean shotAtAngle,
-      int ticksToDetonate, FireworkMeta meta) {
-    return createFirework(velocity, location, shotAtAngle, ticksToDetonate, 0, meta);
   }
 }

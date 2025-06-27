@@ -10,6 +10,7 @@ import org.aincraft.api.context.IEntityMoveContext;
 import org.aincraft.api.context.IItemDamageContext.IEntityItemDamageContext;
 import org.aincraft.api.context.IItemDamageContext.IPlayerItemDamageContext;
 import org.aincraft.api.context.IPlayerFishContext;
+import org.aincraft.api.context.IPlayerMoveContext;
 import org.aincraft.api.context.IShearEntityContext.IPlayerShearEntityContext;
 import org.aincraft.api.context.IShootBowContext;
 import org.aincraft.api.trigger.IOnInteract.IInteractContext;
@@ -22,6 +23,7 @@ import org.bukkit.event.entity.EntityShootBowEvent;
 import org.bukkit.event.player.PlayerFishEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerItemDamageEvent;
+import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.event.player.PlayerShearEntityEvent;
 import org.jetbrains.annotations.ApiStatus.Internal;
 
@@ -37,6 +39,7 @@ final class ContextProviders {
   public static final IContextProvider<IPlayerItemDamageContext, PlayerItemDamageEvent> PLAYER_ITEM_DAMAGE;
   public static final IContextProvider<IPlayerShearEntityContext, PlayerShearEntityEvent> PLAYER_SHEAR_ENTITY;
   public static final IContextProvider<IEntityMoveContext, EntityMoveEvent> ENTITY_MOVE;
+  public static final IContextProvider<IPlayerMoveContext, PlayerMoveEvent> PLAYER_MOVE;
   public static final IContextProvider<IBlockBreakContext, BlockBreakEvent> BLOCK_BREAK;
   public static final IContextProvider<IShootBowContext, EntityShootBowEvent> SHOOT_BOW;
 
@@ -56,10 +59,14 @@ final class ContextProviders {
     PLAYER_SHEAR_ENTITY = handle -> new PlayerShearEntityEntityContext(
         new PlayerShearEntityEventDecorator(handle));
 
-    ENTITY_MOVE = EntityMoveContext::new;
+    ENTITY_MOVE = handle -> new EntityMoveContext(
+        new EntityMoveEventDecorator(handle));
+
+    PLAYER_MOVE = handle -> new PlayerMoveContext(new PlayerMoveEventDecorator(handle));
 
     BLOCK_BREAK = handle -> new BlockBreakContext(
         handle, handle instanceof FakeBlockBreakEvent);
+
     SHOOT_BOW = ShootBowContext::new;
   }
 

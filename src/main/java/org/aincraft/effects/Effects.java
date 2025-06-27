@@ -44,6 +44,8 @@ public final class Effects {
 
   public static IGemEffect CRUSH;
 
+  public static IGemEffect LAVA_WALKER;
+
   static {
     AUTO_SMELT = AutoSmelt.create(Taric.getConfiguration("gems"));
     BURROWING = new Burrowing();
@@ -65,6 +67,7 @@ public final class Effects {
     TILLER = new Tiller();
     MANA_BORE = new ManaBore();
     CRUSH = new Crush();
+    LAVA_WALKER = new LavaWalker();
   }
 
   private Effects() {

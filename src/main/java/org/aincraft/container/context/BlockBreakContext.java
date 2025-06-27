@@ -2,7 +2,6 @@ package org.aincraft.container.context;
 
 import org.aincraft.api.context.IBlockBreakContext;
 import org.bukkit.block.Block;
-import org.bukkit.block.BlockFace;
 import org.bukkit.entity.Player;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.inventory.ItemStack;
@@ -12,8 +11,6 @@ final class BlockBreakContext extends AbstractContext<BlockBreakEvent> implement
     IBlockBreakContext {
 
   private final boolean fake;
-
-  private BlockFace blockFace = null;
 
   BlockBreakContext(BlockBreakEvent event, boolean fake) {
     super(event);
@@ -30,15 +27,6 @@ final class BlockBreakContext extends AbstractContext<BlockBreakEvent> implement
     Player player = event.getPlayer();
     PlayerInventory inventory = player.getInventory();
     return inventory.getItemInMainHand();
-  }
-
-  @Override
-  public BlockFace getBlockFace() {
-    return blockFace;
-  }
-
-  public void setBlockFace(BlockFace blockFace) {
-    this.blockFace = blockFace;
   }
 
   @Override
@@ -60,6 +48,4 @@ final class BlockBreakContext extends AbstractContext<BlockBreakEvent> implement
   public int getExperience() {
     return event.getExpToDrop();
   }
-
-
 }

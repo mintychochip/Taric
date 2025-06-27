@@ -18,14 +18,14 @@ import org.aincraft.api.container.EffectInstanceMeta;
 import org.aincraft.api.container.IEffectInstance;
 import org.aincraft.api.container.ISocketColor;
 import org.aincraft.api.container.TargetType;
+import org.aincraft.api.container.gem.IContainerHolder;
 import org.aincraft.api.container.gem.IEffectContainer;
 import org.aincraft.api.container.gem.IGemItem;
 import org.aincraft.api.container.gem.IGemItem.IGemItemContainer;
 import org.aincraft.api.container.gem.IGemItem.IGemItemContainerView;
-import org.aincraft.api.container.gem.IItemContainerHolder;
 import org.aincraft.api.trigger.IOnSocket;
-import org.aincraft.container.context.IEffectQueueLoader;
 import org.aincraft.api.trigger.ITriggerType;
+import org.aincraft.container.context.IEffectQueueLoader;
 import org.aincraft.effects.IGemEffect;
 import org.aincraft.util.Roman;
 import org.bukkit.Material;
@@ -35,7 +35,8 @@ import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-final class GemItem extends AbstractHolder<IGemItemContainer, IGemItemContainerView> implements
+final class GemItem extends
+    AbstractContainerHolder<IGemItemContainer, IGemItemContainerView> implements
     IGemItem {
 
   static final NamespacedKey GEM_ITEM_KEY = new NamespacedKey("taric", "item");
@@ -45,11 +46,19 @@ final class GemItem extends AbstractHolder<IGemItemContainer, IGemItemContainerV
   }
 
   private static final class View extends
-      AbstractView<Container, IGemItemContainer, IGemItemContainerView> implements
+      AbstractView<Container, IGemItemContainerView> implements
       IGemItemContainerView {
 
     View(Container container) {
       super(container);
+    }
+
+    @Override
+    public void update(ItemStack stack) {
+      Preconditions.checkArgument(stack != null && !stack.getType().isAir());
+      super.update(stack);
+      container.getStackConsumers().forEach(c -> c.accept(stack));
+      container.getStackConsumers().clear();
     }
 
     @Override
@@ -98,19 +107,6 @@ final class GemItem extends AbstractHolder<IGemItemContainer, IGemItemContainerV
     }
 
     @Override
-    public void update(ItemStack stack) {
-      Preconditions.checkArgument(stack != null && !stack.getType().isAir());
-      super.update(stack);
-      container.getStackConsumers().forEach(c -> c.accept(stack));
-      container.getStackConsumers().clear();
-    }
-
-    @Override
-    public int getRank(IGemEffect effect) {
-      return container.getRank(effect);
-    }
-
-    @Override
     public boolean hasEffect(IGemEffect effect) {
       return container.hasEffect(effect);
     }
@@ -128,7 +124,7 @@ final class GemItem extends AbstractHolder<IGemItemContainer, IGemItemContainerV
   }
 
   static final class Container extends
-      AbstractEffectContainer<IGemItemContainerView> implements
+      AbstractContainer<IGemItemContainerView> implements
       IGemItemContainer {
 
     @Expose
@@ -176,7 +172,7 @@ final class GemItem extends AbstractHolder<IGemItemContainer, IGemItemContainerV
 
     @Override
     public void move(@NotNull IGemEffect effect,
-        IItemContainerHolder<? extends IEffectContainer<?>, ?> holder)
+        IContainerHolder<? extends IEffectContainer<?>, ?> holder)
         throws IllegalArgumentException, IllegalStateException, NullPointerException {
       Preconditions.checkNotNull(effect);
       Preconditions.checkState(hasEffect(effect), "");
@@ -206,15 +202,6 @@ final class GemItem extends AbstractHolder<IGemItemContainer, IGemItemContainerV
     @Override
     protected IGemItemContainerView buildView() {
       return new View(this);
-    }
-
-    @Override
-    public int getRank(IGemEffect effect) {
-      if (!effects.containsKey(effect)) {
-        return 0;
-      }
-      EffectInstanceMeta meta = effects.get(effect);
-      return meta.getRank();
     }
 
     @Override
@@ -309,6 +296,15 @@ final class GemItem extends AbstractHolder<IGemItemContainer, IGemItemContainerV
     }
 
     @Override
+    public int getRank(IGemEffect effect) {
+      if (!effects.containsKey(effect)) {
+        return 0;
+      }
+      EffectInstanceMeta meta = effects.get(effect);
+      return meta.getRank();
+    }
+
+    @Override
     public void clear() {
       effects.clear();
     }
@@ -399,13 +395,8 @@ final class GemItem extends AbstractHolder<IGemItemContainer, IGemItemContainerV
   }
 
   static final class Factory extends
-      ItemHolderFactory<IGemItem, IGemItemContainer, IGemItemContainerView> implements
+      ContainerHolderFactory<IGemItem, IGemItemContainer, IGemItemContainerView> implements
       IGemItemFactory {
-
-    @Override
-    protected Class<? extends IGemItemContainer> getContainerImplClazz() {
-      return Container.class;
-    }
 
     @Override
     protected NamespacedKey getContainerKey() {
@@ -415,6 +406,11 @@ final class GemItem extends AbstractHolder<IGemItemContainer, IGemItemContainerV
     @Override
     protected IGemItem create(ItemStack stack, IGemItemContainer container) {
       return new GemItem(stack, container);
+    }
+
+    @Override
+    protected Class<? extends IGemItemContainer> getContainerImplClazz() {
+      return Container.class;
     }
 
     @Override

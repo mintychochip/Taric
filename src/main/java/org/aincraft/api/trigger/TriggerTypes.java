@@ -18,6 +18,7 @@ public final class TriggerTypes {
   public static final ITriggerType<IOnPlayerItemDamage> PLAYER_ITEM_DAMAGE;
   public static final ITriggerType<IOnEntityItemDamage> ENTITY_ITEM_DAMAGE;
   public static final ITriggerType<IOnEntityMove> ENTITY_MOVE;
+  public static final ITriggerType<IOnPlayerMove> PLAYER_MOVE;
 
   static {
     BLOCK_BREAK = new TriggerType<>(Key.key("taric:block_break"), IOnBlockBreak.class);
@@ -37,6 +38,7 @@ public final class TriggerTypes {
     ENTITY_ITEM_DAMAGE = new TriggerType<>(Key.key("taric:entity_item_damage"),
         IOnEntityItemDamage.class);
     ENTITY_MOVE = new TriggerType<>(Key.key("taric:entity_move"), IOnEntityMove.class);
+    PLAYER_MOVE = new TriggerType<>(Key.key("taric:player_move"), IOnPlayerMove.class);
   }
 
   private TriggerTypes() {

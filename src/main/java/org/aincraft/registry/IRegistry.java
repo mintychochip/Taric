@@ -8,12 +8,19 @@ import org.jetbrains.annotations.Nullable;
 
 public interface IRegistry<T extends Keyed> extends Iterable<T> {
 
+  interface IRegisterable<K> {
+
+    Key getKey();
+  }
+
   IRegistry<T> register(T object);
 
   T get(Keyed keyed);
 
   @Nullable
   T get(Key key);
+
+  T get(int index);
 
   int size();
 
@@ -26,9 +33,4 @@ public interface IRegistry<T extends Keyed> extends Iterable<T> {
   }
 
   Collection<T> values();
-
-  interface IRegisterable<K> {
-
-    Key getKey();
-  }
 }

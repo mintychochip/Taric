@@ -1,11 +1,11 @@
 package org.aincraft.container.util;
 
-import com.google.common.base.Preconditions;
 import com.google.common.collect.ForwardingList;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.random.RandomGenerator;
 import org.aincraft.api.container.util.IRandomSelector;
+import org.jetbrains.annotations.NotNull;
 
 public class ExponentialRandomSelector<T> extends ForwardingList<T> implements IRandomSelector<T> {
 
@@ -25,7 +25,7 @@ public class ExponentialRandomSelector<T> extends ForwardingList<T> implements I
   }
 
   @Override
-  public T getRandom(RandomGenerator randomGenerator) {
+  public @NotNull T getRandom(RandomGenerator randomGenerator) {
     int n = objects.size();
     if (n == 0) {
       throw new IllegalStateException("No elements to select from");
@@ -59,21 +59,5 @@ public class ExponentialRandomSelector<T> extends ForwardingList<T> implements I
     }
     sb.append("}");
     return sb.toString();
-  }
-
-  public static final class IntegerSelector extends
-      ExponentialRandomSelector<Integer> {
-
-    public IntegerSelector(double base) {
-      super(base);
-    }
-
-    public void addRange(int min, int max, int step) {
-      Preconditions.checkArgument(min <= max);
-      for (int i = min; i <= max; i += step) {
-        add(i);
-      }
-    }
-
   }
 }

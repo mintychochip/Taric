@@ -25,13 +25,18 @@ public class SharedRegistry<T extends Keyed> implements IRegistry<T> {
   }
 
   @Override
-  public int size() {
-    return registry.size();
+  public @Nullable T get(Key key) {
+    return registry.get(key);
   }
 
   @Override
-  public @Nullable T get(Key key) {
-    return registry.get(key);
+  public T get(int index) {
+    return registry.values().stream().toList().get(index);
+  }
+
+  @Override
+  public int size() {
+    return registry.size();
   }
 
   @Override

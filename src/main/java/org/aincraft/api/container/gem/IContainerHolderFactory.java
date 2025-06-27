@@ -6,7 +6,7 @@ import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-public interface IItemHolderFactory<H extends IItemContainerHolder<C, V>, C extends IItemContainer<V>, V extends IItemContainerView> {
+public interface IContainerHolderFactory<H extends IContainerHolder<C, V>, C extends IItemContainer<V>, V extends IItemContainerView> {
 
   @NotNull
   H from(ItemStack stack, Callable<? extends H> loader)

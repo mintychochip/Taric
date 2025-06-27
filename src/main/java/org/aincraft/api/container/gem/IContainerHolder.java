@@ -4,7 +4,7 @@ import java.util.function.Consumer;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 
-public interface IItemContainerHolder<C extends IItemContainer<V>, V extends IItemContainerView> {
+public interface IContainerHolder<C extends IItemContainer<V>, V extends IItemContainerView> {
 
   @NotNull
   ItemStack getStack();

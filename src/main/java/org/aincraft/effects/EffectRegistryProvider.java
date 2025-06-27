@@ -34,27 +34,14 @@ public final class EffectRegistryProvider implements Provider<IRegistry<IGemEffe
 
   @Override
   public IRegistry<IGemEffect> get() {
-    IRegistry<IGemEffect> registry = new SharedRegistry<IGemEffect>().register(
-            Effects.AUTO_SMELT)
-        .register(Effects.BURROWING)
-        .register(Effects.FLARE)
-        .register(Effects.VAMPIRISM)
-        .register(Effects.INSIGHT)
-        .register(Effects.SCAVENGE)
-        .register(Effects.NETHER_SCOURGE)
-        .register(Effects.VEIN_MINER)
-        .register(Effects.VORPAL)
-        .register(Effects.PRISMATIC)
-        .register(Effects.BLINK)
-        .register(Effects.FROSTBITE)
-        .register(Effects.MULTISHOT)
-        .register(Effects.OVERFLOWING)
-        .register(Effects.HARVEST)
-        .register(Effects.GLIMMER)
-        .register(Effects.TILLER)
-        .register(Effects.MANA_BORE)
-        .register(Effects.CRUSH)
-        .register(Effects.HARDENED);
+    IRegistry<IGemEffect> registry = new SharedRegistry<IGemEffect>().register(Effects.AUTO_SMELT)
+        .register(Effects.BURROWING).register(Effects.FLARE).register(Effects.VAMPIRISM)
+        .register(Effects.INSIGHT).register(Effects.SCAVENGE).register(Effects.NETHER_SCOURGE)
+        .register(Effects.VEIN_MINER).register(Effects.VORPAL).register(Effects.PRISMATIC)
+        .register(Effects.BLINK).register(Effects.FROSTBITE).register(Effects.MULTISHOT)
+        .register(Effects.OVERFLOWING).register(Effects.HARVEST).register(Effects.GLIMMER)
+        .register(Effects.TILLER).register(Effects.MANA_BORE).register(Effects.CRUSH)
+        .register(Effects.HARDENED).register(Effects.LAVA_WALKER);
     GemMetaFactory factory = new GemMetaFactory(rarityRegistry, colorRegistry, triggerRegistry,
         plugin);
     for (String gemKey : gemConfiguration.getKeys(false)) {

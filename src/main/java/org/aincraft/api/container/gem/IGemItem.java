@@ -6,8 +6,8 @@ import org.aincraft.api.container.EffectInstanceMeta;
 import org.aincraft.api.container.ISocketColor;
 import org.aincraft.api.container.gem.IGemItem.IGemItemContainer;
 import org.aincraft.api.container.gem.IGemItem.IGemItemContainerView;
-import org.aincraft.container.context.IEffectQueueLoader;
 import org.aincraft.api.trigger.ITriggerType;
+import org.aincraft.container.context.IEffectQueueLoader;
 import org.aincraft.effects.IGemEffect;
 import org.bukkit.Material;
 import org.bukkit.inventory.EquipmentSlot;
@@ -15,7 +15,7 @@ import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-public interface IGemItem extends IItemContainerHolder<IGemItemContainer, IGemItemContainerView> {
+public interface IGemItem extends IContainerHolder<IGemItemContainer, IGemItemContainerView> {
 
   interface IGemItemContainer extends IEffectContainer<IGemItemContainerView> {
 
@@ -28,7 +28,7 @@ public interface IGemItem extends IItemContainerHolder<IGemItemContainer, IGemIt
     void editCounter(ISocketColor color, Consumer<ISocketLimitCounter> counterConsumer);
 
     void move(@NotNull IGemEffect effect,
-        IItemContainerHolder<? extends IEffectContainer<?>, ?> holder)
+        IContainerHolder<? extends IEffectContainer<?>, ?> holder)
         throws IllegalArgumentException, IllegalStateException, NullPointerException;
 
     @Nullable
@@ -72,7 +72,7 @@ public interface IGemItem extends IItemContainerHolder<IGemItemContainer, IGemIt
   }
 
   interface IGemItemFactory extends
-      IItemHolderFactory<IGemItem, IGemItemContainer, IGemItemContainerView> {
+      IContainerHolderFactory<IGemItem, IGemItemContainer, IGemItemContainerView> {
 
     IGemItem create(Material material) throws IllegalArgumentException;
 

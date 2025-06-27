@@ -2,20 +2,19 @@ package org.aincraft.container;
 
 import com.google.common.base.Preconditions;
 import com.google.gson.JsonObject;
-import com.google.gson.annotations.Expose;
-import com.google.gson.annotations.SerializedName;
 import io.papermc.paper.datacomponent.item.ItemLore;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextDecoration;
 import org.aincraft.api.container.EffectInstanceMeta;
 import org.aincraft.api.container.ISocketColor;
+import org.aincraft.api.container.gem.IContainerHolder;
 import org.aincraft.api.container.gem.IEffectContainer;
 import org.aincraft.api.container.gem.IEffectContainerView;
-import org.aincraft.api.container.gem.IItemContainerHolder;
+import org.aincraft.api.container.gem.IGem.IGemContainerView;
 import org.aincraft.api.container.gem.ISocketGem;
 import org.aincraft.api.container.gem.ISocketGem.ISocketGemContainer;
-import org.aincraft.api.container.gem.ISocketGem.ISocketGemContainerView;
+import org.aincraft.container.AbstractGem.AbstractGemContainer.AbstractGemView;
 import org.aincraft.effects.IGemEffect;
 import org.aincraft.util.Roman;
 import org.aincraft.util.Utils;
@@ -26,7 +25,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 final class SocketGem extends
-    AbstractHolder<ISocketGemContainer, ISocketGemContainerView> implements
+    AbstractGem<ISocketGemContainer, IGemContainerView> implements
     ISocketGem {
 
   static final NamespacedKey GEM_KEY = new NamespacedKey("taric", "gem");
@@ -36,8 +35,8 @@ final class SocketGem extends
   }
 
   private static final class View extends
-      AbstractView<Container, ISocketGemContainer, ISocketGemContainerView> implements
-      ISocketGemContainerView {
+      AbstractGemView<Container, IGemContainerView> implements
+      IGemContainerView {
 
 
     View(Container container) {
@@ -58,7 +57,7 @@ final class SocketGem extends
             .append(Component.space())
             .append(title);
       }
-      ISocketColor socketColor = container.getSocketColor();
+      ISocketColor socketColor = container.getColor();
       if (socketColor != null) {
         title = title.color(socketColor.getTextColor());
       }
@@ -96,7 +95,7 @@ final class SocketGem extends
         builder.addLine(label);
       }
       builder.addLine(Component.empty());
-      ISocketColor socketColor = container.getSocketColor();
+      ISocketColor socketColor = container.getColor();
       if (socketColor != null) {
         Component colorLabel = Component.empty()
             .append(Component.text(Utils.toTitleCase(socketColor.getName())))
@@ -107,46 +106,14 @@ final class SocketGem extends
 
       return builder.build();
     }
-
-    @Override
-    public int getRank(IGemEffect effect) {
-      return container.getRank(effect);
-    }
-
-    @Override
-    public @NotNull ISocketColor getSocketColor() {
-      return container.getSocketColor();
-    }
-
-    @Override
-    public @Nullable IGemEffect getEffect() {
-      return container.getEffect();
-    }
-
-    @Override
-    public int getRank() {
-      return container.getRank();
-    }
   }
 
-  static final class Container extends AbstractEffectContainer<ISocketGemContainerView> implements
+
+  static final class Container extends AbstractGemContainer<IGemContainerView> implements
       ISocketGemContainer {
 
-    @Expose
-    @SerializedName("color")
-    private final ISocketColor socketColor;
-
-    @Nullable
-    @Expose
-    @SerializedName("effect")
-    private IGemEffect effect;
-    @Expose
-    @SerializedName("meta")
-    private EffectInstanceMeta meta;
-
-    private Container(NamespacedKey containerKey, ISocketColor socketColor) {
-      super(containerKey);
-      this.socketColor = socketColor;
+    Container(NamespacedKey containerKey, ISocketColor color) {
+      super(containerKey, color);
     }
 
     @Override
@@ -155,7 +122,7 @@ final class SocketGem extends
         return false;
       }
       ISocketColor socketColor = effect.getSocketColor();
-      return this.socketColor.equals(socketColor);
+      return this.color.equals(socketColor);
     }
 
     @Override
@@ -168,7 +135,7 @@ final class SocketGem extends
         Preconditions.checkArgument(meta.getRank() <= effect.getMaxRank(),
             "rank: %d cannot be greater than max rank: %d".formatted(meta.getRank(),
                 effect.getMaxRank()));
-        Preconditions.checkArgument(effect.getSocketColor().equals(socketColor),
+        Preconditions.checkArgument(effect.getSocketColor().equals(color),
             "gem colors must be the same");
       }
       this.effect = effect;
@@ -197,14 +164,17 @@ final class SocketGem extends
     }
 
     @Override
-    public void clear() {
-      this.effect = null;
-      this.meta = null;
+    public int getRank(IGemEffect effect) {
+      if (this.effect == null) {
+        return 0;
+      }
+      return this.effect.equals(effect) ? meta.getRank() : 0;
     }
 
     @Override
-    public @NotNull ISocketColor getSocketColor() {
-      return socketColor;
+    public void clear() {
+      this.effect = null;
+      this.meta = null;
     }
 
     @Override
@@ -219,7 +189,7 @@ final class SocketGem extends
 
     @Override
     public void move(
-        @NotNull IItemContainerHolder<? extends IEffectContainer<?>, ? extends IEffectContainerView> holder)
+        @NotNull IContainerHolder<? extends IEffectContainer<?>, ? extends IEffectContainerView> holder)
         throws IllegalArgumentException, NullPointerException, IllegalStateException {
       Preconditions.checkNotNull(holder);
       Preconditions.checkNotNull(effect);
@@ -235,7 +205,7 @@ final class SocketGem extends
       if (effect == null || meta.getRank() == 0) {
         return false;
       }
-      ISocketGemContainerView view = other.getContainer();
+      IGemContainerView view = other.getContainer();
       if (view == null) {
         return false;
       }
@@ -256,14 +226,15 @@ final class SocketGem extends
         throw new IllegalStateException("cannot merge a null effect");
       }
       Preconditions.checkNotNull(other);
-      ISocketGemContainerView otherView = other.getContainer();
-      IGemEffect otherEffect = otherView.getEffect();
-      int otherRank = otherView.getRank();
+      IGemContainerView view = other.getContainer();
+      IGemEffect otherEffect = view.getEffect();
+      int otherRank = view.getRank();
       Preconditions.checkNotNull(otherEffect, "cannot merge a null effect");
       Preconditions.checkArgument(otherRank > 0, "cannot merge a null effect");
       if (!otherEffect.equals(effect) || otherRank != meta.getRank()) {
         throw new IllegalArgumentException("other gem must have the same effect and rank");
       }
+      //TODO: ensure cloning is proper
       int newRank = meta.getRank() + 1;
       JsonObject extra = meta.getExtra();
       EffectInstanceMeta instanceMeta = new EffectInstanceMeta(newRank);
@@ -284,40 +255,14 @@ final class SocketGem extends
     }
 
     @Override
-    public int getRank(IGemEffect effect) {
-      if (this.effect == null) {
-        return 0;
-      }
-      return this.effect.equals(effect) ? meta.getRank() : 0;
-    }
-
-    @Override
-    protected ISocketGemContainerView buildView() {
+    protected IGemContainerView buildView() {
       return new View(this);
-    }
-
-    @Override
-    public String toString() {
-      return new StringBuilder(this.getClass().getSimpleName())
-          .append("{effect=")
-          .append(effect != null ? effect.getName() : "null")
-          .append(", meta=")
-          .append(meta)
-          .append(", socketColor=")
-          .append(socketColor)
-          .append('}')
-          .toString();
     }
   }
 
   static final class Factory extends
-      ItemHolderFactory<ISocketGem, ISocketGemContainer, ISocketGemContainerView> implements
+      ContainerHolderFactory<ISocketGem, ISocketGemContainer, IGemContainerView> implements
       ISocketGemFactory {
-
-    @Override
-    protected Class<? extends ISocketGemContainer> getContainerImplClazz() {
-      return Container.class;
-    }
 
     @Override
     protected NamespacedKey getContainerKey() {
@@ -327,6 +272,11 @@ final class SocketGem extends
     @Override
     protected ISocketGem create(ItemStack stack, ISocketGemContainer container) {
       return new SocketGem(stack, container);
+    }
+
+    @Override
+    protected Class<? extends ISocketGemContainer> getContainerImplClazz() {
+      return Container.class;
     }
 
     @Override
@@ -353,7 +303,7 @@ final class SocketGem extends
   }
 
   @Override
-  public @NotNull ISocketColor getSocketColor() {
-    return container.getSocketColor();
+  public @NotNull ISocketColor getColor() {
+    return container.getColor();
   }
 }

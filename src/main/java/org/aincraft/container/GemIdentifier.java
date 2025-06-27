@@ -5,19 +5,20 @@ import com.google.inject.Inject;
 import java.util.List;
 import java.util.random.RandomGenerator;
 import org.aincraft.Taric;
-import org.aincraft.api.container.EffectInstanceMeta;
 import org.aincraft.api.container.IIdentificationTable;
 import org.aincraft.api.container.IRarity;
+import org.aincraft.api.container.ISocketColor;
 import org.aincraft.api.container.gem.IGemIdentifier;
-import org.aincraft.api.container.gem.IPreciousGem;
-import org.aincraft.api.container.gem.IPreciousGem.IPreciousGemContainerView;
 import org.aincraft.api.container.gem.ISocketGem;
 import org.aincraft.api.container.gem.ISocketGem.ISocketGemFactory;
+import org.aincraft.api.container.gem.IUnidentifiedGem;
+import org.aincraft.api.container.gem.IUnidentifiedGem.IUnidentifiedGemContainerView;
 import org.aincraft.container.util.ExponentialRandomSelector;
 import org.aincraft.effects.IGemEffect;
 import org.aincraft.registry.IRegistry;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
+import org.jetbrains.annotations.NotNull;
 
 public class GemIdentifier implements IGemIdentifier {
 
@@ -34,24 +35,49 @@ public class GemIdentifier implements IGemIdentifier {
     this.gemFactory = gemFactory;
   }
 
+  private static void addRange(ExponentialRandomSelector<Integer> selector, int min, int max) {
+    Preconditions.checkArgument(min <= max, "min must be <= max (was %s > %s)", min, max);
+    for (int i = min; i <= max; ++i) {
+      selector.add(i);
+    }
+  }
+
   @Override
-  public ISocketGem identify(IPreciousGem unidentified, Player identifier) {
-    IPreciousGemContainerView view = unidentified.getContainer();
+  public ISocketGem identify(@NotNull IUnidentifiedGem unidentified, @NotNull Player player) {
+    Preconditions.checkNotNull(unidentified);
+    Preconditions.checkNotNull(player);
+    IUnidentifiedGemContainerView view = unidentified.getContainer();
+    IGemEffect viewEffect = view.getEffect();
+    int rank = view.getRank();
+    if (viewEffect != null && rank > 0) {
+      return gemFactory.create(Material.EMERALD, viewEffect, rank, true);
+    }
     IRarity rarity = view.getRarity();
-    Preconditions.checkArgument(canIdentify(rarity, identifier));
-    IIdentificationTable identificationTable = identificationTableRegistry.get(rarity.key());
-    Preconditions.checkNotNull(identificationTable,
-        "identification table for rarity: %s is not registered".formatted(rarity.getName()));
-    IRarity selectedRarity = identificationTable.getRandom(Taric.getRandom());
-    IGemEffect effect = selectEffect(selectedRarity, Taric.getRandom());
-    ISocketGem gem = gemFactory.create(Material.EMERALD, effect.getSocketColor());
-    ExponentialRandomSelector<Integer> selector = new ExponentialRandomSelector<>(DECAY_RATE);
-    addRange(selector, 1, effect.getMaxRank());
-    Integer random = selector.getRandom(Taric.getRandom());
-    gem.editContainer(container -> {
-      container.applyEffect(effect, new EffectInstanceMeta(random));
-    });
-    return gem;
+    ISocketColor color = view.getColor();
+    List<IGemEffect> effects = effectRegistry.stream()
+        .filter(effect -> effect.getSocketColor().equals(color)).toList();
+    if (effects.isEmpty()) { //no colors matched
+      int index = Taric.getRandom().nextInt(effectRegistry.size());
+      IGemEffect effect = effectRegistry.get(index);
+      return gemFactory.create(Material.EMERALD, effect, 1, false);
+    }
+    IIdentificationTable table = identificationTableRegistry.get(rarity.key());
+    IRarity selected = table.getRandom(Taric.getRandom());
+    List<IGemEffect> rarityColorEffects = effects.stream()
+        .filter(effect -> effect.getRarity().equals(selected)).toList();
+    if (!rarityColorEffects.isEmpty()) {
+      int index = Taric.getRandom().nextInt(rarityColorEffects.size());
+      IGemEffect effect = rarityColorEffects.get(index);
+      return gemFactory.create(Material.EMERALD, effect, 1, false);
+    }
+    int index = Taric.getRandom().nextInt(effectRegistry.size());
+    IGemEffect effect = effectRegistry.values().stream().toList().get(index);
+    return gemFactory.create(Material.EMERALD, effect, 1, false);
+  }
+
+  @Override
+  public boolean canIdentify(IRarity rarity, Player identifier) {
+    return true;
   }
 
   private IGemEffect selectEffect(IRarity rarity, RandomGenerator randomGenerator) {
@@ -66,17 +92,5 @@ public class GemIdentifier implements IGemIdentifier {
       return applicable.get(index);
     }
     return null;
-  }
-
-  private static void addRange(ExponentialRandomSelector<Integer> selector, int min, int max) {
-    Preconditions.checkArgument(min <= max, "min must be <= max (was %s > %s)", min, max);
-    for (int i = min; i <= max; ++i) {
-      selector.add(i);
-    }
-  }
-
-  @Override
-  public boolean canIdentify(IRarity rarity, Player identifier) {
-    return true;
   }
 }

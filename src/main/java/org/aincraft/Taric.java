@@ -16,6 +16,7 @@ import org.aincraft.api.container.Rarities;
 import org.aincraft.api.container.SocketColors;
 import org.aincraft.commands.ContainerCommand;
 import org.aincraft.commands.GemCommand;
+import org.aincraft.container.distribution.DistributionListener;
 import org.aincraft.database.IDatabase;
 import org.aincraft.effects.IGemEffect;
 import org.aincraft.listeners.EffectListener;
@@ -82,6 +83,10 @@ public class Taric {
     return Taric.getPlugin().getLogger();
   }
 
+  public static Plugin getPlugin() {
+    return instance.injector.getInstance(Plugin.class);
+  }
+
   @NotNull
   public static IConfiguration getConfiguration(String configurationKey)
       throws IllegalArgumentException {
@@ -102,16 +107,14 @@ public class Taric {
         .registerEvents(injector.getInstance(FakeEventListener.class), Taric.getPlugin());
     Bukkit.getPluginManager()
         .registerEvents(injector.getInstance(GeodeListener.class), Taric.getPlugin());
+    Bukkit.getPluginManager()
+        .registerEvents(injector.getInstance(DistributionListener.class), Taric.getPlugin());
     //temporary
     Bukkit.getPluginCommand("container").setExecutor(injector.getInstance(ContainerCommand.class));
     Bukkit.getPluginCommand("gem").setExecutor(injector.getInstance(GemCommand.class));
     Rarities.initialize(rarityRegistry);
     SocketColors.initialize(socketColorRegistry);
     Settings.initialize();
-  }
-
-  public static Plugin getPlugin() {
-    return instance.injector.getInstance(Plugin.class);
   }
 
   void disable() {

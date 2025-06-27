@@ -3,6 +3,7 @@ package org.aincraft.listeners;
 
 import com.google.common.cache.LoadingCache;
 import com.google.inject.Inject;
+import io.papermc.paper.event.entity.EntityMoveEvent;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.concurrent.ExecutionException;
@@ -34,6 +35,7 @@ import org.bukkit.event.entity.EntityShootBowEvent;
 import org.bukkit.event.player.PlayerFishEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerItemDamageEvent;
+import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.event.player.PlayerShearEntityEvent;
 
 public class EffectListener implements Listener {
@@ -43,8 +45,7 @@ public class EffectListener implements Listener {
   private final IDispatch dispatch;
 
   @Inject
-  public EffectListener(
-      LoadingCache<LivingEntity, IGemInventory> inventoryCache,
+  public EffectListener(LoadingCache<LivingEntity, IGemInventory> inventoryCache,
       IDispatch dispatch) {
     this.inventoryCache = inventoryCache;
     this.dispatch = dispatch;
@@ -74,11 +75,10 @@ public class EffectListener implements Listener {
     try {
       IGemInventory inventory = inventoryCache.get(shooter);
       IEffectQueueLoader loader = inventory.getLoader(TriggerTypes.SHOOT_BOW);
-      IShootBowContext context = dispatch.dispatch(DispatchContexts.SHOOT_BOW, loader, event,
-          e -> {
-            Projectile p = (Projectile) e.getProjectile();
-            p.remove();
-          });
+      IShootBowContext context = dispatch.dispatch(DispatchContexts.SHOOT_BOW, loader, event, e -> {
+        Projectile p = (Projectile) e.getProjectile();
+        p.remove();
+      });
       for (ILaunchable launchable : context.getLaunchables()) {
         launchable.launch(shooter);
       }
@@ -288,4 +288,23 @@ public class EffectListener implements Listener {
       throw new RuntimeException(e);
     }
   }
+
+  @EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
+  private void onEntityMove(final EntityMoveEvent event) {
+    try {
+      dispatch.dispatch(DispatchContexts.ENTITY_MOVE, inventoryCache.get(event.getEntity()), event);
+    } catch (ExecutionException e) {
+      throw new RuntimeException(e);
+    }
+  }
+
+  @EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
+  private void onEntityMove(final PlayerMoveEvent event) {
+    try {
+      dispatch.dispatch(DispatchContexts.PLAYER_MOVE, inventoryCache.get(event.getPlayer()), event);
+    } catch (ExecutionException e) {
+      throw new RuntimeException(e);
+    }
+  }
+
 }

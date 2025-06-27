@@ -2,15 +2,15 @@ package org.aincraft.listeners;
 
 import com.google.inject.Inject;
 import org.aincraft.api.container.gem.AppraisalState;
+import org.aincraft.api.container.gem.IGem.IGemContainerView;
 import org.aincraft.api.container.gem.IGemIdentifier;
 import org.aincraft.api.container.gem.IGemItem;
 import org.aincraft.api.container.gem.IGemItem.IGemItemFactory;
-import org.aincraft.api.container.gem.IPreciousGem;
-import org.aincraft.api.container.gem.IPreciousGem.IPreciousGemContainerView;
-import org.aincraft.api.container.gem.IPreciousGem.IPreciousGemFactory;
 import org.aincraft.api.container.gem.ISocketGem;
-import org.aincraft.api.container.gem.ISocketGem.ISocketGemContainerView;
 import org.aincraft.api.container.gem.ISocketGem.ISocketGemFactory;
+import org.aincraft.api.container.gem.IUnidentifiedGem;
+import org.aincraft.api.container.gem.IUnidentifiedGem.IUnidentifiedGemContainerView;
+import org.aincraft.api.container.gem.IUnidentifiedGem.IUnidentifiedGemFactory;
 import org.aincraft.effects.IGemEffect;
 import org.bukkit.Material;
 import org.bukkit.Sound;
@@ -31,12 +31,12 @@ import org.bukkit.inventory.PlayerInventory;
 public class GeodeListener implements Listener {
 
   private final IGemIdentifier identifier;
-  private final IPreciousGemFactory preciousGemFactory;
+  private final IUnidentifiedGemFactory preciousGemFactory;
   private final IGemItemFactory gemItemFactory;
   private final ISocketGemFactory socketGemFactory;
 
   @Inject
-  public GeodeListener(IGemIdentifier identifier, IPreciousGemFactory preciousGemFactory,
+  public GeodeListener(IGemIdentifier identifier, IUnidentifiedGemFactory preciousGemFactory,
       IGemItemFactory gemItemFactory, ISocketGemFactory socketGemFactory) {
     this.identifier = identifier;
     this.preciousGemFactory = preciousGemFactory;
@@ -61,13 +61,13 @@ public class GeodeListener implements Listener {
       return;
     }
 
-    IPreciousGem gem = preciousGemFactory.fromIfExists(item);
+    IUnidentifiedGem gem = preciousGemFactory.fromIfExists(item);
     if (gem == null) {
       return;
     }
 
     Player player = event.getPlayer();
-    IPreciousGemContainerView view = gem.getContainer();
+    IUnidentifiedGemContainerView view = gem.getContainer();
     AppraisalState state = view.getState();
     EquipmentSlot hand = event.getHand();
     assert hand != null;
@@ -140,7 +140,7 @@ public class GeodeListener implements Listener {
   }
 
   private void playEffects(InventoryClickEvent event, ISocketGem socketGem, Player player) {
-    final ISocketGemContainerView view = socketGem.getContainer();
+    final IGemContainerView view = socketGem.getContainer();
     final IGemEffect effect = view.getEffect();
 
     if (effect == null) {

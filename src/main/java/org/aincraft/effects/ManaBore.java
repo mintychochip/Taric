@@ -10,7 +10,6 @@ import org.aincraft.api.trigger.IOnEntityItemDamage;
 import org.aincraft.api.trigger.IOnPlayerItemDamage;
 import org.aincraft.api.trigger.ITriggerType;
 import org.aincraft.api.trigger.TriggerTypes;
-import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.AnimalTamer;
 import org.bukkit.entity.Entity;
@@ -24,7 +23,6 @@ final class ManaBore extends AbstractGemEffect implements IOnEntityItemDamage, I
     double damage = context.getDamage();
     Entity entity = context.getEntity();
     Player player = getPlayerOrOwner(entity);
-    Bukkit.broadcastMessage("here");
     if (player == null) {
       return;
     }

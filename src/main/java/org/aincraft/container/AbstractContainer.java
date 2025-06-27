@@ -2,43 +2,34 @@ package org.aincraft.container;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.UUID;
-import java.util.function.Consumer;
 import net.kyori.adventure.key.Key;
-import org.aincraft.api.container.gem.IItemContainer;
-import org.aincraft.api.container.gem.IItemContainerView;
+import org.aincraft.api.container.EffectInstanceMeta;
+import org.aincraft.api.container.gem.IEffectContainer;
+import org.aincraft.api.container.gem.IEffectContainerView;
+import org.aincraft.effects.IGemEffect;
 import org.bukkit.NamespacedKey;
-import org.bukkit.inventory.ItemStack;
 
-abstract class AbstractContainer<V extends IItemContainerView> implements IItemContainer<V> {
-
-  private V view = null;
+abstract class AbstractContainer<V extends IEffectContainerView> implements
+    IEffectContainer<V> {
 
   @Expose
   @SerializedName("container-key")
-  private final Key containerKey;
-
+  protected final Key containerKey;
   @Expose
   @SerializedName("uuid")
-  private final UUID uuid;
+  protected final UUID uuid;
+  private V view = null;
 
   AbstractContainer(NamespacedKey containerKey) {
     this.containerKey = containerKey;
-    this.uuid = UUID.randomUUID();
-  }
-
-  NamespacedKey getContainerKey() {
-    return (NamespacedKey) containerKey;
+    uuid = UUID.randomUUID();
   }
 
   @Override
   public UUID getUuid() {
     return uuid;
   }
-
-  protected abstract V buildView();
 
   @Override
   public V getView() {
@@ -47,4 +38,25 @@ abstract class AbstractContainer<V extends IItemContainerView> implements IItemC
     }
     return view;
   }
+
+  protected abstract V buildView();
+
+  protected NamespacedKey getContainerKey() {
+    return (NamespacedKey) containerKey;
+  }  @Override
+  public void applyEffect(IGemEffect effect, EffectInstanceMeta meta)
+      throws IllegalArgumentException, NullPointerException {
+    applyEffect(effect, meta, false);
+  }
+
+
+
+
+  @Override
+  public void applyEffect(IGemEffect effect, int rank)
+      throws IllegalArgumentException, NullPointerException {
+    applyEffect(effect, new EffectInstanceMeta(rank));
+  }
+
+
 }

@@ -5,7 +5,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.random.RandomGenerator;
 import org.aincraft.api.container.util.IRandomSelector;
-import org.bukkit.Bukkit;
+import org.jetbrains.annotations.NotNull;
 
 public class WeightedRandomSelector<T> extends
     ForwardingMap<T, Double> implements
@@ -19,7 +19,7 @@ public class WeightedRandomSelector<T> extends
   }
 
   @Override
-  public T getRandom(RandomGenerator randomGenerator) throws IllegalStateException {
+  public @NotNull T getRandom(RandomGenerator randomGenerator) throws IllegalStateException {
     if (objects.isEmpty()) {
       throw new IllegalStateException("objects cannot be empty");
     }
@@ -36,7 +36,7 @@ public class WeightedRandomSelector<T> extends
         return entry.getKey();
       }
     }
-    return null;
+    throw new IllegalStateException("Random selection failed despite non-empty, weighted input.");
   }
 
   @Override

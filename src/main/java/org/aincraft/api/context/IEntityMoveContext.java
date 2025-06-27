@@ -1,16 +1,9 @@
 package org.aincraft.api.context;
 
 import org.bukkit.Location;
+import org.bukkit.entity.Entity;
 
-public interface IEntityMoveContext {
-
-  enum ChangeType {
-    ORIENTATION,
-    POSITION,
-    BLOCK,
-    EXPLICITLY_BLOCK,
-    EXPLICITLY_POSITION
-  }
+public interface IEntityMoveContext extends IMoveContext {
 
   Location getFrom();
 
@@ -20,5 +13,5 @@ public interface IEntityMoveContext {
 
   void setTo(Location to);
 
-  boolean hasChanged(ChangeType type);
+  Entity getEntity();
 }
