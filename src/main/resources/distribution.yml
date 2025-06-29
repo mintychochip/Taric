@@ -1,6 +1,6 @@
 #TODO: fishing
 
-loot-chest:
+chest:
   max-amount: 2
   luck-applicable: false
   base: 0.05

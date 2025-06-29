@@ -2,12 +2,12 @@ package org.aincraft.container;
 
 import java.util.function.Consumer;
 import org.aincraft.api.container.gem.IContainerHolder;
-import org.aincraft.api.container.gem.IItemContainer;
-import org.aincraft.api.container.gem.IItemContainerView;
+import org.aincraft.api.container.gem.IEffectContainer;
+import org.aincraft.api.container.gem.IEffectContainerView;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 
-abstract class AbstractContainerHolder<C extends IItemContainer<V>, V extends IItemContainerView> implements
+abstract class AbstractContainerHolder<C extends IEffectContainer<V>, V extends IEffectContainerView> implements
     IContainerHolder<C, V> {
 
   protected final ItemStack stack;

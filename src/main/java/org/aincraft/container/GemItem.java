@@ -438,7 +438,7 @@ final class GemItem extends
       for (Entry<IGemEffect, EffectInstanceMeta> entry : container.getView()) {
         EffectInstanceMeta meta = entry.getValue();
         IGemEffect effect = entry.getKey();
-        if (trigger.getTriggerClazz().isInstance(effect) && effect.isValidTarget(
+        if (trigger.getTriggerClazz().isInstance(effect) && effect.isValidTarget(trigger,
             stack.getType()) && effect.isValidSlot(slot)) {
           queue.add(new IEffectInstance() {
             @Override

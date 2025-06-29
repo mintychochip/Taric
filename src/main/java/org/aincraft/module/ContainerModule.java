@@ -3,6 +3,8 @@ package org.aincraft.module;
 import com.google.inject.AbstractModule;
 import com.google.inject.Singleton;
 import com.google.inject.TypeLiteral;
+import java.util.concurrent.ThreadLocalRandom;
+import java.util.random.RandomGenerator;
 import org.aincraft.api.container.IIdentificationTable;
 import org.aincraft.api.container.IRarity;
 import org.aincraft.api.container.ISocketColor;
@@ -13,6 +15,7 @@ import org.aincraft.container.GemIdentifier;
 import org.aincraft.container.ItemFactoryModule;
 import org.aincraft.container.context.DispatchProvider;
 import org.aincraft.container.context.IDispatch;
+import org.aincraft.container.distribution.DistributionModule;
 import org.aincraft.container.registerable.IdentificationTableRegistryInitializer;
 import org.aincraft.container.registerable.RarityRegistryInitializer;
 import org.aincraft.container.registerable.SocketRegistryInitializer;
@@ -27,6 +30,8 @@ public final class ContainerModule extends AbstractModule {
   protected void configure() {
     install(new SelectorModule());
     install(new ItemFactoryModule());
+    install(new DistributionModule());
+    bind(RandomGenerator.class).toInstance(ThreadLocalRandom.current());
     bind(new TypeLiteral<IRegistry<IGemEffect>>() {
     }).toProvider(EffectRegistryProvider.class).in(Singleton.class);
     bind(new TypeLiteral<IRegistry<IRarity>>() {

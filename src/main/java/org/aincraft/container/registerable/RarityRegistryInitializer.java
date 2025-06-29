@@ -38,19 +38,28 @@ public final class RarityRegistryInitializer implements Provider<IRegistry<IRari
     public @NotNull IRarity createFromConfiguration(String shallowKey, ConfigurationSection section)
         throws IllegalArgumentException {
       Preconditions.checkNotNull(section);
-      Preconditions.checkArgument(section.contains("base"),
-          "rarity: %s does not contain base".formatted(shallowKey));
-      Preconditions.checkArgument(section.contains("color"),
-          "rarity: %s does not contain color section".formatted(shallowKey));
-      List<Integer> colors = section.getIntegerList("color");
-      if (colors.size() < 3) {
-        throw new IllegalArgumentException("color must be at least size 3");
+      Preconditions.checkArgument(section.contains("base"));
+      Preconditions.checkArgument(section.contains("rgb") | section.contains("hex"));
+      Preconditions.checkArgument(section.contains("decay-rate"));
+      TextColor color;
+      if (section.contains("rgb")) {
+        List<Integer> rgb = section.getIntegerList("rgb");
+        if (rgb.size() < 3) {
+          throw new IllegalArgumentException("at least 3 rgb components");
+        }
+        color = TextColor.color(rgb.get(0), rgb.get(1), rgb.get(2));
+      } else {
+        String hexString = section.getString("hex");
+        if (hexString == null) {
+          throw new IllegalArgumentException("hex string cannot be null");
+        }
+        color = TextColor.fromHexString(hexString);
       }
       double base = section.getDouble("base");
-      TextColor color = TextColor.color(colors.get(0), colors.get(1), colors.get(2));
       String name = AbstractRegisterable.toTitleCase(shallowKey);
+      double decayRate = section.getDouble("decay-rate");
       return new Rarity(new NamespacedKey(plugin, shallowKey.toLowerCase()), color, base,
-          name, priority++);
+          name, priority++, decayRate);
     }
   }
 

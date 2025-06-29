@@ -4,7 +4,6 @@ import com.google.common.base.Preconditions;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 import org.aincraft.api.container.EffectInstanceMeta;
-import org.aincraft.api.container.ISocketColor;
 import org.aincraft.api.container.gem.IGem.IGemContainer;
 import org.aincraft.api.container.gem.IGem.IGemContainerView;
 import org.aincraft.effects.IGemEffect;
@@ -20,12 +19,31 @@ class AbstractGem<C extends IGemContainer<V>, V extends IGemContainerView> exten
     super(stack, container);
   }
 
+  static class AbstractGemView<CImpl extends AbstractGemContainer<V>, V extends IGemContainerView> extends
+      AbstractView<CImpl, V> implements IGemContainerView {
+
+    AbstractGemView(CImpl container) {
+      super(container);
+    }
+
+    @Override
+    public @NotNull IGemEffect getEffect() {
+      return container.getEffect();
+    }
+
+    @Override
+    public int getRank() {
+      return container.getRank();
+    }
+
+    @Override
+    public int getRank(IGemEffect effect) {
+      return container.getRank(effect);
+    }
+  }
+
   static abstract class AbstractGemContainer<V extends IGemContainerView> extends
       AbstractContainer<V> implements IGemContainer<V> {
-
-    @Expose
-    @SerializedName("color")
-    protected final ISocketColor color;
 
     @Expose
     @SerializedName("effect")
@@ -35,61 +53,13 @@ class AbstractGem<C extends IGemContainer<V>, V extends IGemContainerView> exten
     @SerializedName("meta")
     protected EffectInstanceMeta meta;
 
-    AbstractGemContainer(NamespacedKey containerKey, ISocketColor color) {
+    AbstractGemContainer(NamespacedKey containerKey) {
       super(containerKey);
-      this.color = color;
-    }
-
-    static class AbstractGemView<CImpl extends AbstractGemContainer<V>, V extends IGemContainerView> extends
-        AbstractView<CImpl, V> implements IGemContainerView {
-
-      AbstractGemView(CImpl container) {
-        super(container);
-      }
-
-      @Override
-      public @NotNull ISocketColor getColor() {
-        return container.getColor();
-      }
-
-      @Override
-      public IGemEffect getEffect() {
-        return container.getEffect();
-      }
-
-      @Override
-      public int getRank() {
-        return container.getRank();
-      }
-
-      @Override
-      public int getRank(IGemEffect effect) {
-        return container.getRank(effect);
-      }
-    }
-
-    @Override
-    public boolean canApplyEffect(IGemEffect effect, EffectInstanceMeta meta) {
-      if (effect == null || meta.getRank() == 0) {
-        return false;
-      }
-      ISocketColor color = effect.getSocketColor();
-      return color.equals(this.color);
     }
 
     @Override
     public void applyEffect(@NotNull IGemEffect effect, EffectInstanceMeta meta, boolean force)
         throws IllegalArgumentException, NullPointerException {
-      if (!force) {
-        Preconditions.checkNotNull(effect, "effect cannot be null");
-        Preconditions.checkArgument(meta.getRank() > 0,
-            "rank: %d must be greater than 0".formatted(meta.getRank()));
-        Preconditions.checkArgument(meta.getRank() <= effect.getMaxRank(),
-            "rank: %d cannot be greater than max rank: %d".formatted(meta.getRank(),
-                effect.getMaxRank()));
-        Preconditions.checkArgument(effect.getSocketColor().equals(color),
-            "gem colors must be the same");
-      }
       this.effect = effect;
       this.meta = meta.copy();
     }
@@ -130,12 +100,7 @@ class AbstractGem<C extends IGemContainer<V>, V extends IGemContainerView> exten
     }
 
     @Override
-    public @NotNull ISocketColor getColor() {
-      return color;
-    }
-
-    @Override
-    public IGemEffect getEffect() {
+    public @NotNull IGemEffect getEffect() {
       return effect;
     }
 
@@ -151,8 +116,6 @@ class AbstractGem<C extends IGemContainer<V>, V extends IGemContainerView> exten
           .append(effect != null ? effect.getName() : "null")
           .append(", meta=")
           .append(meta)
-          .append(", socketColor=")
-          .append(color)
           .append('}')
           .toString();
     }

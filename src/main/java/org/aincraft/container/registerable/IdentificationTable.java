@@ -5,6 +5,7 @@ import net.kyori.adventure.key.Key;
 import org.aincraft.api.container.IIdentificationTable;
 import org.aincraft.api.container.IRarity;
 import org.aincraft.api.container.util.IRandomSelector;
+import org.jetbrains.annotations.NotNull;
 
 final class IdentificationTable extends AbstractRegisterable implements IIdentificationTable {
 
@@ -16,7 +17,7 @@ final class IdentificationTable extends AbstractRegisterable implements IIdentif
   }
 
   @Override
-  public IRarity getRandom(RandomGenerator randomGenerator) {
+  public @NotNull IRarity getRandom(RandomGenerator randomGenerator) {
     return randomSelector.getRandom(randomGenerator);
   }
 

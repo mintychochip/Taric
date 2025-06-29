@@ -1,13 +1,15 @@
 package org.aincraft.commands;
 
 import com.google.inject.Inject;
+import io.papermc.paper.datacomponent.DataComponentTypes;
+import io.papermc.paper.datacomponent.item.Equippable;
+import io.papermc.paper.datacomponent.item.Equippable.Builder;
+import net.kyori.adventure.key.Key;
 import org.aincraft.api.container.IIdentificationTable;
-import org.aincraft.api.container.Rarities;
-import org.aincraft.api.container.SocketColors;
 import org.aincraft.api.container.gem.IGemIdentifier;
+import org.aincraft.api.container.gem.IGemItem;
 import org.aincraft.api.container.gem.IGemItem.IGemItemFactory;
 import org.aincraft.api.container.gem.ISocketGem.ISocketGemFactory;
-import org.aincraft.api.container.gem.IUnidentifiedGem;
 import org.aincraft.api.container.gem.IUnidentifiedGem.IUnidentifiedGemFactory;
 import org.aincraft.api.trigger.ITriggerType;
 import org.aincraft.effects.IGemEffect;
@@ -22,6 +24,7 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.loot.LootTable;
 import org.jetbrains.annotations.NotNull;
@@ -57,16 +60,18 @@ public class GemCommand implements CommandExecutor {
   public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command,
       @NotNull String label, @NotNull String @NotNull [] args) {
     if (sender instanceof Player player) {
-      IUnidentifiedGem gem = factory.create(ItemStack.of(Material.EMERALD), SocketColors.YELLOW,
-          Rarities.MYTHIC);
-      player.getInventory().addItem(gem.getStack());
-//      IGemItem item = itemFactory.create(ItemStack.of(Material.DIAMOND_BOOTS));
+      IGemItem item = itemFactory.create(ItemStack.of(Material.LEATHER_HELMET));
 //      item.editContainer(container -> {
-//        container.applyEffect(Effects.LAVA_WALKER, new EffectInstanceMeta(3), true);
+//        container.initializeCounter(SocketColors.GREEN, 3);
+//        container.initializeCounter(SocketColors.BLUE, 3);
+//        container.applyEffect(Effects.BURROWING, 1);
+//        container.applyEffect(Effects.VEIN_MINER, 3);
 //      });
-//      player.getInventory().addItem(item.getStack());
-//      NamespacedKey lootKey = new NamespacedKey("minecraft", "chests/simple_dungeon");
-//      spawnLootableChest(player.getLocation(), lootKey, new Random().nextLong());
+      Builder equippable = Equippable.equippable(EquipmentSlot.HEAD);
+      Equippable build = equippable.assetId(Key.key("minecraft:diamond")).build();
+      ItemStack stack = item.getStack();
+      stack.setData(DataComponentTypes.EQUIPPABLE, build);
+      player.getInventory().addItem(item.getStack());
     }
     return false;
   }

@@ -4,15 +4,31 @@ import org.aincraft.api.container.ISocketColor;
 import org.aincraft.api.container.gem.IGem.IGemContainer;
 import org.aincraft.api.container.gem.IGem.IGemContainerView;
 import org.aincraft.api.container.gem.ISocketGem.ISocketGemContainer;
+import org.aincraft.api.container.gem.ISocketGem.ISocketGemContainerView;
 import org.aincraft.effects.IGemEffect;
 import org.bukkit.Material;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 public interface ISocketGem extends
-    IContainerHolder<ISocketGemContainer, IGemContainerView> {
+    IContainerHolder<ISocketGemContainer, ISocketGemContainerView> {
 
-  interface ISocketGemContainer extends IGemContainer<IGemContainerView> {
+  interface ISocketGemContainerView extends IGemContainerView {
+
+    @Nullable
+    @Override
+    IGemEffect getEffect();
+
+    ISocketColor getColor();
+  }
+
+  interface ISocketGemContainer extends IGemContainer<ISocketGemContainerView> {
+
+    @Nullable
+    @Override
+    IGemEffect getEffect();
+
+    ISocketColor getColor();
 
     void move(
         @NotNull IContainerHolder<? extends IEffectContainer<?>, ? extends IEffectContainerView> holder)
@@ -50,7 +66,7 @@ public interface ISocketGem extends
   }
 
   interface ISocketGemFactory extends
-      IContainerHolderFactory<ISocketGem, ISocketGemContainer, IGemContainerView> {
+      IContainerHolderFactory<ISocketGem, ISocketGemContainer, ISocketGemContainerView> {
 
     @NotNull
     ISocketGem create(Material material, ISocketColor socketColor);

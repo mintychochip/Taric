@@ -6,8 +6,8 @@ import java.util.concurrent.ExecutionException;
 import org.aincraft.Taric;
 import org.aincraft.api.container.gem.IContainerHolder;
 import org.aincraft.api.container.gem.IContainerHolderFactory;
-import org.aincraft.api.container.gem.IItemContainer;
-import org.aincraft.api.container.gem.IItemContainerView;
+import org.aincraft.api.container.gem.IEffectContainer;
+import org.aincraft.api.container.gem.IEffectContainerView;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.inventory.ItemStack;
@@ -15,7 +15,7 @@ import org.bukkit.persistence.PersistentDataType;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-abstract class ContainerHolderFactory<H extends IContainerHolder<C, V>, C extends IItemContainer<V>, V extends IItemContainerView> implements
+abstract class ContainerHolderFactory<H extends IContainerHolder<C, V>, C extends IEffectContainer<V>, V extends IEffectContainerView> implements
     IContainerHolderFactory<H, C, V> {
 
   @Override

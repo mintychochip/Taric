@@ -10,8 +10,7 @@ import org.aincraft.api.container.gem.IEffectContainerView;
 import org.aincraft.effects.IGemEffect;
 import org.bukkit.NamespacedKey;
 
-abstract class AbstractContainer<V extends IEffectContainerView> implements
-    IEffectContainer<V> {
+abstract class AbstractContainer<V extends IEffectContainerView> implements IEffectContainer<V> {
 
   @Expose
   @SerializedName("container-key")
@@ -43,14 +42,13 @@ abstract class AbstractContainer<V extends IEffectContainerView> implements
 
   protected NamespacedKey getContainerKey() {
     return (NamespacedKey) containerKey;
-  }  @Override
+  }
+
+  @Override
   public void applyEffect(IGemEffect effect, EffectInstanceMeta meta)
       throws IllegalArgumentException, NullPointerException {
     applyEffect(effect, meta, false);
   }
-
-
-
 
   @Override
   public void applyEffect(IGemEffect effect, int rank)

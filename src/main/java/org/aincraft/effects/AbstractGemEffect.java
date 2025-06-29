@@ -12,6 +12,7 @@ import org.aincraft.api.trigger.ITriggerType;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.inventory.EquipmentSlot;
+import org.bukkit.permissions.Permission;
 import org.jetbrains.annotations.NotNull;
 
 abstract class AbstractGemEffect implements IGemEffect {
@@ -94,6 +95,11 @@ abstract class AbstractGemEffect implements IGemEffect {
   @Override
   public int getMaxRank() {
     return meta.maxLevel();
+  }
+
+  @Override
+  public Permission getPermission() {
+    return null;
   }
 
   @NotNull

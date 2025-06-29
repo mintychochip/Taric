@@ -11,6 +11,7 @@ import org.aincraft.api.trigger.ITriggerType;
 import org.bukkit.Keyed;
 import org.bukkit.Material;
 import org.bukkit.inventory.EquipmentSlot;
+import org.bukkit.permissions.Permission;
 import org.jetbrains.annotations.NotNull;
 
 public interface IGemEffect extends Keyed, IWeighable {
@@ -28,6 +29,8 @@ public interface IGemEffect extends Keyed, IWeighable {
   String getAdjective();
 
   int getMaxRank();
+
+  Permission getPermission();
 
   /**
    * Returns the set of equipment slots from which the effect can be activated. If the item

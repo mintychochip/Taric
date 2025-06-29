@@ -1,11 +1,12 @@
 package org.aincraft.api.container.gem;
 
+import java.util.UUID;
 import org.aincraft.api.container.EffectInstanceMeta;
 import org.aincraft.effects.IGemEffect;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-public interface IEffectContainer<V extends IEffectContainerView> extends IItemContainer<V> {
+public interface IEffectContainer<V extends IEffectContainerView> {
 
   boolean canApplyEffect(IGemEffect effect, EffectInstanceMeta meta);
 
@@ -26,4 +27,8 @@ public interface IEffectContainer<V extends IEffectContainerView> extends IItemC
   int getRank(IGemEffect effect);
 
   void clear();
+
+  UUID getUuid();
+
+  V getView();
 }
