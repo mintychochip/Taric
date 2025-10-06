@@ -1,9 +1,9 @@
 package org.aincraft.api.trigger;
 
 import org.aincraft.api.container.EffectInstanceMeta;
-import org.aincraft.api.context.IBlockDropContext;
+import org.aincraft.api.context.BlockDropContext;
 
 public interface IOnBlockDrop {
 
-  void onBlockDrop(IBlockDropContext context, EffectInstanceMeta meta);
+  void onBlockDrop(BlockDropContext context, EffectInstanceMeta meta);
 }

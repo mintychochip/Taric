@@ -24,7 +24,7 @@ import org.aincraft.api.container.gem.IGemItem;
 import org.aincraft.api.container.gem.IGemItem.IGemItemContainer;
 import org.aincraft.api.container.gem.IGemItem.IGemItemContainerView;
 import org.aincraft.api.trigger.IOnSocket;
-import org.aincraft.api.trigger.ITriggerType;
+import org.aincraft.api.trigger.TriggerType;
 import org.aincraft.container.context.IEffectQueueLoader;
 import org.aincraft.effects.IGemEffect;
 import org.aincraft.util.Roman;
@@ -433,12 +433,12 @@ final class GemItem extends
   }
 
   @Override
-  public IEffectQueueLoader getLoader(ITriggerType<?> trigger, EquipmentSlot slot) {
+  public IEffectQueueLoader getLoader(TriggerType<?> trigger, EquipmentSlot slot) {
     return queue -> {
       for (Entry<IGemEffect, EffectInstanceMeta> entry : container.getView()) {
         EffectInstanceMeta meta = entry.getValue();
         IGemEffect effect = entry.getKey();
-        if (trigger.getTriggerClazz().isInstance(effect) && effect.isValidTarget(trigger,
+        if (trigger.triggerClazz().isInstance(effect) && effect.isValidTarget(trigger,
             stack.getType()) && effect.isValidSlot(slot)) {
           queue.add(new IEffectInstance() {
             @Override

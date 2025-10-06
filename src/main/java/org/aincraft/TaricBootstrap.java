@@ -3,8 +3,11 @@ package org.aincraft;
 import com.google.inject.Guice;
 import com.google.inject.Injector;
 import java.util.Map;
+import org.aincraft.api.Bridge;
 import org.aincraft.module.ContainerModule;
 import org.aincraft.module.PluginModule;
+import org.bukkit.Bukkit;
+import org.bukkit.plugin.ServicePriority;
 import org.bukkit.plugin.java.JavaPlugin;
 
 public final class TaricBootstrap extends JavaPlugin {
@@ -37,6 +40,8 @@ public final class TaricBootstrap extends JavaPlugin {
     if (application == null) {
       return;
     }
+    Bukkit.getServicesManager().register(Bridge.class, injector.getInstance(Bridge.class), this,
+        ServicePriority.High);
     application.enable();
   }
 }

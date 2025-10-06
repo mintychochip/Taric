@@ -4,7 +4,7 @@ import java.time.Duration;
 import java.util.Map;
 import java.util.Set;
 import org.aincraft.api.trigger.IOnActivate;
-import org.aincraft.api.trigger.ITriggerType;
+import org.aincraft.api.trigger.TriggerType;
 import org.bukkit.FluidCollisionMode;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -23,7 +23,7 @@ final class Blink extends AbstractGemEffect implements IOnActivate {
 
 
   @Override
-  protected Map<ITriggerType<?>, Set<Material>> buildValidTargets() {
+  protected Map<TriggerType<?>, Set<Material>> buildValidTargets() {
     return Map.of();
   }
 

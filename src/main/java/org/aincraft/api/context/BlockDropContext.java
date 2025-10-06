@@ -7,7 +7,7 @@ import org.bukkit.block.BlockState;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
-public interface IBlockDropContext extends IDropContext<List<ItemStack>> {
+public interface BlockDropContext extends IDropContext<List<ItemStack>> {
 
   Player getPlayer();
 

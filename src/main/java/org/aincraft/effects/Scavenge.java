@@ -9,14 +9,14 @@ import org.aincraft.Taric;
 import org.aincraft.api.container.EffectInstanceMeta;
 import org.aincraft.api.container.TargetType;
 import org.aincraft.api.container.TypeSet;
-import org.aincraft.api.context.IEntityKillContext;
+import org.aincraft.api.context.EntityKillContext;
+import org.aincraft.api.context.FishContext;
+import org.aincraft.api.context.IShearEntityContext.IPlayerShearEntityContext;
 import org.aincraft.api.trigger.IOnEntityKill;
 import org.aincraft.api.trigger.IOnPlayerFish;
 import org.aincraft.api.trigger.IOnPlayerShearEntity;
-import org.aincraft.api.context.IShearEntityContext.IPlayerShearEntityContext;
-import org.aincraft.api.context.IPlayerFishContext;
+import org.aincraft.api.trigger.TriggerType;
 import org.aincraft.api.trigger.TriggerTypes;
-import org.aincraft.api.trigger.ITriggerType;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 
@@ -24,7 +24,7 @@ final class Scavenge extends AbstractGemEffect implements IOnEntityKill, IOnPlay
     IOnPlayerFish {
 
   @Override
-  protected Map<ITriggerType<?>, Set<Material>> buildValidTargets() {
+  protected Map<TriggerType<?>, Set<Material>> buildValidTargets() {
     return Map.ofEntries(
         Map.entry(TriggerTypes.ENTITY_KILL, TargetType.RANGED_WEAPON),
         Map.entry(TriggerTypes.PLAYER_SHEAR_ENTITY, TypeSet.single(Material.SHEARS)),
@@ -56,7 +56,7 @@ final class Scavenge extends AbstractGemEffect implements IOnEntityKill, IOnPlay
   }
 
   @Override
-  public void onPlayerFish(IPlayerFishContext context, EffectInstanceMeta meta) {
+  public void onPlayerFish(FishContext context, EffectInstanceMeta meta) {
     ItemStack drop = context.getDrops();
     if (drop == null) {
       return;
@@ -67,7 +67,7 @@ final class Scavenge extends AbstractGemEffect implements IOnEntityKill, IOnPlay
   }
 
   @Override
-  public void onKillEntity(IEntityKillContext context, EffectInstanceMeta meta) {
+  public void onKillEntity(EntityKillContext context, EffectInstanceMeta meta) {
     context.setDrops(scavenge(meta.getRank(), context.getDrops()));
   }
 }

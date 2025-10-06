@@ -4,9 +4,9 @@ import java.util.Map;
 import java.util.Set;
 import org.aincraft.api.container.EffectInstanceMeta;
 import org.aincraft.api.container.TargetType;
-import org.aincraft.api.context.IEntityDamageEntityContext;
+import org.aincraft.api.context.EntityDamageEntityContext;
 import org.aincraft.api.trigger.IOnEntityHitByEntity;
-import org.aincraft.api.trigger.ITriggerType;
+import org.aincraft.api.trigger.TriggerType;
 import org.aincraft.api.trigger.TriggerTypes;
 import org.bukkit.Material;
 import org.bukkit.entity.Entity;
@@ -17,15 +17,15 @@ import org.bukkit.potion.PotionEffectType;
 final class Hardened extends AbstractGemEffect implements IOnEntityHitByEntity {
 
   @Override
-  protected Map<ITriggerType<?>, Set<Material>> buildValidTargets() {
+  protected Map<TriggerType<?>, Set<Material>> buildValidTargets() {
     return Map.ofEntries(
         Map.entry(TriggerTypes.ENTITY_HIT_BY_ENTITY, TargetType.PLAYER_ARMOR)
     );
   }
 
   @Override
-  public void onHitByEntity(IEntityDamageEntityContext context, EffectInstanceMeta meta) {
-    Entity damagee = context.getDamagee();
+  public void onHitByEntity(EntityDamageEntityContext context, EffectInstanceMeta meta) {
+    Entity damagee = context.getEntity();
     if (damagee instanceof LivingEntity) {
       LivingEntity living = (LivingEntity) damagee;
 

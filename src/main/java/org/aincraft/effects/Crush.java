@@ -5,9 +5,9 @@ import java.util.Set;
 import org.aincraft.api.container.EffectInstanceMeta;
 import org.aincraft.api.container.TargetType;
 import org.aincraft.api.container.TypeSet;
-import org.aincraft.api.context.IBlockDropContext;
+import org.aincraft.api.context.BlockDropContext;
 import org.aincraft.api.trigger.IOnBlockDrop;
-import org.aincraft.api.trigger.ITriggerType;
+import org.aincraft.api.trigger.TriggerType;
 import org.aincraft.api.trigger.TriggerTypes;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
@@ -19,7 +19,7 @@ final class Crush extends AbstractGemEffect implements IOnBlockDrop {
   static final class CrushHelperBlockDrop extends BlockDropConversionHelper {
 
     @Override
-    protected boolean conversionPredicate(IBlockDropContext context, EffectInstanceMeta meta,
+    protected boolean conversionPredicate(BlockDropContext context, EffectInstanceMeta meta,
         ItemStack stack) {
       Material material = stack.getType();
       return material == Material.COBBLESTONE || material == Material.GRAVEL;
@@ -32,7 +32,7 @@ final class Crush extends AbstractGemEffect implements IOnBlockDrop {
   }
 
   @Override
-  protected Map<ITriggerType<?>, Set<Material>> buildValidTargets() {
+  protected Map<TriggerType<?>, Set<Material>> buildValidTargets() {
     return Map.ofEntries(
         Map.entry(TriggerTypes.BLOCK_DROP,
             TypeSet.builder().union(TargetType.PICKAXE, TargetType.SHOVEL).build())
@@ -40,7 +40,7 @@ final class Crush extends AbstractGemEffect implements IOnBlockDrop {
   }
 
   @Override
-  public void onBlockDrop(IBlockDropContext context, EffectInstanceMeta meta) {
+  public void onBlockDrop(BlockDropContext context, EffectInstanceMeta meta) {
     helper.onBlockDrop(context, meta);
   }
 }

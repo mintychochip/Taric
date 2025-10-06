@@ -4,7 +4,7 @@ import org.aincraft.api.context.IItemDamageContext.IPlayerItemDamageContext;
 import org.bukkit.entity.Player;
 
 final class PlayerItemDamageContext extends
-    AbstractItemDamageContext<PlayerItemDamageEventDecorator> implements
+    AbstractContext.AbstractItemDamageContext<PlayerItemDamageEventDecorator> implements
     IPlayerItemDamageContext {
 
   PlayerItemDamageContext(PlayerItemDamageEventDecorator event) {

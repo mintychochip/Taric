@@ -1,6 +1,6 @@
 package org.aincraft.container.context;
 
-import org.aincraft.api.trigger.IOnInteract.IInteractContext;
+import org.aincraft.api.trigger.IOnInteract.PlayerInteractContext;
 import org.bukkit.Location;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
@@ -14,7 +14,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 final class InteractContext extends AbstractContext<PlayerInteractEvent> implements
-    IInteractContext {
+    PlayerInteractContext {
 
   InteractContext(PlayerInteractEvent event) {
     super(event);
@@ -36,7 +36,7 @@ final class InteractContext extends AbstractContext<PlayerInteractEvent> impleme
   }
 
   @Override
-  public @Nullable Block getBlock() {
+  public @Nullable Block getClickedBlock() {
     return event.getClickedBlock();
   }
 
@@ -46,7 +46,7 @@ final class InteractContext extends AbstractContext<PlayerInteractEvent> impleme
   }
 
   @Override
-  public @Nullable Location getLocation() {
+  public @Nullable Location getInteractionPoint() {
     return event.getInteractionPoint();
   }
 

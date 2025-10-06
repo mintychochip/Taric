@@ -1,9 +1,9 @@
 package org.aincraft.api.trigger;
 
 import org.aincraft.api.container.EffectInstanceMeta;
-import org.aincraft.api.context.IEntityMoveContext;
+import org.aincraft.api.context.EntityMoveContext;
 
 public interface IOnEntityMove {
 
-  void onEntityMove(IEntityMoveContext context, EffectInstanceMeta meta);
+  void onEntityMove(EntityMoveContext context, EffectInstanceMeta meta);
 }

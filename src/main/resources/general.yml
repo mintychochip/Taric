@@ -2,3 +2,14 @@ settings:
   enable-item-drops-in-creative: true
   enable-break-effects-in-creative: true
   enable-item-break-in-creative: true
+rarity:
+  common:
+    base:
+    rgb: [ 35,35,35 ]
+    decay-rate: 0.01
+colors:
+  green:
+    color: [ 35,35,35 ]
+identification-tables:
+  common:
+    common: 50.0

@@ -6,10 +6,10 @@ import org.aincraft.Settings;
 import org.aincraft.Taric;
 import org.aincraft.api.container.EffectInstanceMeta;
 import org.aincraft.api.container.TargetType;
-import org.aincraft.api.context.IEntityKillContext;
+import org.aincraft.api.context.EntityKillContext;
 import org.aincraft.api.trigger.IOnEntityKill;
+import org.aincraft.api.trigger.TriggerType;
 import org.aincraft.api.trigger.TriggerTypes;
-import org.aincraft.api.trigger.ITriggerType;
 import org.bukkit.Material;
 import org.bukkit.entity.EntityType;
 import org.bukkit.inventory.ItemStack;
@@ -18,14 +18,14 @@ import org.jetbrains.annotations.Nullable;
 final class Vorpal extends AbstractGemEffect implements IOnEntityKill {
 
   @Override
-  protected Map<ITriggerType<?>, Set<Material>> buildValidTargets() {
+  protected Map<TriggerType<?>, Set<Material>> buildValidTargets() {
     return Map.ofEntries(
         Map.entry(TriggerTypes.ENTITY_KILL, TargetType.MELEE_WEAPON)
     );
   }
 
   @Override
-  public void onKillEntity(IEntityKillContext context, EffectInstanceMeta meta) {
+  public void onKillEntity(EntityKillContext context, EffectInstanceMeta meta) {
     EntityType type = context.getSlain().getType();
     if (!(type == EntityType.ZOMBIE || type == EntityType.SKELETON || type == EntityType.CREEPER
         || type == EntityType.WITHER_SKELETON || type == EntityType.PIGLIN)) {

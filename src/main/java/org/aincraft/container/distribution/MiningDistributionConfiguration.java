@@ -5,6 +5,7 @@ import com.google.inject.Inject;
 import com.google.inject.Provider;
 import com.google.inject.name.Named;
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.Map;
 import org.aincraft.api.config.IConfiguration;
 import org.bukkit.Material;
@@ -50,7 +51,7 @@ final class MiningDistributionConfiguration extends AbstractDistributionConfigur
         Map<Material, Double> materialBaseChance = new HashMap<>();
         for (String key : materialMapSection.getKeys(false)) {
           double baseChance = materialMapSection.getDouble(key);
-          Material material = Material.valueOf(key);
+          Material material = Material.valueOf(key.toUpperCase(Locale.ENGLISH));
           materialBaseChance.put(material, baseChance);
         }
         boolean enabled = miningSection.getBoolean("enabled");

@@ -3,17 +3,17 @@ package org.aincraft.container.context;
 import io.papermc.paper.event.entity.EntityDamageItemEvent;
 import io.papermc.paper.event.entity.EntityMoveEvent;
 import org.aincraft.api.container.EffectInstanceMeta;
-import org.aincraft.api.context.IBlockBreakContext;
-import org.aincraft.api.context.IBlockDropContext;
-import org.aincraft.api.context.IEntityDamageEntityContext;
-import org.aincraft.api.context.IEntityKillContext;
-import org.aincraft.api.context.IEntityMoveContext;
-import org.aincraft.api.context.IItemDamageContext.IEntityItemDamageContext;
+import org.aincraft.api.context.BlockBreakContext;
+import org.aincraft.api.context.BlockDropContext;
+import org.aincraft.api.context.EntityDamageEntityContext;
+import org.aincraft.api.context.EntityKillContext;
+import org.aincraft.api.context.EntityMoveContext;
+import org.aincraft.api.context.FishContext;
+import org.aincraft.api.context.IItemDamageContext.EntityItemDamageContext;
 import org.aincraft.api.context.IItemDamageContext.IPlayerItemDamageContext;
-import org.aincraft.api.context.IPlayerFishContext;
-import org.aincraft.api.context.IPlayerMoveContext;
 import org.aincraft.api.context.IShearEntityContext.IPlayerShearEntityContext;
 import org.aincraft.api.context.IShootBowContext;
+import org.aincraft.api.context.PlayerMoveContext;
 import org.aincraft.api.trigger.IOnBlockBreak;
 import org.aincraft.api.trigger.IOnBlockDrop;
 import org.aincraft.api.trigger.IOnEntityHitByEntity;
@@ -22,13 +22,13 @@ import org.aincraft.api.trigger.IOnEntityItemDamage;
 import org.aincraft.api.trigger.IOnEntityKill;
 import org.aincraft.api.trigger.IOnEntityMove;
 import org.aincraft.api.trigger.IOnInteract;
-import org.aincraft.api.trigger.IOnInteract.IInteractContext;
+import org.aincraft.api.trigger.IOnInteract.PlayerInteractContext;
 import org.aincraft.api.trigger.IOnPlayerFish;
 import org.aincraft.api.trigger.IOnPlayerItemDamage;
 import org.aincraft.api.trigger.IOnPlayerMove;
 import org.aincraft.api.trigger.IOnPlayerShearEntity;
 import org.aincraft.api.trigger.IOnShootBow;
-import org.aincraft.api.trigger.ITriggerType;
+import org.aincraft.api.trigger.TriggerType;
 import org.aincraft.api.trigger.TriggerTypes;
 import org.bukkit.event.Event;
 import org.bukkit.event.block.BlockBreakEvent;
@@ -44,18 +44,18 @@ import org.bukkit.event.player.PlayerShearEntityEvent;
 
 public final class DispatchContexts {
 
-  public static final IDispatchContext<IOnBlockBreak, IBlockBreakContext, BlockBreakEvent> BLOCK_BREAK;
-  public static final IDispatchContext<IOnBlockDrop, IBlockDropContext, BlockDropItemEvent> BLOCK_DROP;
-  public static final IDispatchContext<IOnInteract, IInteractContext, PlayerInteractEvent> INTERACT;
+  public static final IDispatchContext<IOnBlockBreak, BlockBreakContext, BlockBreakEvent> BLOCK_BREAK;
+  public static final IDispatchContext<IOnBlockDrop, BlockDropContext, BlockDropItemEvent> BLOCK_DROP;
+  public static final IDispatchContext<IOnInteract, PlayerInteractContext, PlayerInteractEvent> INTERACT;
   public static final IDispatchContext<IOnPlayerShearEntity, IPlayerShearEntityContext, PlayerShearEntityEvent> PLAYER_SHEAR_ENTITY;
-  public static final IDispatchContext<IOnEntityHitEntity, IEntityDamageEntityContext, EntityDamageByEntityEvent> ENTITY_HIT_ENTITY;
-  public static final IDispatchContext<IOnEntityHitByEntity, IEntityDamageEntityContext, EntityDamageByEntityEvent> ENTITY_HIT_BY_ENTITY;
-  public static final IDispatchContext<IOnPlayerFish, IPlayerFishContext, PlayerFishEvent> PLAYER_FISH;
-  public static final IDispatchContext<IOnEntityKill, IEntityKillContext, EntityDeathEvent> KILL_ENTITY;
-  public static final IDispatchContext<IOnEntityMove, IEntityMoveContext, EntityMoveEvent> ENTITY_MOVE;
-  public static final IDispatchContext<IOnPlayerMove, IPlayerMoveContext, PlayerMoveEvent> PLAYER_MOVE;
+  public static final IDispatchContext<IOnEntityHitEntity, EntityDamageEntityContext, EntityDamageByEntityEvent> ENTITY_HIT_ENTITY;
+  public static final IDispatchContext<IOnEntityHitByEntity, EntityDamageEntityContext, EntityDamageByEntityEvent> ENTITY_HIT_BY_ENTITY;
+  public static final IDispatchContext<IOnPlayerFish, FishContext, PlayerFishEvent> PLAYER_FISH;
+  public static final IDispatchContext<IOnEntityKill, EntityKillContext, EntityDeathEvent> KILL_ENTITY;
+  public static final IDispatchContext<IOnEntityMove, EntityMoveContext, EntityMoveEvent> ENTITY_MOVE;
+  public static final IDispatchContext<IOnPlayerMove, PlayerMoveContext, PlayerMoveEvent> PLAYER_MOVE;
   public static final IDispatchContext<IOnPlayerItemDamage, IPlayerItemDamageContext, PlayerItemDamageEvent> PLAYER_ITEM_DAMAGE;
-  public static final IDispatchContext<IOnEntityItemDamage, IEntityItemDamageContext, EntityDamageItemEvent> ENTITY_ITEM_DAMAGE;
+  public static final IDispatchContext<IOnEntityItemDamage, EntityItemDamageContext, EntityDamageItemEvent> ENTITY_ITEM_DAMAGE;
   public static final IDispatchContext<IOnShootBow, IShootBowContext, EntityShootBowEvent> SHOOT_BOW;
 
   static {
@@ -97,7 +97,7 @@ public final class DispatchContexts {
     void trigger(T trigger, C context, EffectInstanceMeta meta);
   }
 
-  private record DispatchContext<T, C, E extends Event>(ITriggerType<T> triggerType,
+  private record DispatchContext<T, C, E extends Event>(TriggerType<T> triggerType,
                                                         IContextProvider<C, E> contextProvider,
                                                         ITriggerExecutor<T, C> triggerExecutor) implements
       IDispatchContext<T, C, E> {

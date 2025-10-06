@@ -10,7 +10,7 @@ import org.aincraft.api.container.TargetType;
 import org.aincraft.api.container.launchable.ILaunchable;
 import org.aincraft.api.context.IShootBowContext;
 import org.aincraft.api.trigger.IOnShootBow;
-import org.aincraft.api.trigger.ITriggerType;
+import org.aincraft.api.trigger.TriggerType;
 import org.aincraft.api.trigger.TriggerTypes;
 import org.aincraft.container.launchable.LaunchableFactory;
 import org.bukkit.Color;
@@ -95,7 +95,7 @@ final class Flare extends AbstractGemEffect implements IOnShootBow {
   }
 
   @Override
-  protected Map<ITriggerType<?>, Set<Material>> buildValidTargets() {
+  protected Map<TriggerType<?>, Set<Material>> buildValidTargets() {
     return Map.ofEntries(
         Map.entry(TriggerTypes.SHOOT_BOW, TargetType.RANGED_WEAPON)
     );

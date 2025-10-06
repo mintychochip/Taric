@@ -8,6 +8,7 @@ import org.aincraft.api.container.EffectInstanceMeta;
 import org.aincraft.api.container.gem.IEffectContainer;
 import org.aincraft.api.container.gem.IEffectContainerView;
 import org.aincraft.effects.IGemEffect;
+import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 
 abstract class AbstractContainer<V extends IEffectContainerView> implements IEffectContainer<V> {

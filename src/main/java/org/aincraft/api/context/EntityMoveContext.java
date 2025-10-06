@@ -3,7 +3,7 @@ package org.aincraft.api.context;
 import org.bukkit.Location;
 import org.bukkit.entity.Entity;
 
-public interface IEntityMoveContext extends IMoveContext {
+public interface EntityMoveContext extends IMoveContext {
 
   Location getFrom();
 

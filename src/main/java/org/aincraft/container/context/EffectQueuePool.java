@@ -7,19 +7,19 @@ import java.util.Map;
 import java.util.PriorityQueue;
 import java.util.Queue;
 import java.util.concurrent.ConcurrentHashMap;
-import org.aincraft.api.trigger.ITriggerType;
+import org.aincraft.api.trigger.TriggerType;
 import org.jetbrains.annotations.ApiStatus.Internal;
 
 @Internal
 final class EffectQueuePool {
 
-  private final Map<ITriggerType<?>, Queue<EffectQueue>> poolMap;
+  private final Map<TriggerType<?>, Queue<EffectQueue>> poolMap;
 
   EffectQueuePool() {
     poolMap = new ConcurrentHashMap<>();
   }
 
-  public synchronized EffectQueue acquire(ITriggerType<?> trigger, IEffectQueueLoader loader)
+  public synchronized EffectQueue acquire(TriggerType<?> trigger, IEffectQueueLoader loader)
       throws NullPointerException {
     Preconditions.checkNotNull(trigger);
     Queue<EffectQueue> pool = poolMap.computeIfAbsent(trigger,
@@ -37,7 +37,7 @@ final class EffectQueuePool {
   }
 
   public synchronized void release(EffectQueue queue) {
-    ITriggerType<?> trigger = queue.getTriggerType();
+    TriggerType<?> trigger = queue.getTriggerType();
     Queue<EffectQueue> pool = poolMap.get(trigger);
     pool.offer(queue);
   }

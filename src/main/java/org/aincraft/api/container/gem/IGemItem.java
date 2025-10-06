@@ -6,7 +6,7 @@ import org.aincraft.api.container.EffectInstanceMeta;
 import org.aincraft.api.container.ISocketColor;
 import org.aincraft.api.container.gem.IGemItem.IGemItemContainer;
 import org.aincraft.api.container.gem.IGemItem.IGemItemContainerView;
-import org.aincraft.api.trigger.ITriggerType;
+import org.aincraft.api.trigger.TriggerType;
 import org.aincraft.container.context.IEffectQueueLoader;
 import org.aincraft.effects.IGemEffect;
 import org.bukkit.Material;
@@ -79,5 +79,5 @@ public interface IGemItem extends IContainerHolder<IGemItemContainer, IGemItemCo
     IGemItem create(ItemStack stack) throws IllegalArgumentException;
   }
 
-  IEffectQueueLoader getLoader(ITriggerType<?> trigger, EquipmentSlot slot);
+  IEffectQueueLoader getLoader(TriggerType<?> trigger, EquipmentSlot slot);
 }

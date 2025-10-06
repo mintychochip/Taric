@@ -2,7 +2,7 @@ package org.aincraft.api.context;
 
 import org.bukkit.entity.Player;
 
-public interface IPlayerMoveContext extends IMoveContext {
+public interface PlayerMoveContext extends IMoveContext {
 
   Player getPlayer();
 }

@@ -16,7 +16,9 @@ import java.util.Map.Entry;
 import net.kyori.adventure.key.Key;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.MiniMessage;
+import org.aincraft.BridgeImpl;
 import org.aincraft.Taric;
+import org.aincraft.api.Bridge;
 import org.aincraft.api.config.IConfiguration;
 import org.aincraft.api.container.IRarity;
 import org.aincraft.api.container.ISocketColor;
@@ -26,6 +28,8 @@ import org.aincraft.database.Extractor.ResourceExtractor;
 import org.aincraft.database.IDatabase;
 import org.aincraft.database.StorageProvider;
 import org.aincraft.effects.IGemEffect;
+import org.aincraft.registry.RegistryAccess;
+import org.aincraft.trigger.TriggerModule;
 import org.bukkit.NamespacedKey;
 import org.bukkit.plugin.Plugin;
 
@@ -164,6 +168,7 @@ public final class PluginModule extends AbstractModule {
 
   @Override
   protected void configure() {
+    install(new TriggerModule());
     bind(Gson.class).toInstance(
         new GsonBuilder()
             .enableComplexMapKeySerialization()
@@ -182,6 +187,8 @@ public final class PluginModule extends AbstractModule {
       bind(IConfiguration.class).annotatedWith(Names.named(entry.getKey()))
           .toInstance(configurationFactory.yaml(entry.getValue()));
     }
+    bind(RegistryAccess.class).to(RegistryAccessImpl.class).in(Singleton.class);
+    bind(Bridge.class).to(BridgeImpl.class).in(Singleton.class);
     bind(IDatabase.class).toProvider(StorageProvider.class).in(Singleton.class);
     bind(Extractor.class).to(ResourceExtractor.class);
   }

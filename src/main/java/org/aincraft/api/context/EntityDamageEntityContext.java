@@ -3,11 +3,11 @@ package org.aincraft.api.context;
 import org.bukkit.entity.Entity;
 import org.bukkit.event.entity.EntityDamageEvent.DamageModifier;
 
-public interface IEntityDamageEntityContext {
+public interface EntityDamageEntityContext {
 
   Entity getDamager();
 
-  Entity getDamagee();
+  Entity getEntity();
 
   @SuppressWarnings("deprecation")
   void setDamage(DamageModifier modifier, double value);

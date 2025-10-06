@@ -2,7 +2,7 @@ package org.aincraft.effects;
 
 import java.util.List;
 import org.aincraft.api.container.EffectInstanceMeta;
-import org.aincraft.api.context.IBlockDropContext;
+import org.aincraft.api.context.BlockDropContext;
 import org.aincraft.api.trigger.IOnBlockDrop;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
@@ -10,7 +10,7 @@ import org.bukkit.inventory.ItemStack;
 abstract class BlockDropConversionHelper implements IOnBlockDrop {
 
   @Override
-  public void onBlockDrop(IBlockDropContext context, EffectInstanceMeta meta) {
+  public void onBlockDrop(BlockDropContext context, EffectInstanceMeta meta) {
     List<ItemStack> drops = context.getDrops();
     if (drops == null || drops.isEmpty()) {
       return;
@@ -30,7 +30,7 @@ abstract class BlockDropConversionHelper implements IOnBlockDrop {
     context.setDrops(drops);
   }
 
-  protected abstract boolean conversionPredicate(IBlockDropContext context, EffectInstanceMeta meta,
+  protected abstract boolean conversionPredicate(BlockDropContext context, EffectInstanceMeta meta,
       ItemStack stack);
 
   protected abstract ItemStack conversion(Material material);

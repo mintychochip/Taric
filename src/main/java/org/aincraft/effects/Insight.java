@@ -8,21 +8,21 @@ import org.aincraft.api.container.EffectInstanceMeta;
 import org.aincraft.api.container.TargetType;
 import org.aincraft.api.container.TypeSet;
 import org.aincraft.api.container.context.IExperienceContext;
-import org.aincraft.api.context.IBlockBreakContext;
-import org.aincraft.api.context.IEntityKillContext;
+import org.aincraft.api.context.BlockBreakContext;
+import org.aincraft.api.context.EntityKillContext;
+import org.aincraft.api.context.FishContext;
 import org.aincraft.api.trigger.IOnBlockBreak;
 import org.aincraft.api.trigger.IOnEntityKill;
 import org.aincraft.api.trigger.IOnPlayerFish;
-import org.aincraft.api.context.IPlayerFishContext;
+import org.aincraft.api.trigger.TriggerType;
 import org.aincraft.api.trigger.TriggerTypes;
-import org.aincraft.api.trigger.ITriggerType;
 import org.bukkit.Material;
 
 final class Insight extends AbstractGemEffect implements IOnEntityKill, IOnBlockBreak,
     IOnPlayerFish {
 
   @Override
-  protected Map<ITriggerType<?>, Set<Material>> buildValidTargets() {
+  protected Map<TriggerType<?>, Set<Material>> buildValidTargets() {
     return Map.ofEntries(
         Map.entry(TriggerTypes.ENTITY_KILL, TargetType.MELEE_WEAPON),
         Map.entry(TriggerTypes.BLOCK_BREAK, TargetType.PICKAXE),
@@ -31,7 +31,7 @@ final class Insight extends AbstractGemEffect implements IOnEntityKill, IOnBlock
   }
 
   @Override
-  public void onBlockBreak(IBlockBreakContext context, EffectInstanceMeta meta) {
+  public void onBlockBreak(BlockBreakContext context, EffectInstanceMeta meta) {
     echoes(context, meta.getRank());
   }
 
@@ -47,13 +47,13 @@ final class Insight extends AbstractGemEffect implements IOnEntityKill, IOnBlock
   }
 
   @Override
-  public void onPlayerFish(IPlayerFishContext context, EffectInstanceMeta meta) {
+  public void onPlayerFish(FishContext context, EffectInstanceMeta meta) {
     echoes(context, meta.getRank());
   }
 
 
   @Override
-  public void onKillEntity(IEntityKillContext context, EffectInstanceMeta meta) {
+  public void onKillEntity(EntityKillContext context, EffectInstanceMeta meta) {
     echoes(context, meta.getRank());
   }
 }

@@ -4,11 +4,11 @@ import java.util.Map;
 import java.util.Set;
 import org.aincraft.api.container.EffectInstanceMeta;
 import org.aincraft.api.container.TargetType;
-import org.aincraft.api.context.IEntityMoveContext;
-import org.aincraft.api.context.IPlayerMoveContext;
+import org.aincraft.api.context.EntityMoveContext;
+import org.aincraft.api.context.PlayerMoveContext;
 import org.aincraft.api.trigger.IOnEntityMove;
 import org.aincraft.api.trigger.IOnPlayerMove;
-import org.aincraft.api.trigger.ITriggerType;
+import org.aincraft.api.trigger.TriggerType;
 import org.aincraft.api.trigger.TriggerTypes;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -16,13 +16,13 @@ import org.bukkit.Material;
 public class LavaWalker extends AbstractGemEffect implements IOnEntityMove, IOnPlayerMove {
 
   @Override
-  public void onEntityMove(IEntityMoveContext context, EffectInstanceMeta meta) {
+  public void onEntityMove(EntityMoveContext context, EffectInstanceMeta meta) {
     Location from = context.getFrom();
   }
 
 
   @Override
-  protected Map<ITriggerType<?>, Set<Material>> buildValidTargets() {
+  protected Map<TriggerType<?>, Set<Material>> buildValidTargets() {
     return Map.ofEntries(
         Map.entry(TriggerTypes.ENTITY_MOVE, TargetType.BOOTS),
         Map.entry(TriggerTypes.PLAYER_MOVE, TargetType.BOOTS)
@@ -30,7 +30,7 @@ public class LavaWalker extends AbstractGemEffect implements IOnEntityMove, IOnP
   }
 
   @Override
-  public void onPlayerMove(IPlayerMoveContext context, EffectInstanceMeta meta) {
+  public void onPlayerMove(PlayerMoveContext context, EffectInstanceMeta meta) {
     Location from = context.getFrom();
   }
 }

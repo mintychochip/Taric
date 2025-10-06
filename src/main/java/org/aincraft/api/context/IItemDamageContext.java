@@ -13,7 +13,7 @@ public interface IItemDamageContext {
     double getOriginalDamage();
   }
 
-  interface IEntityItemDamageContext extends IItemDamageContext {
+  interface EntityItemDamageContext extends IItemDamageContext {
 
     Entity getEntity();
   }

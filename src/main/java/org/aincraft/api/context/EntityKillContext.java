@@ -7,7 +7,7 @@ import org.bukkit.damage.DamageSource;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.inventory.ItemStack;
 
-public interface IEntityKillContext extends IDropContext<List<ItemStack>>,
+public interface EntityKillContext extends IDropContext<List<ItemStack>>,
     IExperienceContext {
 
   DamageSource getDamageSource();

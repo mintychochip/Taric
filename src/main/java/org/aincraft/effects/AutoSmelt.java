@@ -7,9 +7,9 @@ import org.aincraft.Taric;
 import org.aincraft.api.config.IConfiguration;
 import org.aincraft.api.container.EffectInstanceMeta;
 import org.aincraft.api.container.TargetType;
-import org.aincraft.api.context.IBlockDropContext;
+import org.aincraft.api.context.BlockDropContext;
 import org.aincraft.api.trigger.IOnBlockDrop;
-import org.aincraft.api.trigger.ITriggerType;
+import org.aincraft.api.trigger.TriggerType;
 import org.aincraft.api.trigger.TriggerTypes;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -62,6 +62,7 @@ final class AutoSmelt extends AbstractGemEffect implements IOnBlockDrop {
     Taric.getLogger().info(
         String.format("[AutoSmelt] Loaded %d item conversions", conversions.size())
     );
+    Taric.getLogger().info(conversions.toString());
     return new AutoSmelt(conversions);
   }
 
@@ -76,7 +77,7 @@ final class AutoSmelt extends AbstractGemEffect implements IOnBlockDrop {
     }
 
     @Override
-    protected boolean conversionPredicate(IBlockDropContext context, EffectInstanceMeta meta,
+    protected boolean conversionPredicate(BlockDropContext context, EffectInstanceMeta meta,
         ItemStack stack) {
       int rank = meta.getRank();
       Material material = stack.getType();
@@ -116,21 +117,14 @@ final class AutoSmelt extends AbstractGemEffect implements IOnBlockDrop {
   }
 
   @Override
-  protected Map<ITriggerType<?>, Set<Material>> buildValidTargets() {
+  protected Map<TriggerType<?>, Set<Material>> buildValidTargets() {
     return Map.ofEntries(
-        Map.entry(TriggerTypes.BLOCK_BREAK, TargetType.TOOL)
+        Map.entry(TriggerTypes.BLOCK_DROP, TargetType.TOOL)
     );
   }
 
-  //  @Override
-//  protected Map<TriggerType, Set<Material>> buildValidTargets() {
-//    return Map.ofEntries(
-//        Map.entry(TriggerType.BLOCK_DROP, TargetType.TOOL)
-//    );
-//  }
-
   @Override
-  public void onBlockDrop(IBlockDropContext context, EffectInstanceMeta meta) {
+  public void onBlockDrop(BlockDropContext context, EffectInstanceMeta meta) {
     helper.setMaxRank(this.getMaxRank());
     helper.onBlockDrop(context, meta);
   }

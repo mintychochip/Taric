@@ -5,9 +5,9 @@ import java.util.Set;
 import org.aincraft.Settings;
 import org.aincraft.api.container.EffectInstanceMeta;
 import org.aincraft.api.container.TargetType;
-import org.aincraft.api.context.IEntityDamageEntityContext;
+import org.aincraft.api.context.EntityDamageEntityContext;
 import org.aincraft.api.trigger.IOnEntityHitEntity;
-import org.aincraft.api.trigger.ITriggerType;
+import org.aincraft.api.trigger.TriggerType;
 import org.aincraft.api.trigger.TriggerTypes;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -20,8 +20,8 @@ import org.jetbrains.annotations.NotNull;
 final class Frostbite extends AbstractGemEffect implements IOnEntityHitEntity {
 
   @Override
-  public void onHitEntity(IEntityDamageEntityContext context, EffectInstanceMeta meta) {
-    Entity damagee = context.getDamagee();
+  public void onHitEntity(EntityDamageEntityContext context, EffectInstanceMeta meta) {
+    Entity damagee = context.getEntity();
     int base = damagee.getFreezeTicks();
     damagee.setFreezeTicks(
         Math.min(base + meta.getRank() * Settings.COLD_ASPECT_FREEZE_TICKS_RANK,
@@ -47,7 +47,7 @@ final class Frostbite extends AbstractGemEffect implements IOnEntityHitEntity {
   }
 
   @Override
-  protected Map<ITriggerType<?>, Set<Material>> buildValidTargets() {
+  protected Map<TriggerType<?>, Set<Material>> buildValidTargets() {
     return Map.ofEntries(
         Map.entry(TriggerTypes.ENTITY_HIT_ENTITY, TargetType.MELEE_WEAPON)
     );

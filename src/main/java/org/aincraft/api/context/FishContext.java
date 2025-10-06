@@ -7,7 +7,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
 
-public interface IPlayerFishContext extends IExperienceContext, IDropContext<ItemStack> {
+public interface FishContext extends IExperienceContext, IDropContext<ItemStack> {
 
   Player getPlayer();
 

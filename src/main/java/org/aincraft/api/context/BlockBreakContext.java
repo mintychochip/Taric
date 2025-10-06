@@ -6,7 +6,7 @@ import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
-public interface IBlockBreakContext extends IExperienceContext, IFakeContext {
+public interface BlockBreakContext extends IExperienceContext, IFakeContext {
 
   Player getPlayer();
 

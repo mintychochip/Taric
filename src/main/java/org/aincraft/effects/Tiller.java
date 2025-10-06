@@ -9,7 +9,7 @@ import org.aincraft.api.container.TargetType;
 import org.aincraft.api.context.IItemDamageContext.IPlayerItemDamageContext;
 import org.aincraft.api.trigger.IOnInteract;
 import org.aincraft.api.trigger.IOnPlayerItemDamage;
-import org.aincraft.api.trigger.ITriggerType;
+import org.aincraft.api.trigger.TriggerType;
 import org.aincraft.api.trigger.TriggerTypes;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -32,7 +32,7 @@ public class Tiller extends AbstractGemEffect implements IOnInteract, IOnPlayerI
   private final Map<Integer, Location> used = new HashMap<>();
 
   @Override
-  protected Map<ITriggerType<?>, Set<Material>> buildValidTargets() {
+  protected Map<TriggerType<?>, Set<Material>> buildValidTargets() {
     return Map.ofEntries(
         Map.entry(TriggerTypes.INTERACT, TargetType.HOE),
         Map.entry(TriggerTypes.PLAYER_ITEM_DAMAGE, TargetType.HOE)
@@ -40,8 +40,8 @@ public class Tiller extends AbstractGemEffect implements IOnInteract, IOnPlayerI
   }
 
   @Override
-  public void onInteract(IInteractContext context, EffectInstanceMeta meta) {
-    Block origin = context.getBlock();
+  public void onInteract(PlayerInteractContext context, EffectInstanceMeta meta) {
+    Block origin = context.getClickedBlock();
     if (origin == null) {
       return;
     }

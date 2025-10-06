@@ -14,7 +14,7 @@ import org.jetbrains.annotations.Nullable;
 
 public interface IOnInteract {
 
-  interface IInteractContext {
+  interface PlayerInteractContext {
 
     @NotNull
     Player getPlayer();
@@ -26,13 +26,13 @@ public interface IOnInteract {
     Action getAction();
 
     @Nullable
-    Block getBlock();
+    Block getClickedBlock();
 
     @NotNull
     BlockFace getBlockFace();
 
     @Nullable
-    Location getLocation();
+    Location getInteractionPoint();
 
     @Nullable
     EquipmentSlot getHand();
@@ -51,5 +51,5 @@ public interface IOnInteract {
     boolean isBlockInHand();
   }
 
-  void onInteract(IInteractContext context, EffectInstanceMeta meta);
+  void onInteract(PlayerInteractContext context, EffectInstanceMeta meta);
 }

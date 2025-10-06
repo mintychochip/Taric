@@ -5,9 +5,9 @@ import java.util.Set;
 import org.aincraft.Settings;
 import org.aincraft.api.container.EffectInstanceMeta;
 import org.aincraft.api.container.TargetType;
-import org.aincraft.api.context.IEntityDamageEntityContext;
+import org.aincraft.api.context.EntityDamageEntityContext;
 import org.aincraft.api.trigger.IOnEntityHitEntity;
-import org.aincraft.api.trigger.ITriggerType;
+import org.aincraft.api.trigger.TriggerType;
 import org.aincraft.api.trigger.TriggerTypes;
 import org.bukkit.Color;
 import org.bukkit.Location;
@@ -29,7 +29,7 @@ public final class Vampirism extends AbstractGemEffect implements IOnEntityHitEn
       1.5f);
 
   @Override
-  public void onHitEntity(IEntityDamageEntityContext context, EffectInstanceMeta meta) {
+  public void onHitEntity(EntityDamageEntityContext context, EffectInstanceMeta meta) {
     Entity damager = context.getDamager();
     if (!(damager instanceof LivingEntity livingEntity)) {
       return;
@@ -49,7 +49,7 @@ public final class Vampirism extends AbstractGemEffect implements IOnEntityHitEn
     } else {
       livingEntity.setHealth(maxHealth);
     }
-    if (context.getDamagee() instanceof LivingEntity livingDamagee) {
+    if (context.getEntity() instanceof LivingEntity livingDamagee) {
       playEffects(livingDamagee.getEyeLocation());
     }
   }
@@ -71,7 +71,7 @@ public final class Vampirism extends AbstractGemEffect implements IOnEntityHitEn
   }
 
   @Override
-  protected Map<ITriggerType<?>, Set<Material>> buildValidTargets() {
+  protected Map<TriggerType<?>, Set<Material>> buildValidTargets() {
     return Map.ofEntries(
         Map.entry(TriggerTypes.ENTITY_HIT_ENTITY, TargetType.MELEE_WEAPON)
     );

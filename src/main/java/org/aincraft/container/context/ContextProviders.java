@@ -2,19 +2,19 @@ package org.aincraft.container.context;
 
 import io.papermc.paper.event.entity.EntityDamageItemEvent;
 import io.papermc.paper.event.entity.EntityMoveEvent;
-import org.aincraft.api.context.IBlockBreakContext;
-import org.aincraft.api.context.IBlockDropContext;
-import org.aincraft.api.context.IEntityDamageEntityContext;
-import org.aincraft.api.context.IEntityKillContext;
-import org.aincraft.api.context.IEntityMoveContext;
-import org.aincraft.api.context.IItemDamageContext.IEntityItemDamageContext;
+import org.aincraft.api.context.BlockBreakContext;
+import org.aincraft.api.context.BlockDropContext;
+import org.aincraft.api.context.ContextFactory;
+import org.aincraft.api.context.EntityDamageEntityContext;
+import org.aincraft.api.context.EntityKillContext;
+import org.aincraft.api.context.EntityMoveContext;
+import org.aincraft.api.context.FishContext;
+import org.aincraft.api.context.IItemDamageContext.EntityItemDamageContext;
 import org.aincraft.api.context.IItemDamageContext.IPlayerItemDamageContext;
-import org.aincraft.api.context.IPlayerFishContext;
-import org.aincraft.api.context.IPlayerMoveContext;
 import org.aincraft.api.context.IShearEntityContext.IPlayerShearEntityContext;
 import org.aincraft.api.context.IShootBowContext;
-import org.aincraft.api.trigger.IOnInteract.IInteractContext;
-import org.aincraft.events.FakeBlockBreakEvent;
+import org.aincraft.api.context.PlayerMoveContext;
+import org.aincraft.api.trigger.IOnInteract.PlayerInteractContext;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockDropItemEvent;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
@@ -30,42 +30,37 @@ import org.jetbrains.annotations.ApiStatus.Internal;
 @Internal
 final class ContextProviders {
 
-  public static final IContextProvider<IEntityDamageEntityContext, EntityDamageByEntityEvent> ENTITY_DAMAGE_BY_ENTITY;
-  public static final IContextProvider<IEntityKillContext, EntityDeathEvent> ENTITY_KILL;
-  public static final IContextProvider<IPlayerFishContext, PlayerFishEvent> PLAYER_FISH;
-  public static final IContextProvider<IInteractContext, PlayerInteractEvent> INTERACT;
-  public static final IContextProvider<IBlockDropContext, BlockDropItemEvent> BLOCK_DROP;
-  public static final IContextProvider<IEntityItemDamageContext, EntityDamageItemEvent> ENTITY_ITEM_DAMAGE;
+  public static final IContextProvider<EntityDamageEntityContext, EntityDamageByEntityEvent> ENTITY_DAMAGE_BY_ENTITY;
+  public static final IContextProvider<EntityKillContext, EntityDeathEvent> ENTITY_KILL;
+  public static final IContextProvider<FishContext, PlayerFishEvent> PLAYER_FISH;
+  public static final IContextProvider<PlayerInteractContext, PlayerInteractEvent> INTERACT;
+  public static final IContextProvider<BlockDropContext, BlockDropItemEvent> BLOCK_DROP;
+  public static final IContextProvider<EntityItemDamageContext, EntityDamageItemEvent> ENTITY_ITEM_DAMAGE;
   public static final IContextProvider<IPlayerItemDamageContext, PlayerItemDamageEvent> PLAYER_ITEM_DAMAGE;
   public static final IContextProvider<IPlayerShearEntityContext, PlayerShearEntityEvent> PLAYER_SHEAR_ENTITY;
-  public static final IContextProvider<IEntityMoveContext, EntityMoveEvent> ENTITY_MOVE;
-  public static final IContextProvider<IPlayerMoveContext, PlayerMoveEvent> PLAYER_MOVE;
-  public static final IContextProvider<IBlockBreakContext, BlockBreakEvent> BLOCK_BREAK;
+  public static final IContextProvider<EntityMoveContext, EntityMoveEvent> ENTITY_MOVE;
+  public static final IContextProvider<PlayerMoveContext, PlayerMoveEvent> PLAYER_MOVE;
+  public static final IContextProvider<BlockBreakContext, BlockBreakEvent> BLOCK_BREAK;
   public static final IContextProvider<IShootBowContext, EntityShootBowEvent> SHOOT_BOW;
 
   static {
-    ENTITY_DAMAGE_BY_ENTITY = EntityDamageEntityContext::new;
-    ENTITY_KILL = EntityKillContext::new;
+    ENTITY_DAMAGE_BY_ENTITY = ContextFactory::create;
+    ENTITY_KILL = ContextFactory::create;
     PLAYER_FISH = PlayerFishContext::new;
-    INTERACT = InteractContext::new;
-    BLOCK_DROP = BlockDropContext::new;
-
-    ENTITY_ITEM_DAMAGE = handle -> new EntityItemDamageContext(
-        new EntityItemDamageEventDecorator(handle));
+    INTERACT = ContextFactory::create;
+    BLOCK_DROP = org.aincraft.container.context.BlockDropContext::new;
+    ENTITY_ITEM_DAMAGE = ContextFactory::create;
 
     PLAYER_ITEM_DAMAGE = handle -> new PlayerItemDamageContext(
         new PlayerItemDamageEventDecorator(handle));
 
-    PLAYER_SHEAR_ENTITY = handle -> new PlayerShearEntityEntityContext(
-        new PlayerShearEntityEventDecorator(handle));
+    PLAYER_SHEAR_ENTITY = ContextFactory::create;
 
-    ENTITY_MOVE = handle -> new EntityMoveContext(
-        new EntityMoveEventDecorator(handle));
+    ENTITY_MOVE = ContextFactory::create;
 
-    PLAYER_MOVE = handle -> new PlayerMoveContext(new PlayerMoveEventDecorator(handle));
+    PLAYER_MOVE = ContextFactory::create;
 
-    BLOCK_BREAK = handle -> new BlockBreakContext(
-        handle, handle instanceof FakeBlockBreakEvent);
+    BLOCK_BREAK = ContextFactory::create;
 
     SHOOT_BOW = ShootBowContext::new;
   }

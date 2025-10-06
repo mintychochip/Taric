@@ -4,6 +4,7 @@ chest:
   max-amount: 2
   luck-applicable: false
   base: 0.05
+  enabled: true
   loot-table-whitelist:
     - minecraft:chests/village/village_armorer
     - minecraft:chests/village/village_butcher

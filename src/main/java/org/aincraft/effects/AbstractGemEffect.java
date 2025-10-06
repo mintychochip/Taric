@@ -8,7 +8,7 @@ import java.util.Set;
 import org.aincraft.Taric;
 import org.aincraft.api.container.IRarity;
 import org.aincraft.api.container.ISocketColor;
-import org.aincraft.api.trigger.ITriggerType;
+import org.aincraft.api.trigger.TriggerType;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.inventory.EquipmentSlot;
@@ -17,7 +17,7 @@ import org.jetbrains.annotations.NotNull;
 
 abstract class AbstractGemEffect implements IGemEffect {
 
-  private final Supplier<Map<ITriggerType<?>, Set<Material>>> targetSupplier = Suppliers.memoize(
+  private final Supplier<Map<TriggerType<?>, Set<Material>>> targetSupplier = Suppliers.memoize(
       this::buildValidTargets);
   private final Supplier<NamespacedKey> keySupplier = Suppliers.memoize(this::buildKey);
   private final Supplier<String> nameSupplier = Suppliers.memoize(this::buildName);
@@ -27,14 +27,14 @@ abstract class AbstractGemEffect implements IGemEffect {
                               IRarity rarity,
                               ISocketColor color,
                               List<String> adjectives,
-                              Map<ITriggerType<?>, Integer> priority,
+                              Map<TriggerType<?>, Integer> priority,
                               String description,
                               Set<EquipmentSlot> requiredActiveSlots) {
 
   }
 
   @Override
-  public int getPriority(ITriggerType<?> triggerType) {
+  public int getPriority(TriggerType<?> triggerType) {
     return meta.priority.getOrDefault(triggerType, 0);
   }
 
@@ -50,18 +50,18 @@ abstract class AbstractGemEffect implements IGemEffect {
 
 
   @Override
-  public boolean isValidTarget(ITriggerType<?> trigger, Material material) {
+  public boolean isValidTarget(TriggerType<?> trigger, Material material) {
     if (material.isAir()) {
       return false;
     }
-    Map<ITriggerType<?>, Set<Material>> validTargets = this.getValidTargets();
+    Map<TriggerType<?>, Set<Material>> validTargets = this.getValidTargets();
     if (!validTargets.containsKey(trigger)) {
       return false;
     }
     return validTargets.get(trigger).contains(material);
   }
 
-  private Map<ITriggerType<?>, Set<Material>> getValidTargets() {
+  private Map<TriggerType<?>, Set<Material>> getValidTargets() {
     return this.targetSupplier.get();
   }
 
@@ -70,7 +70,7 @@ abstract class AbstractGemEffect implements IGemEffect {
     if (material.isAir()) {
       return false;
     }
-    Map<ITriggerType<?>, Set<Material>> validTargets = this.getValidTargets();
+    Map<TriggerType<?>, Set<Material>> validTargets = this.getValidTargets();
     for (Set<Material> materials : validTargets.values()) {
       if (materials.contains(material)) {
         return true;
@@ -148,5 +148,5 @@ abstract class AbstractGemEffect implements IGemEffect {
     return new NamespacedKey("taric", key.toLowerCase());
   }
 
-  protected abstract Map<ITriggerType<?>, Set<Material>> buildValidTargets();
+  protected abstract Map<TriggerType<?>, Set<Material>> buildValidTargets();
 }

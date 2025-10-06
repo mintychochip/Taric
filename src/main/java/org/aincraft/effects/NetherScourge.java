@@ -6,9 +6,9 @@ import org.aincraft.Settings;
 import org.aincraft.Taric;
 import org.aincraft.api.container.EffectInstanceMeta;
 import org.aincraft.api.container.TargetType;
-import org.aincraft.api.context.IEntityDamageEntityContext;
+import org.aincraft.api.context.EntityDamageEntityContext;
 import org.aincraft.api.trigger.IOnEntityHitEntity;
-import org.aincraft.api.trigger.ITriggerType;
+import org.aincraft.api.trigger.TriggerType;
 import org.aincraft.api.trigger.TriggerTypes;
 import org.bukkit.Material;
 import org.bukkit.entity.Entity;
@@ -17,15 +17,15 @@ import org.bukkit.event.entity.EntityDamageEvent.DamageModifier;
 final class NetherScourge extends AbstractGemEffect implements IOnEntityHitEntity {
 
   @Override
-  protected Map<ITriggerType<?>, Set<Material>> buildValidTargets() {
+  protected Map<TriggerType<?>, Set<Material>> buildValidTargets() {
     return Map.ofEntries(
         Map.entry(TriggerTypes.ENTITY_HIT_ENTITY, TargetType.MELEE_WEAPON)
     );
   }
 
   @Override
-  public void onHitEntity(IEntityDamageEntityContext context, EffectInstanceMeta meta) {
-    Entity damagee = context.getDamagee();
+  public void onHitEntity(EntityDamageEntityContext context, EffectInstanceMeta meta) {
+    Entity damagee = context.getEntity();
     if (!Settings.NETHER_SCOURGE_AFFECTED_TYPES.contains(damagee.getType())) {
       return;
     }

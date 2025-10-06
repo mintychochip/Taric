@@ -10,9 +10,10 @@ import org.aincraft.Taric;
 import org.aincraft.api.config.IConfigurationFactory;
 import org.aincraft.api.container.IRarity;
 import org.aincraft.api.container.ISocketColor;
-import org.aincraft.api.trigger.ITriggerType;
+import org.aincraft.api.trigger.TriggerType;
 import org.aincraft.effects.AbstractGemEffect.GemEffectMeta;
 import org.aincraft.registry.IRegistry;
+import org.aincraft.registry.Registry;
 import org.bukkit.NamespacedKey;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.inventory.EquipmentSlot;
@@ -26,11 +27,11 @@ final class GemMetaFactory implements IConfigurationFactory<GemEffectMeta> {
       "description", "required-active-slots"};
   private final IRegistry<IRarity> rarityRegistry;
   private final IRegistry<ISocketColor> colorRegistry;
-  private final IRegistry<ITriggerType<?>> triggerRegistry;
+  private final Registry<TriggerType<?>> triggerRegistry;
   private final Plugin plugin;
 
   GemMetaFactory(IRegistry<IRarity> rarityRegistry, IRegistry<ISocketColor> colorRegistry,
-      IRegistry<ITriggerType<?>> triggerRegistry,
+      Registry<TriggerType<?>> triggerRegistry,
       Plugin plugin) {
     this.rarityRegistry = rarityRegistry;
     this.colorRegistry = colorRegistry;
@@ -60,7 +61,7 @@ final class GemMetaFactory implements IConfigurationFactory<GemEffectMeta> {
     if (prioritySection == null) {
       throw new IllegalArgumentException("priority section cannot be null");
     }
-    Map<ITriggerType<?>, Integer> priorityMap = getPriorityMap(prioritySection);
+    Map<TriggerType<?>, Integer> priorityMap = getPriorityMap(prioritySection);
     Taric.getLogger().info(priorityMap.toString());
     String description = section.getString("description");
     Set<EquipmentSlot> slots = section.getStringList("required-active-slots").stream()
@@ -69,13 +70,13 @@ final class GemMetaFactory implements IConfigurationFactory<GemEffectMeta> {
     return new GemEffectMeta(maxRank, rarity, color, adjectives, priorityMap, description, slots);
   }
 
-  private Map<ITriggerType<?>, Integer> getPriorityMap(@NotNull ConfigurationSection section)
+  private Map<TriggerType<?>, Integer> getPriorityMap(@NotNull ConfigurationSection section)
       throws IllegalArgumentException {
-    Map<ITriggerType<?>, Integer> priorityMap = new HashMap<>();
+    Map<TriggerType<?>, Integer> priorityMap = new HashMap<>();
     for (String triggerTypeString : section.getKeys(false)) {
       String lowerCase = triggerTypeString.toLowerCase();
       NamespacedKey key = new NamespacedKey(plugin, lowerCase);
-      ITriggerType<?> trigger = triggerRegistry.get(key);
+      TriggerType<?> trigger = triggerRegistry.get(key);
       if (trigger == null) {
         Taric.getLogger().info("could not find a trigger for %s".formatted(triggerTypeString));
       }

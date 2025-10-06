@@ -8,7 +8,10 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.concurrent.ExecutionException;
 import org.aincraft.api.container.gem.IGemInventory;
+import org.aincraft.api.container.gem.IGemInventoryFactory;
 import org.aincraft.api.container.launchable.ILaunchable;
+import org.aincraft.api.context.BlockBreakContext;
+import org.aincraft.api.context.ContextFactory;
 import org.aincraft.api.context.IShootBowContext;
 import org.aincraft.api.trigger.TriggerTypes;
 import org.aincraft.container.context.DispatchContexts;
@@ -16,6 +19,7 @@ import org.aincraft.container.context.IDispatch;
 import org.aincraft.container.context.IEffectQueueLoader;
 import org.aincraft.events.FakeBlockBreakEvent;
 import org.aincraft.events.FakeBlockDropItemEvent;
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.block.Block;
 import org.bukkit.damage.DamageSource;
@@ -40,13 +44,16 @@ import org.bukkit.event.player.PlayerShearEntityEvent;
 
 public class EffectListener implements Listener {
 
+  private final IGemInventoryFactory factory;
   private final LoadingCache<LivingEntity, IGemInventory> inventoryCache;
   private final Set<Location> blocksDestroyed = new HashSet<>();
   private final IDispatch dispatch;
 
   @Inject
-  public EffectListener(LoadingCache<LivingEntity, IGemInventory> inventoryCache,
+  public EffectListener(IGemInventoryFactory factory,
+      LoadingCache<LivingEntity, IGemInventory> inventoryCache,
       IDispatch dispatch) {
+    this.factory = factory;
     this.inventoryCache = inventoryCache;
     this.dispatch = dispatch;
   }
@@ -72,18 +79,13 @@ public class EffectListener implements Listener {
   @EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
   private void onEntityBowShoot(final EntityShootBowEvent event) {
     LivingEntity shooter = event.getEntity();
-    try {
-      IGemInventory inventory = inventoryCache.get(shooter);
-      IEffectQueueLoader loader = inventory.getLoader(TriggerTypes.SHOOT_BOW);
-      IShootBowContext context = dispatch.dispatch(DispatchContexts.SHOOT_BOW, loader, event, e -> {
-        Projectile p = (Projectile) e.getProjectile();
-        p.remove();
-      });
-      for (ILaunchable launchable : context.getLaunchables()) {
-        launchable.launch(shooter);
-      }
-    } catch (ExecutionException e) {
-      throw new RuntimeException(e);
+    IEffectQueueLoader loader = factory.create(shooter).getLoader(TriggerTypes.SHOOT_BOW);
+    IShootBowContext context = dispatch.dispatch(DispatchContexts.SHOOT_BOW, loader, event, e -> {
+      Projectile p = (Projectile) e.getProjectile();
+      p.remove();
+    });
+    for (ILaunchable launchable : context.getLaunchables()) {
+      launchable.launch(shooter);
     }
   }
 
@@ -146,6 +148,13 @@ public class EffectListener implements Listener {
     if (event instanceof FakeBlockBreakEvent) {
       return;
     }
+    BlockBreakContext blockBreakContext = ContextFactory.create(event);
+    int experience = blockBreakContext.getExperience();
+    Block block = blockBreakContext.getBlock();
+    Bukkit.broadcastMessage(block + "");
+    Bukkit.broadcastMessage(experience + "");
+    Bukkit.broadcastMessage(blockBreakContext.getTool().toString());
+    Bukkit.broadcastMessage(blockBreakContext.getPlayer().toString());
     try {
       IGemInventory inventory = inventoryCache.get(event.getPlayer());
       IEffectQueueLoader loader = inventory.getLoader(TriggerTypes.BLOCK_BREAK);

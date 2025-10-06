@@ -9,7 +9,7 @@ import org.aincraft.api.container.gem.IGemInventory;
 import org.aincraft.api.container.gem.IGemInventoryFactory;
 import org.aincraft.api.container.gem.IGemItem;
 import org.aincraft.api.container.gem.IGemItem.IGemItemFactory;
-import org.aincraft.api.trigger.ITriggerType;
+import org.aincraft.api.trigger.TriggerType;
 import org.aincraft.container.context.IEffectQueueLoader;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.inventory.EquipmentSlot;
@@ -63,7 +63,7 @@ final class GemInventory implements IGemInventory {
   }
 
   @Override
-  public IEffectQueueLoader getLoader(ITriggerType<?> trigger) {
+  public IEffectQueueLoader getLoader(TriggerType<?> trigger) {
     return queue -> {
       for (Map.Entry<EquipmentSlot, IGemItem> itemEntry : inventory.entrySet()) {
         EquipmentSlot slot = itemEntry.getKey();

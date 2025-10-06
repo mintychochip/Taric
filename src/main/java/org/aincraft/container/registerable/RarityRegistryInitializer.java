@@ -6,7 +6,6 @@ import com.google.inject.Provider;
 import com.google.inject.name.Named;
 import java.util.List;
 import net.kyori.adventure.text.format.TextColor;
-import org.aincraft.Taric;
 import org.aincraft.api.config.IConfiguration;
 import org.aincraft.api.config.IConfigurationFactory;
 import org.aincraft.api.container.IRarity;
@@ -78,7 +77,7 @@ public final class RarityRegistryInitializer implements Provider<IRegistry<IRari
             raritySection.getConfigurationSection(rarityKey));
         registry.register(rarity);
       } catch (IllegalArgumentException ex) {
-        Taric.getLogger().info(ex.getMessage());
+//        Taric.getLogger().info(ex.getMessage());
       }
     }
     return registry;

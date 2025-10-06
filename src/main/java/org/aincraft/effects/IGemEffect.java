@@ -7,7 +7,7 @@ import org.aincraft.api.config.IConfiguration;
 import org.aincraft.api.container.IRarity;
 import org.aincraft.api.container.ISocketColor;
 import org.aincraft.api.container.IWeighable;
-import org.aincraft.api.trigger.ITriggerType;
+import org.aincraft.api.trigger.TriggerType;
 import org.bukkit.Keyed;
 import org.bukkit.Material;
 import org.bukkit.inventory.EquipmentSlot;
@@ -16,13 +16,13 @@ import org.jetbrains.annotations.NotNull;
 
 public interface IGemEffect extends Keyed, IWeighable {
 
-  int getPriority(ITriggerType<?> triggerType);
+  int getPriority(TriggerType<?> triggerType);
 
   IRarity getRarity();
 
   ISocketColor getSocketColor();
 
-  boolean isValidTarget(ITriggerType<?> trigger, Material material);
+  boolean isValidTarget(TriggerType<?> trigger, Material material);
 
   boolean isValidTarget(Material material);
 

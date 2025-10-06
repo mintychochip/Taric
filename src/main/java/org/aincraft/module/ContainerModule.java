@@ -9,8 +9,6 @@ import org.aincraft.api.container.IIdentificationTable;
 import org.aincraft.api.container.IRarity;
 import org.aincraft.api.container.ISocketColor;
 import org.aincraft.api.container.gem.IGemIdentifier;
-import org.aincraft.api.trigger.ITriggerType;
-import org.aincraft.api.trigger.TriggerRegistryInitializer;
 import org.aincraft.container.GemIdentifier;
 import org.aincraft.container.ItemFactoryModule;
 import org.aincraft.container.context.DispatchProvider;
@@ -41,8 +39,6 @@ public final class ContainerModule extends AbstractModule {
     bind(new TypeLiteral<IRegistry<IIdentificationTable>>() {
     }).toProvider(
         IdentificationTableRegistryInitializer.class).in(Singleton.class);
-    bind(new TypeLiteral<IRegistry<ITriggerType<?>>>() {
-    }).toProvider(TriggerRegistryInitializer.class).in(Singleton.class);
     bind(IGemIdentifier.class).to(GemIdentifier.class).in(Singleton.class);
     bind(IDispatch.class).toProvider(DispatchProvider.class).in(Singleton.class);
   }
