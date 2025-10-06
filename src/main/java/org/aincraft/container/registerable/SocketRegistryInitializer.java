@@ -7,8 +7,8 @@ import com.google.inject.name.Named;
 import java.util.List;
 import net.kyori.adventure.text.format.TextColor;
 import org.aincraft.Taric;
-import org.aincraft.api.config.IConfiguration;
 import org.aincraft.api.config.IConfigurationFactory;
+import org.aincraft.api.config.YamlConfiguration;
 import org.aincraft.api.container.ISocketColor;
 import org.aincraft.registry.IRegistry;
 import org.aincraft.registry.SharedRegistry;
@@ -20,10 +20,11 @@ import org.jetbrains.annotations.NotNull;
 public final class SocketRegistryInitializer implements Provider<IRegistry<ISocketColor>> {
 
   private final Plugin plugin;
-  private final IConfiguration generalConfiguration;
+  private final YamlConfiguration generalConfiguration;
 
   @Inject
-  SocketRegistryInitializer(Plugin plugin, @Named("general") IConfiguration generalConfiguration) {
+  SocketRegistryInitializer(Plugin plugin,
+      @Named("general") YamlConfiguration generalConfiguration) {
     this.plugin = plugin;
     this.generalConfiguration = generalConfiguration;
   }

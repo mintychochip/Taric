@@ -20,9 +20,8 @@ import org.aincraft.BridgeImpl;
 import org.aincraft.Taric;
 import org.aincraft.api.Bridge;
 import org.aincraft.api.Rarity;
-import org.aincraft.api.config.IConfiguration;
+import org.aincraft.api.config.YamlConfiguration;
 import org.aincraft.api.container.ISocketColor;
-import org.aincraft.config.ConfigurationFactory;
 import org.aincraft.database.Extractor;
 import org.aincraft.database.Extractor.ResourceExtractor;
 import org.aincraft.database.IDatabase;
@@ -182,10 +181,9 @@ public final class PluginModule extends AbstractModule {
     );
     bind(Plugin.class).toInstance(plugin);
     bind(Taric.class).asEagerSingleton();
-    ConfigurationFactory configurationFactory = new ConfigurationFactory(plugin);
     for (Entry<String, String> entry : configs.entrySet()) {
-      bind(IConfiguration.class).annotatedWith(Names.named(entry.getKey()))
-          .toInstance(configurationFactory.yaml(entry.getValue()));
+      bind(YamlConfiguration.class).annotatedWith(Names.named(entry.getKey()))
+          .toInstance(YamlConfiguration.single(plugin, entry.getValue()));
     }
     bind(RegistryAccess.class).to(RegistryAccessImpl.class).in(Singleton.class);
     bind(Bridge.class).to(BridgeImpl.class).in(Singleton.class);

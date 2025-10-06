@@ -6,8 +6,8 @@ import com.google.inject.Provider;
 import com.google.inject.name.Named;
 import org.aincraft.Taric;
 import org.aincraft.api.Rarity;
-import org.aincraft.api.config.IConfiguration;
 import org.aincraft.api.config.IConfigurationFactory;
+import org.aincraft.api.config.YamlConfiguration;
 import org.aincraft.api.container.IIdentificationTable;
 import org.aincraft.container.util.WeightedRandomSelector;
 import org.aincraft.registry.IRegistry;
@@ -22,11 +22,11 @@ public final class IdentificationTableRegistryInitializer implements
 
   private final IRegistry<Rarity> rarityRegistry;
   private final Plugin plugin;
-  private final IConfiguration generalConfiguration;
+  private final YamlConfiguration generalConfiguration;
 
   @Inject
   public IdentificationTableRegistryInitializer(IRegistry<Rarity> rarityRegistry, Plugin plugin,
-      @Named("general") IConfiguration generalConfiguration) {
+      @Named("general") YamlConfiguration generalConfiguration) {
     this.rarityRegistry = rarityRegistry;
     this.plugin = plugin;
     this.generalConfiguration = generalConfiguration;

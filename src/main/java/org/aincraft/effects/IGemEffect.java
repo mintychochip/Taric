@@ -4,7 +4,7 @@ import java.util.List;
 import java.util.Set;
 import org.aincraft.Taric;
 import org.aincraft.api.Rarity;
-import org.aincraft.api.config.IConfiguration;
+import org.aincraft.api.config.YamlConfiguration;
 import org.aincraft.api.container.ISocketColor;
 import org.aincraft.api.container.IWeighable;
 import org.aincraft.api.trigger.TriggerType;
@@ -46,7 +46,7 @@ public interface IGemEffect extends Keyed, IWeighable {
   String getName();
 
   //TODO: move this to abstract effect
-  default double loadDouble(IConfiguration config, String subPath, double defaultValue) {
+  default double loadDouble(YamlConfiguration config, String subPath, double defaultValue) {
     String path = this.key().value() + ".settings." + subPath;
     if (!config.contains(path)) {
       logMissing("Double", path, defaultValue);
@@ -59,7 +59,7 @@ public interface IGemEffect extends Keyed, IWeighable {
     Taric.getLogger().warning(type + " not found at '" + path + "', using default: " + fallback);
   }
 
-  default int loadInt(IConfiguration config, String subPath, int defaultValue) {
+  default int loadInt(YamlConfiguration config, String subPath, int defaultValue) {
     String path = this.key().value() + ".settings." + subPath;
     if (!config.contains(path)) {
       logMissing("Integer", path, defaultValue);
@@ -68,7 +68,7 @@ public interface IGemEffect extends Keyed, IWeighable {
     return config.getInt(path);
   }
 
-  default boolean loadBoolean(IConfiguration config, String subPath, boolean defaultValue) {
+  default boolean loadBoolean(YamlConfiguration config, String subPath, boolean defaultValue) {
     String path = this.key().value() + ".settings." + subPath;
     if (!config.contains(path)) {
       logMissing("Boolean", path, defaultValue);
@@ -77,7 +77,7 @@ public interface IGemEffect extends Keyed, IWeighable {
     return config.getBoolean(path);
   }
 
-  default String loadString(IConfiguration config, String subPath, String defaultValue) {
+  default String loadString(YamlConfiguration config, String subPath, String defaultValue) {
     String path = this.key().value() + ".settings." + subPath;
     if (!config.contains(path)) {
       logMissing("String", path, defaultValue);
@@ -86,7 +86,7 @@ public interface IGemEffect extends Keyed, IWeighable {
     return config.getString(path);
   }
 
-  default List<String> loadStringList(IConfiguration config, String subPath,
+  default List<String> loadStringList(YamlConfiguration config, String subPath,
       List<String> defaultValue) {
     String path = this.key().value() + ".settings." + subPath;
     if (!config.contains(path)) {

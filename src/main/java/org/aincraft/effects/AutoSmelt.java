@@ -4,7 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 import org.aincraft.Taric;
-import org.aincraft.api.config.IConfiguration;
+import org.aincraft.api.config.YamlConfiguration;
 import org.aincraft.api.container.EffectInstanceMeta;
 import org.aincraft.api.container.TargetType;
 import org.aincraft.api.context.BlockDropContext;
@@ -31,7 +31,7 @@ final class AutoSmelt extends AbstractGemEffect implements IOnBlockDrop {
     this.helper = new AutoSmeltHelperBlockDrop(conversions);
   }
 
-  public static @NotNull AutoSmelt create(@NotNull IConfiguration gemConfiguration) {
+  public static @NotNull AutoSmelt create(@NotNull YamlConfiguration gemConfiguration) {
     Map<Material, ItemStack> conversions = new HashMap<>();
     String path = "auto-smelt.conversions";
 

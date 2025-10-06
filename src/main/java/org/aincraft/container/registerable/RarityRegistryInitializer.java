@@ -7,8 +7,8 @@ import com.google.inject.name.Named;
 import java.util.List;
 import net.kyori.adventure.text.format.TextColor;
 import org.aincraft.api.Rarity;
-import org.aincraft.api.config.IConfiguration;
 import org.aincraft.api.config.IConfigurationFactory;
+import org.aincraft.api.config.YamlConfiguration;
 import org.aincraft.registry.IRegistry;
 import org.aincraft.registry.SharedRegistry;
 import org.bukkit.NamespacedKey;
@@ -18,13 +18,13 @@ import org.jetbrains.annotations.NotNull;
 
 public final class RarityRegistryInitializer implements Provider<IRegistry<Rarity>> {
 
-  private final IConfiguration generalConfiguration;
+  private final YamlConfiguration generalConfiguration;
 
   private final Plugin plugin;
 
   @Inject
   public RarityRegistryInitializer(@Named("general")
-  IConfiguration generalConfiguration, Plugin plugin) {
+  YamlConfiguration generalConfiguration, Plugin plugin) {
     this.generalConfiguration = generalConfiguration;
     this.plugin = plugin;
   }

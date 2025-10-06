@@ -10,7 +10,7 @@ import java.sql.SQLException;
 import java.util.Random;
 import java.util.logging.Logger;
 import org.aincraft.api.Rarity;
-import org.aincraft.api.config.IConfiguration;
+import org.aincraft.api.config.YamlConfiguration;
 import org.aincraft.api.container.ISocketColor;
 import org.aincraft.api.container.Rarities;
 import org.aincraft.api.container.SocketColors;
@@ -88,14 +88,14 @@ public class Taric {
   }
 
   @NotNull
-  public static IConfiguration getConfiguration(String configurationKey)
+  public static YamlConfiguration getConfiguration(String configurationKey)
       throws IllegalArgumentException {
     if (!TaricBootstrap.CONFIGS.containsKey(configurationKey)) {
       throw new IllegalArgumentException(
           "Configuration key: " + configurationKey + " is not a valid configuration key!");
     }
     return instance.injector.getInstance(
-        Key.get(IConfiguration.class, Names.named(configurationKey)));
+        Key.get(YamlConfiguration.class, Names.named(configurationKey)));
   }
 
   void enable() {

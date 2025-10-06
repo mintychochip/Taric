@@ -3,7 +3,6 @@ package org.aincraft.api.config;
 import com.google.common.base.Preconditions;
 import java.io.File;
 import java.lang.reflect.Proxy;
-import org.aincraft.config.YamlConfiguration;
 import org.bukkit.plugin.Plugin;
 
 final class SingleYamlConfigurationImpl {
@@ -24,14 +23,14 @@ final class SingleYamlConfigurationImpl {
     config = org.bukkit.configuration.file.YamlConfiguration.loadConfiguration(configFile);
   }
 
-  static org.aincraft.config.YamlConfiguration single(Plugin plugin, String path)
+  static YamlConfiguration single(Plugin plugin, String path)
       throws IllegalArgumentException {
     String[] split = path.split("\\.");
     Preconditions.checkArgument(split.length >= 2);
     Preconditions.checkArgument(split[1].equals("yml") || split[1].equals("yaml"));
     SingleYamlConfigurationImpl configuration = new SingleYamlConfigurationImpl(plugin, path);
-    return (org.aincraft.config.YamlConfiguration) Proxy.newProxyInstance(
-        org.aincraft.config.YamlConfiguration.class.getClassLoader(),
+    return (YamlConfiguration) Proxy.newProxyInstance(
+        YamlConfiguration.class.getClassLoader(),
         new Class[]{YamlConfiguration.class},
         (proxy, method, args) -> method.invoke(configuration.config, args));
   }

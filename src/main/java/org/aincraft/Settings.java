@@ -3,7 +3,7 @@ package org.aincraft;
 import java.util.ArrayList;
 import java.util.Set;
 import java.util.stream.Collectors;
-import org.aincraft.api.config.IConfiguration;
+import org.aincraft.api.config.YamlConfiguration;
 import org.aincraft.effects.Effects;
 import org.aincraft.effects.IGemEffect;
 import org.aincraft.registry.IRegistry;
@@ -40,7 +40,7 @@ public final class Settings {
   public static int MULTISHOT_PROJECTILES_RANK;
 
   public static void initialize() {
-    IConfiguration generalConfig = Taric.getConfiguration("general");
+    YamlConfiguration generalConfig = Taric.getConfiguration("general");
     ConfigurationSection settings = generalConfig.getConfigurationSection("settings");
 
     ITEM_DROPS_IN_CREATIVE = loadBoolean(settings, "item-drops-in-creative");
@@ -48,7 +48,7 @@ public final class Settings {
     ITEM_BREAK_IN_CREATIVE = loadBoolean(settings, "item-break-in-creative");
     ITEM_TAKES_DAMAGE_IN_CREATIVE = loadBoolean(settings, "item-takes-damage-in-creative");
 
-    IConfiguration gemConfig = Taric.getConfiguration("gems");
+    YamlConfiguration gemConfig = Taric.getConfiguration("gems");
     IRegistry<IGemEffect> effects = Taric.getEffects();
     if (effects.isRegistered(Effects.VAMPIRISM.key())) {
       VAMPIRIC_FACTOR = Effects.VAMPIRISM.loadDouble(gemConfig, "factor", 1);
@@ -98,14 +98,14 @@ public final class Settings {
     return section.getBoolean(path);
   }
 
-  public static double loadDouble(IConfiguration configuration, String path) {
+  public static double loadDouble(YamlConfiguration configuration, String path) {
     if (!configuration.contains(path)) {
       Taric.getLogger().info("Double not found at: '" + path + "', using '0.0' instead.");
     }
     return configuration.getDouble(path, 0.0);
   }
 
-  public static int loadInt(IConfiguration configuration, String path) {
+  public static int loadInt(YamlConfiguration configuration, String path) {
     if (!configuration.contains(path)) {
       Taric.getLogger().info("Integer not found at: '" + path + "', using '0' instead.");
     }

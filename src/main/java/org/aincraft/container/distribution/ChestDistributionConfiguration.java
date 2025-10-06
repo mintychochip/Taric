@@ -5,7 +5,7 @@ import com.google.inject.Inject;
 import com.google.inject.Provider;
 import com.google.inject.name.Named;
 import java.util.List;
-import org.aincraft.api.config.IConfiguration;
+import org.aincraft.api.config.YamlConfiguration;
 import org.bukkit.NamespacedKey;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.permissions.Permission;
@@ -32,10 +32,10 @@ final class ChestDistributionConfiguration extends AbstractDistributionConfigura
   static final class ChestConfigurationProvider implements
       Provider<IChestDistributionConfiguration> {
 
-    private final IConfiguration configuration;
+    private final YamlConfiguration configuration;
 
     @Inject
-    ChestConfigurationProvider(@Named("distribution") IConfiguration configuration) {
+    ChestConfigurationProvider(@Named("distribution") YamlConfiguration configuration) {
       this.configuration = configuration;
     }
 

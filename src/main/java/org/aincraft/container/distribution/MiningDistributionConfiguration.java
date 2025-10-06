@@ -7,7 +7,7 @@ import com.google.inject.name.Named;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
-import org.aincraft.api.config.IConfiguration;
+import org.aincraft.api.config.YamlConfiguration;
 import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.permissions.Permission;
@@ -27,10 +27,10 @@ final class MiningDistributionConfiguration extends AbstractDistributionConfigur
   static final class MiningConfigurationProvider implements
       Provider<IMiningDistributionConfiguration> {
 
-    private final IConfiguration configuration;
+    private final YamlConfiguration configuration;
 
     @Inject
-    MiningConfigurationProvider(@Named("distribution") IConfiguration configuration) {
+    MiningConfigurationProvider(@Named("distribution") YamlConfiguration configuration) {
       this.configuration = configuration;
     }
 

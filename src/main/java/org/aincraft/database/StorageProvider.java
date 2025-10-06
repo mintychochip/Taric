@@ -6,18 +6,19 @@ import com.google.inject.name.Named;
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
 import java.util.logging.Logger;
-import org.aincraft.api.config.IConfiguration;
+import org.aincraft.api.config.YamlConfiguration;
 import org.bukkit.plugin.Plugin;
 
 public final class StorageProvider implements Provider<IDatabase> {
 
   private final Logger logger;
   private final Plugin plugin;
-  private final IConfiguration dbConfiguration;
+  private final YamlConfiguration dbConfiguration;
   private final Extractor extractor;
 
   @Inject
-  public StorageProvider(Logger logger, Plugin plugin, @Named("db") IConfiguration dbConfiguration,
+  public StorageProvider(Logger logger, Plugin plugin,
+      @Named("db") YamlConfiguration dbConfiguration,
       Extractor extractor) {
     this.logger = logger;
     this.plugin = plugin;
@@ -39,7 +40,7 @@ public final class StorageProvider implements Provider<IDatabase> {
     };
   }
 
-  private static HikariConfig parseConfiguration(IConfiguration config) {
+  private static HikariConfig parseConfiguration(YamlConfiguration config) {
     String jdbcUrl = config.getString("url");
     if (jdbcUrl == null || jdbcUrl.isBlank()) {
       throw new IllegalArgumentException("Missing or empty JDBC URL ('url' field).");
