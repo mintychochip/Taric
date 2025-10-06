@@ -1,14 +1,14 @@
 package org.aincraft.commands;
 
 import com.google.inject.Inject;
+import org.aincraft.api.container.Equipment;
 import org.aincraft.api.container.IIdentificationTable;
-import org.aincraft.api.container.SocketColors;
 import org.aincraft.api.container.gem.IGemIdentifier;
-import org.aincraft.api.container.gem.IGemItem;
 import org.aincraft.api.container.gem.IGemItem.IGemItemFactory;
 import org.aincraft.api.container.gem.ISocketGem;
 import org.aincraft.api.container.gem.ISocketGem.ISocketGemFactory;
 import org.aincraft.api.container.gem.IUnidentifiedGem.IUnidentifiedGemFactory;
+import org.aincraft.container.EquipmentFactory;
 import org.aincraft.effects.IGemEffect;
 import org.aincraft.registry.IRegistry;
 import org.bukkit.Bukkit;
@@ -21,7 +21,7 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
-import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.loot.LootTable;
 import org.jetbrains.annotations.NotNull;
 
@@ -58,70 +58,28 @@ public class GemCommand implements CommandExecutor {
         ISocketGem gem = gemFactory.create(Material.EMERALD, effect);
         player.getInventory().addItem(gem.getStack());
       });
+      Equipment equipment = EquipmentFactory.create(player);
 
-      IGemItem item = itemFactory.create(ItemStack.of(Material.DIAMOND_CHESTPLATE));
-      item.editContainer(container -> {
-        container.initializeCounter(SocketColors.GREEN, 3);
-        container.initializeCounter(SocketColors.BLUE, 3);
-        container.initializeCounter(SocketColors.ORANGE, 3);
-        container.initializeCounter(SocketColors.RED, 3);
-        container.initializeCounter(SocketColors.YELLOW, 3);
-      });
-      player.getInventory().addItem(item.getStack());
-      item = itemFactory.create(ItemStack.of(Material.DIAMOND_SWORD));
-      item.editContainer(container -> {
-        container.initializeCounter(SocketColors.GREEN, 3);
-        container.initializeCounter(SocketColors.BLUE, 3);
-        container.initializeCounter(SocketColors.ORANGE, 3);
-        container.initializeCounter(SocketColors.RED, 3);
-        container.initializeCounter(SocketColors.YELLOW, 3);
-      });
-      player.getInventory().addItem(item.getStack());
-      item = itemFactory.create(ItemStack.of(Material.DIAMOND_HOE));
-      item.editContainer(container -> {
-        container.initializeCounter(SocketColors.GREEN, 3);
-        container.initializeCounter(SocketColors.BLUE, 3);
-        container.initializeCounter(SocketColors.ORANGE, 3);
-        container.initializeCounter(SocketColors.RED, 3);
-        container.initializeCounter(SocketColors.YELLOW, 3);
-      });
-      player.getInventory().addItem(item.getStack());
-      item = itemFactory.create(ItemStack.of(Material.CROSSBOW));
-      item.editContainer(container -> {
-        container.initializeCounter(SocketColors.GREEN, 3);
-        container.initializeCounter(SocketColors.BLUE, 3);
-        container.initializeCounter(SocketColors.ORANGE, 3);
-        container.initializeCounter(SocketColors.RED, 3);
-        container.initializeCounter(SocketColors.YELLOW, 3);
-      });
-      player.getInventory().addItem(item.getStack());
-      item = itemFactory.create(ItemStack.of(Material.DIAMOND_PICKAXE));
-      item.editContainer(container -> {
-        container.initializeCounter(SocketColors.GREEN, 3);
-        container.initializeCounter(SocketColors.BLUE, 3);
-        container.initializeCounter(SocketColors.ORANGE, 3);
-        container.initializeCounter(SocketColors.RED, 3);
-        container.initializeCounter(SocketColors.YELLOW, 3);
-      });
-      player.getInventory().addItem(item.getStack());
-      item = itemFactory.create(ItemStack.of(Material.SHEARS));
-      item.editContainer(container -> {
-        container.initializeCounter(SocketColors.GREEN, 3);
-        container.initializeCounter(SocketColors.BLUE, 3);
-        container.initializeCounter(SocketColors.ORANGE, 3);
-        container.initializeCounter(SocketColors.RED, 3);
-        container.initializeCounter(SocketColors.YELLOW, 3);
-      });
-      player.getInventory().addItem(item.getStack());
-      item = itemFactory.create(ItemStack.of(Material.FISHING_ROD));
-      item.editContainer(container -> {
-        container.initializeCounter(SocketColors.GREEN, 3);
-        container.initializeCounter(SocketColors.BLUE, 3);
-        container.initializeCounter(SocketColors.ORANGE, 3);
-        container.initializeCounter(SocketColors.RED, 3);
-        container.initializeCounter(SocketColors.YELLOW, 3);
-      });
-      player.getInventory().addItem(item.getStack());
+// Debugging checks
+      Bukkit.broadcastMessage("=== Equipment Debug Start ===");
+      Bukkit.broadcastMessage("Main hand: " + String.valueOf(equipment.getItemInMainHand()));
+      Bukkit.broadcastMessage("Off hand: " + String.valueOf(equipment.getItemInOffHand()));
+      Bukkit.broadcastMessage("Helmet: " + String.valueOf(equipment.getHelmet()));
+      Bukkit.broadcastMessage("Chestplate: " + String.valueOf(equipment.getChestplate()));
+      Bukkit.broadcastMessage("Leggings: " + String.valueOf(equipment.getLeggings()));
+      Bukkit.broadcastMessage("Boots: " + String.valueOf(equipment.getBoots()));
+
+// Check slot-based access too
+      for (EquipmentSlot slot : EquipmentSlot.values()) {
+        try {
+          Bukkit.broadcastMessage(slot.name() + ": " + String.valueOf(equipment.getItem(slot)));
+        } catch (IllegalArgumentException ex) {
+          Bukkit.broadcastMessage(
+              slot.name() + ": threw IllegalArgumentException -> " + ex.getMessage());
+        }
+      }
+
+      Bukkit.broadcastMessage("=== Equipment Debug End ===");
     }
     return false;
   }

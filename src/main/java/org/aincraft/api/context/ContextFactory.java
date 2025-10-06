@@ -36,7 +36,11 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
 import org.jetbrains.annotations.Nullable;
 
-public class ContextFactory {
+public final class ContextFactory {
+
+  private ContextFactory() {
+    throw new UnsupportedOperationException("do not instantiate");
+  }
 
   public static BlockBreakContext create(BlockBreakEvent event) {
     ContextBinder<BlockBreakEvent> binder = new ContextBinder<>(event)
@@ -136,13 +140,13 @@ public class ContextFactory {
     return new ContextBinder<>(event).build(PlayerItemDamageContext.class);
   }
 
-  private static final class ContextBinder<E> {
+  public static final class ContextBinder<E> {
 
     private final E delegate;
     private final Map<String, BiFunction<E, Object[], Object>> overrides = new HashMap<>();
     private final Map<String, String> renames = new HashMap<>();
 
-    private ContextBinder(E delegate) {
+    public ContextBinder(E delegate) {
       this.delegate = delegate;
     }
 

@@ -1,15 +1,9 @@
 package org.aincraft.api.container;
 
-import org.bukkit.entity.Entity;
 import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
 
-public interface IEquipment {
-
-  interface IEquipmentFactory {
-
-    IEquipment create(Entity entity) throws IllegalArgumentException;
-  }
+public interface Equipment {
 
   void setItem(EquipmentSlot slot, ItemStack item) throws IllegalArgumentException;
 
@@ -27,7 +21,7 @@ public interface IEquipment {
 
   void setHelmet(ItemStack item);
 
-  ItemStack getChestPlate();
+  ItemStack getChestplate();
 
   void setChestPlate(ItemStack item);
 

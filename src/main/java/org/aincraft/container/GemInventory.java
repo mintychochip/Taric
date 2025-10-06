@@ -3,8 +3,7 @@ package org.aincraft.container;
 import com.google.inject.Inject;
 import java.util.HashMap;
 import java.util.Map;
-import org.aincraft.api.container.IEquipment;
-import org.aincraft.api.container.IEquipment.IEquipmentFactory;
+import org.aincraft.api.container.Equipment;
 import org.aincraft.api.container.gem.IGemInventory;
 import org.aincraft.api.container.gem.IGemInventoryFactory;
 import org.aincraft.api.container.gem.IGemItem;
@@ -18,29 +17,27 @@ import org.jetbrains.annotations.NotNull;
 
 final class GemInventory implements IGemInventory {
 
-  private final IEquipment equipment;
+  private final Equipment equipment;
   private final Map<EquipmentSlot, IGemItem> inventory;
 
-  GemInventory(IEquipment equipment, Map<EquipmentSlot, IGemItem> inventory) {
+  GemInventory(Equipment equipment, Map<EquipmentSlot, IGemItem> inventory) {
     this.equipment = equipment;
     this.inventory = inventory;
   }
 
   static final class GemInventoryFactory implements IGemInventoryFactory {
 
-    private final IEquipmentFactory equipmentFactory;
     private final IGemItemFactory gemItemFactory;
 
     @Inject
-    GemInventoryFactory(IEquipmentFactory equipmentFactory, IGemItemFactory gemItemFactory) {
-      this.equipmentFactory = equipmentFactory;
+    GemInventoryFactory(IGemItemFactory gemItemFactory) {
       this.gemItemFactory = gemItemFactory;
     }
 
     @Override
     public IGemInventory create(@NotNull LivingEntity entity) {
       Map<EquipmentSlot, IGemItem> inventory = new HashMap<>();
-      IEquipment equipment = equipmentFactory.create(entity);
+      Equipment equipment = EquipmentFactory.create(entity);
       for (EquipmentSlot slot : EquipmentSlot.values()) {
         try {
           ItemStack stack = equipment.getItem(slot);
@@ -58,7 +55,7 @@ final class GemInventory implements IGemInventory {
   }
 
   @Override
-  public IEquipment getEquipment() {
+  public Equipment getEquipment() {
     return equipment;
   }
 
