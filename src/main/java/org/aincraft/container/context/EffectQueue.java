@@ -12,9 +12,9 @@ final class EffectQueue extends ForwardingQueue<IEffectInstance> {
 
   private final PriorityQueue<IEffectInstance> queue;
 
-  private final TriggerType triggerType;
+  private final TriggerType<?> triggerType;
 
-  EffectQueue(PriorityQueue<IEffectInstance> queue, TriggerType triggerType) {
+  EffectQueue(PriorityQueue<IEffectInstance> queue, TriggerType<?> triggerType) {
     this.queue = queue;
     this.triggerType = triggerType;
   }
@@ -24,7 +24,7 @@ final class EffectQueue extends ForwardingQueue<IEffectInstance> {
     return queue;
   }
 
-  public TriggerType getTriggerType() {
+  public TriggerType<?> getTriggerType() {
     return triggerType;
   }
 }
