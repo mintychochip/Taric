@@ -10,7 +10,7 @@ import org.aincraft.api.context.EntityKillContext;
 import org.aincraft.api.context.EntityMoveContext;
 import org.aincraft.api.context.FishContext;
 import org.aincraft.api.context.IItemDamageContext.EntityItemDamageContext;
-import org.aincraft.api.context.IItemDamageContext.IPlayerItemDamageContext;
+import org.aincraft.api.context.IItemDamageContext.PlayerItemDamageContext;
 import org.aincraft.api.context.IShearEntityContext.IPlayerShearEntityContext;
 import org.aincraft.api.context.IShootBowContext;
 import org.aincraft.api.context.PlayerMoveContext;
@@ -54,7 +54,7 @@ public final class DispatchContexts {
   public static final IDispatchContext<IOnEntityKill, EntityKillContext, EntityDeathEvent> KILL_ENTITY;
   public static final IDispatchContext<IOnEntityMove, EntityMoveContext, EntityMoveEvent> ENTITY_MOVE;
   public static final IDispatchContext<IOnPlayerMove, PlayerMoveContext, PlayerMoveEvent> PLAYER_MOVE;
-  public static final IDispatchContext<IOnPlayerItemDamage, IPlayerItemDamageContext, PlayerItemDamageEvent> PLAYER_ITEM_DAMAGE;
+  public static final IDispatchContext<IOnPlayerItemDamage, PlayerItemDamageContext, PlayerItemDamageEvent> PLAYER_ITEM_DAMAGE;
   public static final IDispatchContext<IOnEntityItemDamage, EntityItemDamageContext, EntityDamageItemEvent> ENTITY_ITEM_DAMAGE;
   public static final IDispatchContext<IOnShootBow, IShootBowContext, EntityShootBowEvent> SHOOT_BOW;
 

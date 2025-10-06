@@ -6,7 +6,7 @@ import org.bukkit.inventory.ItemStack;
 
 public interface IItemDamageContext {
 
-  interface IPlayerItemDamageContext extends IItemDamageContext {
+  interface PlayerItemDamageContext extends IItemDamageContext {
 
     Player getPlayer();
 

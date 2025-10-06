@@ -10,7 +10,7 @@ import org.aincraft.api.context.EntityKillContext;
 import org.aincraft.api.context.EntityMoveContext;
 import org.aincraft.api.context.FishContext;
 import org.aincraft.api.context.IItemDamageContext.EntityItemDamageContext;
-import org.aincraft.api.context.IItemDamageContext.IPlayerItemDamageContext;
+import org.aincraft.api.context.IItemDamageContext.PlayerItemDamageContext;
 import org.aincraft.api.context.IShearEntityContext.IPlayerShearEntityContext;
 import org.aincraft.api.context.IShootBowContext;
 import org.aincraft.api.context.PlayerMoveContext;
@@ -36,7 +36,7 @@ final class ContextProviders {
   public static final IContextProvider<PlayerInteractContext, PlayerInteractEvent> INTERACT;
   public static final IContextProvider<BlockDropContext, BlockDropItemEvent> BLOCK_DROP;
   public static final IContextProvider<EntityItemDamageContext, EntityDamageItemEvent> ENTITY_ITEM_DAMAGE;
-  public static final IContextProvider<IPlayerItemDamageContext, PlayerItemDamageEvent> PLAYER_ITEM_DAMAGE;
+  public static final IContextProvider<PlayerItemDamageContext, PlayerItemDamageEvent> PLAYER_ITEM_DAMAGE;
   public static final IContextProvider<IPlayerShearEntityContext, PlayerShearEntityEvent> PLAYER_SHEAR_ENTITY;
   public static final IContextProvider<EntityMoveContext, EntityMoveEvent> ENTITY_MOVE;
   public static final IContextProvider<PlayerMoveContext, PlayerMoveEvent> PLAYER_MOVE;
@@ -46,13 +46,12 @@ final class ContextProviders {
   static {
     ENTITY_DAMAGE_BY_ENTITY = ContextFactory::create;
     ENTITY_KILL = ContextFactory::create;
-    PLAYER_FISH = PlayerFishContext::new;
+    PLAYER_FISH = ContextFactory::create;
     INTERACT = ContextFactory::create;
-    BLOCK_DROP = org.aincraft.container.context.BlockDropContext::new;
+    BLOCK_DROP = ContextFactory::create;
     ENTITY_ITEM_DAMAGE = ContextFactory::create;
 
-    PLAYER_ITEM_DAMAGE = handle -> new PlayerItemDamageContext(
-        new PlayerItemDamageEventDecorator(handle));
+    PLAYER_ITEM_DAMAGE = ContextFactory::create;
 
     PLAYER_SHEAR_ENTITY = ContextFactory::create;
 

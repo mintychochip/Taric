@@ -12,18 +12,29 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.BiFunction;
 import java.util.function.Function;
+import java.util.stream.Collectors;
 import org.aincraft.api.context.IItemDamageContext.EntityItemDamageContext;
+import org.aincraft.api.context.IItemDamageContext.PlayerItemDamageContext;
 import org.aincraft.api.context.IShearEntityContext.IPlayerShearEntityContext;
 import org.aincraft.api.trigger.IOnInteract.PlayerInteractContext;
+import org.bukkit.Location;
+import org.bukkit.World;
+import org.bukkit.block.Block;
+import org.bukkit.entity.Entity;
+import org.bukkit.entity.Item;
 import org.bukkit.entity.Player;
 import org.bukkit.event.block.BlockBreakEvent;
+import org.bukkit.event.block.BlockDropItemEvent;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDeathEvent;
+import org.bukkit.event.player.PlayerFishEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
+import org.bukkit.event.player.PlayerItemDamageEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.event.player.PlayerShearEntityEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
+import org.jetbrains.annotations.Nullable;
 
 public class ContextFactory {
 
@@ -74,6 +85,55 @@ public class ContextFactory {
 
   public static PlayerMoveContext create(PlayerMoveEvent event) {
     return new ContextBinder<>(event).build(PlayerMoveContext.class);
+  }
+
+  public static FishContext create(PlayerFishEvent event) {
+    return new ContextBinder<>(event)
+        .bind("setExperience", "setExpToDrop")
+        .bind("getExperience", "getExpToDrop")
+        .bind("setDrops", (e, args) -> {
+          Item item = getItem(event);
+          if (item != null) {
+            item.setItemStack((ItemStack) args[0]);
+          }
+          return null;
+        })
+        .bind("getDrops", e -> {
+          Item item = getItem(event);
+          return item != null ? item.getItemStack() : null;
+        }).build(FishContext.class);
+  }
+
+  @Nullable
+  private static Item getItem(PlayerFishEvent event) {
+    Entity caught = event.getCaught();
+    return caught instanceof Item item ? item : null;
+  }
+
+  public static BlockDropContext create(BlockDropItemEvent event) {
+    return new ContextBinder<>(event)
+        .bind("setDrops", (e, args) -> {
+          List<ItemStack> drops = (List<ItemStack>) args[0];
+          Block block = e.getBlock();
+          Location location = block.getLocation();
+          World world = location.getWorld();
+          Location center = location.clone().add(0.5, 0.5, 0.5);
+          List<Item> itemList = drops.stream().map(stack -> {
+            Item item = world.createEntity(center, Item.class);
+            item.setItemStack(stack);
+            return item;
+          }).toList();
+          event.getItems().clear();
+          event.getItems().addAll(itemList);
+          return null;
+        })
+        .bind("getDrops", e -> event.getItems().stream().map(Item::getItemStack).collect(
+            Collectors.toList()))
+        .build(BlockDropContext.class);
+  }
+
+  public static PlayerItemDamageContext create(PlayerItemDamageEvent event) {
+    return new ContextBinder<>(event).build(PlayerItemDamageContext.class);
   }
 
   private static final class ContextBinder<E> {

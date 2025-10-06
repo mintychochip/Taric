@@ -6,7 +6,7 @@ import java.util.Map;
 import java.util.Set;
 import org.aincraft.api.container.EffectInstanceMeta;
 import org.aincraft.api.container.TargetType;
-import org.aincraft.api.context.IItemDamageContext.IPlayerItemDamageContext;
+import org.aincraft.api.context.IItemDamageContext.PlayerItemDamageContext;
 import org.aincraft.api.trigger.IOnInteract;
 import org.aincraft.api.trigger.IOnPlayerItemDamage;
 import org.aincraft.api.trigger.TriggerType;
@@ -62,7 +62,7 @@ public class Tiller extends AbstractGemEffect implements IOnInteract, IOnPlayerI
   }
 
   @Override
-  public void onPlayerItemDamage(IPlayerItemDamageContext context, EffectInstanceMeta meta) {
+  public void onPlayerItemDamage(PlayerItemDamageContext context, EffectInstanceMeta meta) {
     ItemStack item = context.getItem();
     int hash = item.hashCode();
     if (!used.containsKey(hash)) {
