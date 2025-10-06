@@ -3,7 +3,6 @@ package org.aincraft.api.container.gem;
 import java.util.Map.Entry;
 import java.util.function.Consumer;
 import org.aincraft.api.container.EffectInstanceMeta;
-import org.aincraft.api.container.ISocketColor;
 import org.aincraft.api.container.gem.IGemItem.IGemItemContainer;
 import org.aincraft.api.container.gem.IGemItem.IGemItemContainerView;
 import org.aincraft.api.trigger.TriggerType;

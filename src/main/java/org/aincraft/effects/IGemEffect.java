@@ -5,7 +5,6 @@ import java.util.Set;
 import org.aincraft.Taric;
 import org.aincraft.api.Rarity;
 import org.aincraft.api.config.YamlConfiguration;
-import org.aincraft.api.container.ISocketColor;
 import org.aincraft.api.container.IWeighable;
 import org.aincraft.api.trigger.TriggerType;
 import org.bukkit.Keyed;

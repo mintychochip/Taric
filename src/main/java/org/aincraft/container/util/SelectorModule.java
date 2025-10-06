@@ -7,7 +7,6 @@ import com.google.inject.Singleton;
 import com.google.inject.TypeLiteral;
 import com.google.inject.name.Names;
 import org.aincraft.api.Rarity;
-import org.aincraft.api.container.ISocketColor;
 import org.aincraft.api.container.util.IRandomSelector;
 import org.aincraft.registry.IRegistry;
 

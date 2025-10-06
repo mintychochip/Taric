@@ -1,7 +1,6 @@
 package org.aincraft.commands;
 
 import com.google.inject.Inject;
-import org.aincraft.api.container.ISocketColor;
 import org.aincraft.api.container.gem.IGemItem;
 import org.aincraft.api.container.gem.IGemItem.IGemItemFactory;
 import org.aincraft.registry.IRegistry;

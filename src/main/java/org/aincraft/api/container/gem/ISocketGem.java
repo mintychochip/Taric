@@ -1,6 +1,5 @@
 package org.aincraft.api.container.gem;
 
-import org.aincraft.api.container.ISocketColor;
 import org.aincraft.api.container.gem.IGem.IGemContainer;
 import org.aincraft.api.container.gem.IGem.IGemContainerView;
 import org.aincraft.api.container.gem.ISocketGem.ISocketGemContainer;

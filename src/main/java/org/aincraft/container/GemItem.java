@@ -16,7 +16,6 @@ import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.TextDecoration;
 import org.aincraft.api.container.EffectInstanceMeta;
 import org.aincraft.api.container.IEffectInstance;
-import org.aincraft.api.container.ISocketColor;
 import org.aincraft.api.container.TargetType;
 import org.aincraft.api.container.gem.IContainerHolder;
 import org.aincraft.api.container.gem.IEffectContainer;

@@ -11,7 +11,6 @@ import java.util.Random;
 import java.util.logging.Logger;
 import org.aincraft.api.Rarity;
 import org.aincraft.api.config.YamlConfiguration;
-import org.aincraft.api.container.ISocketColor;
 import org.aincraft.api.container.Rarities;
 import org.aincraft.api.container.SocketColors;
 import org.aincraft.commands.ContainerCommand;

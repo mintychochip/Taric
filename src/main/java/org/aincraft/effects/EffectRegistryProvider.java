@@ -6,7 +6,6 @@ import com.google.inject.name.Named;
 import org.aincraft.Taric;
 import org.aincraft.api.Rarity;
 import org.aincraft.api.config.YamlConfiguration;
-import org.aincraft.api.container.ISocketColor;
 import org.aincraft.api.trigger.TriggerType;
 import org.aincraft.registry.IRegistry;
 import org.aincraft.registry.Registry;

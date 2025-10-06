@@ -7,7 +7,6 @@ import java.util.Map;
 import java.util.Set;
 import org.aincraft.Taric;
 import org.aincraft.api.Rarity;
-import org.aincraft.api.container.ISocketColor;
 import org.aincraft.api.trigger.TriggerType;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;

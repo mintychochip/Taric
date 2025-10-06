@@ -21,7 +21,6 @@ import org.aincraft.Taric;
 import org.aincraft.api.Bridge;
 import org.aincraft.api.Rarity;
 import org.aincraft.api.config.YamlConfiguration;
-import org.aincraft.api.container.ISocketColor;
 import org.aincraft.database.Extractor;
 import org.aincraft.database.Extractor.ResourceExtractor;
 import org.aincraft.database.IDatabase;

@@ -23,7 +23,7 @@ abstract class FlatFileSource implements IConnectionSource {
       Class.forName(this.getType().getClassName());
       logger.log(Level.INFO, "Loaded {0} driver", this.getType());
       this.createFlatFile(new File(this.getFilePath().toString()));
-      connection = new NonClosableConnection(DriverManager.getConnection(jdbcUrl));
+      connection = NonClosableConnection.create(DriverManager.getConnection(jdbcUrl));
       logger.log(Level.INFO, "Successfully connected to: {0}", jdbcUrl);
     } catch (ClassNotFoundException | SQLException e) {
       throw new RuntimeException(e);
@@ -82,7 +82,7 @@ abstract class FlatFileSource implements IConnectionSource {
   public Connection getConnection() {
     try {
       if (connection == null || connection.isClosed()) {
-        connection = new NonClosableConnection(DriverManager.getConnection(this.getJdbcUrl()));
+        connection = NonClosableConnection.create(DriverManager.getConnection(this.getJdbcUrl()));
       }
     } catch (SQLException e) {
       throw new RuntimeException("Error checking/refreshing database connection", e);

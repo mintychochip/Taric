@@ -7,17 +7,16 @@ import com.google.inject.name.Named;
 import java.util.List;
 import net.kyori.adventure.text.format.TextColor;
 import org.aincraft.Taric;
+import org.aincraft.api.SocketColor;
 import org.aincraft.api.config.IConfigurationFactory;
 import org.aincraft.api.config.YamlConfiguration;
-import org.aincraft.api.container.ISocketColor;
-import org.aincraft.registry.IRegistry;
-import org.aincraft.registry.SharedRegistry;
+import org.aincraft.registry.Registry;
 import org.bukkit.NamespacedKey;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.plugin.Plugin;
 import org.jetbrains.annotations.NotNull;
 
-public final class SocketRegistryInitializer implements Provider<IRegistry<ISocketColor>> {
+public final class SocketRegistryInitializer implements Provider<Registry<SocketColor>> {
 
   private final Plugin plugin;
   private final YamlConfiguration generalConfiguration;
@@ -29,10 +28,10 @@ public final class SocketRegistryInitializer implements Provider<IRegistry<ISock
     this.generalConfiguration = generalConfiguration;
   }
 
-  private record SocketColorFactory(Plugin plugin) implements IConfigurationFactory<ISocketColor> {
+  private record SocketColorFactory(Plugin plugin) implements IConfigurationFactory<SocketColor> {
 
     @Override
-    public @NotNull ISocketColor createFromConfiguration(String shallowKey,
+    public @NotNull SocketColor createFromConfiguration(String shallowKey,
         ConfigurationSection section) throws IllegalArgumentException {
       Preconditions.checkNotNull(section);
       Preconditions.checkArgument(section.contains("color"));
@@ -48,18 +47,18 @@ public final class SocketRegistryInitializer implements Provider<IRegistry<ISock
   }
 
   @Override
-  public IRegistry<ISocketColor> get() {
+  public Registry<SocketColor> get() {
     Preconditions.checkArgument(generalConfiguration.contains("colors"));
     ConfigurationSection colors = generalConfiguration.getConfigurationSection(
         "colors");
     if (colors == null) {
       throw new IllegalArgumentException("color section cannot be null");
     }
-    SharedRegistry<ISocketColor> registry = new SharedRegistry<>();
+    Registry<SocketColor> registry = Registry.simple();
     SocketColorFactory factory = new SocketColorFactory(plugin);
     for (String colorKey : colors.getKeys(false)) {
       try {
-        ISocketColor color = factory.createFromConfiguration(colorKey,
+        SocketColor color = factory.createFromConfiguration(colorKey,
             colors.getConfigurationSection(colorKey));
         registry.register(color);
       } catch (IllegalArgumentException ex) {

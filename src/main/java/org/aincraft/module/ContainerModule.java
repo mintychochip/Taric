@@ -7,7 +7,6 @@ import java.util.concurrent.ThreadLocalRandom;
 import java.util.random.RandomGenerator;
 import org.aincraft.api.Rarity;
 import org.aincraft.api.container.IIdentificationTable;
-import org.aincraft.api.container.ISocketColor;
 import org.aincraft.api.container.gem.IGemIdentifier;
 import org.aincraft.container.GemIdentifier;
 import org.aincraft.container.ItemFactoryModule;
