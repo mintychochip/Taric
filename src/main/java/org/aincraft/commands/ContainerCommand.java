@@ -2,10 +2,8 @@ package org.aincraft.commands;
 
 import com.google.inject.Inject;
 import org.aincraft.api.container.ISocketColor;
-import org.aincraft.api.container.SocketColors;
 import org.aincraft.api.container.gem.IGemItem;
 import org.aincraft.api.container.gem.IGemItem.IGemItemFactory;
-import org.aincraft.api.container.gem.IGemItem.ISocketLimitCounterView;
 import org.aincraft.registry.IRegistry;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;

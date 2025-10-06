@@ -8,7 +8,6 @@ import org.aincraft.api.container.EffectInstanceMeta;
 import org.aincraft.api.container.gem.IEffectContainer;
 import org.aincraft.api.container.gem.IEffectContainerView;
 import org.aincraft.effects.IGemEffect;
-import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 
 abstract class AbstractContainer<V extends IEffectContainerView> implements IEffectContainer<V> {
@@ -26,7 +25,9 @@ abstract class AbstractContainer<V extends IEffectContainerView> implements IEff
     uuid = UUID.randomUUID();
   }
 
-  @Override
+  protected NamespacedKey getContainerKey() {
+    return (NamespacedKey) containerKey;
+  }  @Override
   public UUID getUuid() {
     return uuid;
   }
@@ -41,9 +42,7 @@ abstract class AbstractContainer<V extends IEffectContainerView> implements IEff
 
   protected abstract V buildView();
 
-  protected NamespacedKey getContainerKey() {
-    return (NamespacedKey) containerKey;
-  }
+
 
   @Override
   public void applyEffect(IGemEffect effect, EffectInstanceMeta meta)
