@@ -5,10 +5,10 @@ import com.google.inject.Inject;
 import com.google.inject.Provider;
 import com.google.inject.name.Named;
 import org.aincraft.Taric;
+import org.aincraft.api.Rarity;
 import org.aincraft.api.config.IConfiguration;
 import org.aincraft.api.config.IConfigurationFactory;
 import org.aincraft.api.container.IIdentificationTable;
-import org.aincraft.api.container.IRarity;
 import org.aincraft.container.util.WeightedRandomSelector;
 import org.aincraft.registry.IRegistry;
 import org.aincraft.registry.SharedRegistry;
@@ -20,12 +20,12 @@ import org.jetbrains.annotations.NotNull;
 public final class IdentificationTableRegistryInitializer implements
     Provider<IRegistry<IIdentificationTable>> {
 
-  private final IRegistry<IRarity> rarityRegistry;
+  private final IRegistry<Rarity> rarityRegistry;
   private final Plugin plugin;
   private final IConfiguration generalConfiguration;
 
   @Inject
-  public IdentificationTableRegistryInitializer(IRegistry<IRarity> rarityRegistry, Plugin plugin,
+  public IdentificationTableRegistryInitializer(IRegistry<Rarity> rarityRegistry, Plugin plugin,
       @Named("general") IConfiguration generalConfiguration) {
     this.rarityRegistry = rarityRegistry;
     this.plugin = plugin;
@@ -35,10 +35,10 @@ public final class IdentificationTableRegistryInitializer implements
   static final class IdentificationTableFactory implements
       IConfigurationFactory<IIdentificationTable> {
 
-    private final IRegistry<IRarity> rarityRegistry;
+    private final IRegistry<Rarity> rarityRegistry;
     private final Plugin plugin;
 
-    IdentificationTableFactory(IRegistry<IRarity> rarityRegistry, Plugin plugin) {
+    IdentificationTableFactory(IRegistry<Rarity> rarityRegistry, Plugin plugin) {
       this.rarityRegistry = rarityRegistry;
       this.plugin = plugin;
     }
@@ -46,14 +46,14 @@ public final class IdentificationTableRegistryInitializer implements
     @Override
     public @NotNull IIdentificationTable createFromConfiguration(String shallowKey,
         ConfigurationSection section) throws IllegalArgumentException {
-      for (IRarity rarity : rarityRegistry) {
+      for (Rarity rarity : rarityRegistry) {
         String rarityString = rarity.key().value();
         Preconditions.checkArgument(section.contains(rarityString),
             "identification table: %s does not contain the rarity weight for: %s".formatted(
                 shallowKey, rarityString));
       }
-      WeightedRandomSelector<IRarity> randomSelector = new WeightedRandomSelector<>();
-      for (IRarity rarity : rarityRegistry) {
+      WeightedRandomSelector<Rarity> randomSelector = new WeightedRandomSelector<>();
+      for (Rarity rarity : rarityRegistry) {
         randomSelector.put(rarity, Math.max(0.0, section.getDouble(rarity.key().value())));
       }
       return new IdentificationTable(new NamespacedKey(plugin, shallowKey), randomSelector);

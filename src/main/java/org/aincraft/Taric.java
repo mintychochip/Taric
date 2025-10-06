@@ -9,8 +9,8 @@ import com.google.inject.name.Names;
 import java.sql.SQLException;
 import java.util.Random;
 import java.util.logging.Logger;
+import org.aincraft.api.Rarity;
 import org.aincraft.api.config.IConfiguration;
-import org.aincraft.api.container.IRarity;
 import org.aincraft.api.container.ISocketColor;
 import org.aincraft.api.container.Rarities;
 import org.aincraft.api.container.SocketColors;
@@ -35,11 +35,11 @@ public class Taric {
 
   private static Taric instance;
   private final Injector injector;
-  private final IRegistry<IRarity> rarityRegistry;
+  private final IRegistry<Rarity> rarityRegistry;
   private final IRegistry<ISocketColor> socketColorRegistry;
 
   @Inject
-  public Taric(Injector injector, IRegistry<IRarity> rarityRegistry,
+  public Taric(Injector injector, IRegistry<Rarity> rarityRegistry,
       IRegistry<ISocketColor> socketColorRegistry) {
     RuntimeModule module = injector.getInstance(RuntimeModule.class);
     this.injector = injector.createChildInjector(new HandlerModule(), module);
@@ -57,7 +57,7 @@ public class Taric {
     });
   }
 
-  public static IRegistry<IRarity> getRarity() {
+  public static IRegistry<Rarity> getRarity() {
     return instance.injector.getInstance(new Key<>() {
     });
   }

@@ -2,20 +2,21 @@ package org.aincraft.api.container;
 
 import java.util.List;
 import net.kyori.adventure.key.Key;
+import org.aincraft.api.Rarity;
 import org.aincraft.registry.IRegistry;
 
 public final class Rarities {
 
-  public static IRarity COMMON;
-  public static IRarity UNCOMMON;
-  public static IRarity RARE;
-  public static IRarity EPIC;
-  public static IRarity LEGENDARY;
-  public static IRarity MYTHIC;
+  public static Rarity COMMON;
+  public static Rarity UNCOMMON;
+  public static Rarity RARE;
+  public static Rarity EPIC;
+  public static Rarity LEGENDARY;
+  public static Rarity MYTHIC;
 
   private static boolean initialized = false;
 
-  public static void initialize(IRegistry<IRarity> registry) {
+  public static void initialize(IRegistry<Rarity> registry) {
     if (initialized) {
       throw new IllegalStateException("rarities already initialized");
     }
@@ -28,7 +29,7 @@ public final class Rarities {
     MYTHIC = registry.get(Key.key("taric:mythic"));
   }
 
-  public static List<IRarity> values() {
+  public static List<Rarity> values() {
     return List.of(COMMON, UNCOMMON, RARE, EPIC, LEGENDARY, MYTHIC);
   }
 }

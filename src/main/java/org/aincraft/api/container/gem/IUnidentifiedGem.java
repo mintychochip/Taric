@@ -1,6 +1,6 @@
 package org.aincraft.api.container.gem;
 
-import org.aincraft.api.container.IRarity;
+import org.aincraft.api.Rarity;
 import org.aincraft.api.container.gem.IGem.IGemContainer;
 import org.aincraft.api.container.gem.IGem.IGemContainerView;
 import org.aincraft.api.container.gem.IUnidentifiedGem.IUnidentifiedGemContainer;
@@ -19,7 +19,7 @@ public interface IUnidentifiedGem extends
     IGemEffect getEffect();
 
     @NotNull
-    IRarity getRarity();
+    Rarity getRarity();
 
     AppraisalState getState();
 
@@ -32,9 +32,9 @@ public interface IUnidentifiedGem extends
     IGemEffect getEffect();
 
     @NotNull
-    IRarity getRarity();
+    Rarity getRarity();
 
-    void setRarity(@NotNull IRarity rarity);
+    void setRarity(@NotNull Rarity rarity);
 
     AppraisalState getState();
 
@@ -44,7 +44,7 @@ public interface IUnidentifiedGem extends
   interface IUnidentifiedGemFactory extends
       IContainerHolderFactory<IUnidentifiedGem, IUnidentifiedGemContainer, IUnidentifiedGemContainerView> {
 
-    IUnidentifiedGem create(@NotNull ItemStack stack, @NotNull IRarity rarity)
+    IUnidentifiedGem create(@NotNull ItemStack stack, @NotNull Rarity rarity)
         throws IllegalArgumentException, NullPointerException;
 
     IUnidentifiedGem create(@NotNull ItemStack stack)

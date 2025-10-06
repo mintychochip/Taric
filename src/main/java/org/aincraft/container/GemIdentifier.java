@@ -2,7 +2,7 @@ package org.aincraft.container;
 
 import com.google.common.base.Preconditions;
 import com.google.inject.Inject;
-import org.aincraft.api.container.IRarity;
+import org.aincraft.api.Rarity;
 import org.aincraft.api.container.gem.IGemIdentifier;
 import org.aincraft.api.container.gem.ISocketGem;
 import org.aincraft.api.container.gem.ISocketGem.ISocketGemFactory;
@@ -33,7 +33,7 @@ public class GemIdentifier implements IGemIdentifier {
   }
 
   @Override
-  public boolean canIdentify(IRarity rarity, Player identifier) {
+  public boolean canIdentify(Rarity rarity, Player identifier) {
     return true;
   }
 }

@@ -6,9 +6,9 @@ import com.google.inject.Provider;
 import com.google.inject.name.Named;
 import java.util.List;
 import net.kyori.adventure.text.format.TextColor;
+import org.aincraft.api.Rarity;
 import org.aincraft.api.config.IConfiguration;
 import org.aincraft.api.config.IConfigurationFactory;
-import org.aincraft.api.container.IRarity;
 import org.aincraft.registry.IRegistry;
 import org.aincraft.registry.SharedRegistry;
 import org.bukkit.NamespacedKey;
@@ -16,7 +16,7 @@ import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.plugin.Plugin;
 import org.jetbrains.annotations.NotNull;
 
-public final class RarityRegistryInitializer implements Provider<IRegistry<IRarity>> {
+public final class RarityRegistryInitializer implements Provider<IRegistry<Rarity>> {
 
   private final IConfiguration generalConfiguration;
 
@@ -29,12 +29,12 @@ public final class RarityRegistryInitializer implements Provider<IRegistry<IRari
     this.plugin = plugin;
   }
 
-  private record RarityFactory(Plugin plugin) implements IConfigurationFactory<IRarity> {
+  private record RarityFactory(Plugin plugin) implements IConfigurationFactory<Rarity> {
 
     private static int priority = 0;
 
     @Override
-    public @NotNull IRarity createFromConfiguration(String shallowKey, ConfigurationSection section)
+    public @NotNull Rarity createFromConfiguration(String shallowKey, ConfigurationSection section)
         throws IllegalArgumentException {
       Preconditions.checkNotNull(section);
       Preconditions.checkArgument(section.contains("base"));
@@ -63,17 +63,17 @@ public final class RarityRegistryInitializer implements Provider<IRegistry<IRari
   }
 
   @Override
-  public IRegistry<IRarity> get() throws IllegalArgumentException {
+  public IRegistry<Rarity> get() throws IllegalArgumentException {
     Preconditions.checkArgument(generalConfiguration.contains("rarity"));
     ConfigurationSection raritySection = generalConfiguration.getConfigurationSection("rarity");
     if (raritySection == null) {
       throw new IllegalArgumentException("rarity section cannot be null");
     }
-    SharedRegistry<IRarity> registry = new SharedRegistry<>();
+    SharedRegistry<Rarity> registry = new SharedRegistry<>();
     RarityFactory factory = new RarityFactory(plugin);
     for (String rarityKey : raritySection.getKeys(false)) {
       try {
-        IRarity rarity = factory.createFromConfiguration(rarityKey,
+        Rarity rarity = factory.createFromConfiguration(rarityKey,
             raritySection.getConfigurationSection(rarityKey));
         registry.register(rarity);
       } catch (IllegalArgumentException ex) {

@@ -7,8 +7,8 @@ import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 import org.aincraft.Taric;
+import org.aincraft.api.Rarity;
 import org.aincraft.api.config.IConfigurationFactory;
-import org.aincraft.api.container.IRarity;
 import org.aincraft.api.container.ISocketColor;
 import org.aincraft.api.trigger.TriggerType;
 import org.aincraft.effects.AbstractGemEffect.GemEffectMeta;
@@ -25,12 +25,12 @@ final class GemMetaFactory implements IConfigurationFactory<GemEffectMeta> {
   private static final String[] REQUIRED_FIELDS = {"max-rank", "adjectives", "rarity", "color",
       "priority",
       "description", "required-active-slots"};
-  private final IRegistry<IRarity> rarityRegistry;
+  private final IRegistry<Rarity> rarityRegistry;
   private final IRegistry<ISocketColor> colorRegistry;
   private final Registry<TriggerType<?>> triggerRegistry;
   private final Plugin plugin;
 
-  GemMetaFactory(IRegistry<IRarity> rarityRegistry, IRegistry<ISocketColor> colorRegistry,
+  GemMetaFactory(IRegistry<Rarity> rarityRegistry, IRegistry<ISocketColor> colorRegistry,
       Registry<TriggerType<?>> triggerRegistry,
       Plugin plugin) {
     this.rarityRegistry = rarityRegistry;
@@ -55,7 +55,7 @@ final class GemMetaFactory implements IConfigurationFactory<GemEffectMeta> {
       throw new IllegalArgumentException("color cannot be null");
     }
     List<String> adjectives = section.getStringList("adjectives");
-    IRarity rarity = rarityRegistry.get(new NamespacedKey(plugin, rarityString));
+    Rarity rarity = rarityRegistry.get(new NamespacedKey(plugin, rarityString));
     ISocketColor color = colorRegistry.get(new NamespacedKey(plugin, colorString));
     ConfigurationSection prioritySection = section.getConfigurationSection("priority");
     if (prioritySection == null) {

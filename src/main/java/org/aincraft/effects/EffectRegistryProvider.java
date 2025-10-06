@@ -4,8 +4,8 @@ import com.google.inject.Inject;
 import com.google.inject.Provider;
 import com.google.inject.name.Named;
 import org.aincraft.Taric;
+import org.aincraft.api.Rarity;
 import org.aincraft.api.config.IConfiguration;
-import org.aincraft.api.container.IRarity;
 import org.aincraft.api.container.ISocketColor;
 import org.aincraft.api.trigger.TriggerType;
 import org.aincraft.registry.IRegistry;
@@ -17,14 +17,14 @@ import org.bukkit.plugin.Plugin;
 public final class EffectRegistryProvider implements Provider<IRegistry<IGemEffect>> {
 
   private final IConfiguration gemConfiguration;
-  private final IRegistry<IRarity> rarityRegistry;
+  private final IRegistry<Rarity> rarityRegistry;
   private final IRegistry<ISocketColor> colorRegistry;
   private final Registry<TriggerType<?>> triggerRegistry;
   private final Plugin plugin;
 
   @Inject
   public EffectRegistryProvider(@Named("gems") IConfiguration gemConfiguration,
-      IRegistry<IRarity> rarityRegistry, IRegistry<ISocketColor> colorRegistry,
+      IRegistry<Rarity> rarityRegistry, IRegistry<ISocketColor> colorRegistry,
       Registry<TriggerType<?>> triggerRegistry, Plugin plugin) {
     this.gemConfiguration = gemConfiguration;
     this.rarityRegistry = rarityRegistry;

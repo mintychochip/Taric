@@ -3,8 +3,8 @@ package org.aincraft.effects;
 import java.util.List;
 import java.util.Set;
 import org.aincraft.Taric;
+import org.aincraft.api.Rarity;
 import org.aincraft.api.config.IConfiguration;
-import org.aincraft.api.container.IRarity;
 import org.aincraft.api.container.ISocketColor;
 import org.aincraft.api.container.IWeighable;
 import org.aincraft.api.trigger.TriggerType;
@@ -18,7 +18,7 @@ public interface IGemEffect extends Keyed, IWeighable {
 
   int getPriority(TriggerType<?> triggerType);
 
-  IRarity getRarity();
+  Rarity getRarity();
 
   ISocketColor getSocketColor();
 

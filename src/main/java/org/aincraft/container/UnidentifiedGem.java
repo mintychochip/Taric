@@ -11,9 +11,9 @@ import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextDecoration;
 import org.aincraft.Taric;
+import org.aincraft.api.Rarity;
 import org.aincraft.api.container.EffectInstanceMeta;
 import org.aincraft.api.container.IIdentificationTable;
-import org.aincraft.api.container.IRarity;
 import org.aincraft.api.container.gem.AppraisalState;
 import org.aincraft.api.container.gem.IUnidentifiedGem;
 import org.aincraft.api.container.gem.IUnidentifiedGem.IUnidentifiedGemContainer;
@@ -49,8 +49,8 @@ final class UnidentifiedGem extends
 
     @Override
     protected Component toItemTitle() {
-      Component rarityLabel = Component.text(container.rarity.getName())
-          .color(container.rarity.getTextColor());
+      Component rarityLabel = Component.text(container.rarity.name())
+          .color(container.rarity.textColor());
       Component label = container.state == AppraisalState.GROUND ? Component.empty()
           .append(Component.text("Ground").color(NamedTextColor.GOLD)).append(Component.space())
           : container.state == AppraisalState.CLEANED ? Component.empty()
@@ -79,7 +79,7 @@ final class UnidentifiedGem extends
     }
 
     @Override
-    public @NotNull IRarity getRarity() {
+    public @NotNull Rarity getRarity() {
       return container.getRarity();
     }
 
@@ -95,13 +95,13 @@ final class UnidentifiedGem extends
     @Expose
     @NotNull
     @SerializedName("rarity")
-    private IRarity rarity;
+    private Rarity rarity;
 
     @Expose
     @SerializedName("state")
     private AppraisalState state;
 
-    UnidentifiedGemContainer(NamespacedKey containerKey, @NotNull IRarity rarity, IGemEffect effect,
+    UnidentifiedGemContainer(NamespacedKey containerKey, @NotNull Rarity rarity, IGemEffect effect,
         EffectInstanceMeta meta) {
       super(containerKey);
       this.rarity = rarity;
@@ -111,12 +111,12 @@ final class UnidentifiedGem extends
     }
 
     @Override
-    public @NotNull IRarity getRarity() {
+    public @NotNull Rarity getRarity() {
       return rarity;
     }
 
     @Override
-    public void setRarity(@NotNull IRarity rarity) {
+    public void setRarity(@NotNull Rarity rarity) {
       this.rarity = rarity;
     }
 
@@ -145,14 +145,14 @@ final class UnidentifiedGem extends
       ContainerHolderFactory<IUnidentifiedGem, IUnidentifiedGemContainer, IUnidentifiedGemContainerView> implements
       IUnidentifiedGemFactory {
 
-    private final IRegistry<IRarity> rarityRegistry;
-    private final IRandomSelector<IRarity> raritySelector;
+    private final IRegistry<Rarity> rarityRegistry;
+    private final IRandomSelector<Rarity> raritySelector;
     private final IRegistry<IGemEffect> effectRegistry;
     private final IRegistry<IIdentificationTable> tableRegistry;
 
     @Inject
-    UnidentifiedGemFactory(IRegistry<IRarity> rarityRegistry,
-        @Named("rarity-selector") IRandomSelector<IRarity> raritySelector,
+    UnidentifiedGemFactory(IRegistry<Rarity> rarityRegistry,
+        @Named("rarity-selector") IRandomSelector<Rarity> raritySelector,
         IRegistry<IGemEffect> effectRegistry, IRegistry<IIdentificationTable> tableRegistry) {
       this.rarityRegistry = rarityRegistry;
       this.raritySelector = raritySelector;
@@ -176,20 +176,20 @@ final class UnidentifiedGem extends
     }
 
     @Override
-    public IUnidentifiedGem create(@NotNull ItemStack stack, @NotNull IRarity rarity)
+    public IUnidentifiedGem create(@NotNull ItemStack stack, @NotNull Rarity rarity)
         throws IllegalArgumentException, NullPointerException {
       Preconditions.checkNotNull(rarity);
       Preconditions.checkArgument(rarityRegistry.isRegistered(rarity));
       Preconditions.checkArgument(tableRegistry.isRegistered(rarity.key()));
       IIdentificationTable identificationTable = tableRegistry.get(rarity.key());
-      IRarity selected = identificationTable.getRandom(Taric.getRandom());
+      Rarity selected = identificationTable.getRandom(Taric.getRandom());
       List<IGemEffect> effects = effectRegistry.stream().filter(e -> e.getRarity().equals(selected))
           .toList();
       if (!effects.isEmpty()) {
         int index = Taric.getRandom().nextInt(effects.size());
         IGemEffect effect = effects.get(index);
         IRandomSelector<Integer> selector = createRankSelector(effect.getMaxRank(),
-            selected.getDecayRate());
+            selected.decayRate());
         UnidentifiedGemContainer container = new UnidentifiedGemContainer(
             UNIDENTIFIED_GEM_CONTAINER_KEY, rarity, effect,
             new EffectInstanceMeta(selector.getRandom(Taric.getRandom())));
@@ -198,7 +198,7 @@ final class UnidentifiedGem extends
       int index = Taric.getRandom().nextInt(effectRegistry.size());
       IGemEffect effect = effectRegistry.get(index);
       IRandomSelector<Integer> selector = createRankSelector(effect.getMaxRank(),
-          selected.getDecayRate());
+          selected.decayRate());
       UnidentifiedGemContainer container = new UnidentifiedGemContainer(
           UNIDENTIFIED_GEM_CONTAINER_KEY, rarity, effect,
           new EffectInstanceMeta(selector.getRandom(Taric.getRandom())));
@@ -209,7 +209,7 @@ final class UnidentifiedGem extends
     @Override
     public IUnidentifiedGem create(@NotNull ItemStack stack)
         throws IllegalArgumentException, NullPointerException {
-      IRarity rarity = raritySelector.getRandom(Taric.getRandom());
+      Rarity rarity = raritySelector.getRandom(Taric.getRandom());
       return create(stack, rarity);
     }
 

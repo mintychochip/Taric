@@ -6,27 +6,27 @@ import com.google.inject.Provider;
 import com.google.inject.Singleton;
 import com.google.inject.TypeLiteral;
 import com.google.inject.name.Names;
-import org.aincraft.api.container.IRarity;
+import org.aincraft.api.Rarity;
 import org.aincraft.api.container.ISocketColor;
 import org.aincraft.api.container.util.IRandomSelector;
 import org.aincraft.registry.IRegistry;
 
 public final class SelectorModule extends AbstractModule {
 
-  static final class RaritySelectorInitializer implements Provider<IRandomSelector<IRarity>> {
+  static final class RaritySelectorInitializer implements Provider<IRandomSelector<Rarity>> {
 
-    private final IRegistry<IRarity> rarityRegistry;
+    private final IRegistry<Rarity> rarityRegistry;
 
     @Inject
-    public RaritySelectorInitializer(IRegistry<IRarity> rarityRegistry) {
+    public RaritySelectorInitializer(IRegistry<Rarity> rarityRegistry) {
       this.rarityRegistry = rarityRegistry;
     }
 
     @Override
-    public IRandomSelector<IRarity> get() {
-      WeightedRandomSelector<IRarity> randomSelector = new WeightedRandomSelector<>();
+    public IRandomSelector<Rarity> get() {
+      WeightedRandomSelector<Rarity> randomSelector = new WeightedRandomSelector<>();
       rarityRegistry.forEach(rarity -> {
-        randomSelector.put(rarity, rarity.getWeight());
+        randomSelector.put(rarity, rarity.weight());
       });
       return randomSelector;
     }
@@ -51,7 +51,7 @@ public final class SelectorModule extends AbstractModule {
 
   @Override
   protected void configure() {
-    bind(new TypeLiteral<IRandomSelector<IRarity>>() {
+    bind(new TypeLiteral<IRandomSelector<Rarity>>() {
     }).annotatedWith(Names.named("rarity-selector"))
         .toProvider(SelectorModule.RaritySelectorInitializer.class)
         .in(Singleton.class);

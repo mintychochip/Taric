@@ -6,7 +6,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import org.aincraft.Taric;
-import org.aincraft.api.container.IRarity;
+import org.aincraft.api.Rarity;
 import org.aincraft.api.container.ISocketColor;
 import org.aincraft.api.trigger.TriggerType;
 import org.bukkit.Material;
@@ -24,7 +24,7 @@ abstract class AbstractGemEffect implements IGemEffect {
   private GemEffectMeta meta;
 
   public record GemEffectMeta(int maxLevel,
-                              IRarity rarity,
+                              Rarity rarity,
                               ISocketColor color,
                               List<String> adjectives,
                               Map<TriggerType<?>, Integer> priority,
@@ -39,7 +39,7 @@ abstract class AbstractGemEffect implements IGemEffect {
   }
 
   @Override
-  public IRarity getRarity() {
+  public Rarity getRarity() {
     return meta.rarity;
   }
 
@@ -130,7 +130,7 @@ abstract class AbstractGemEffect implements IGemEffect {
 
   @Override
   public double getWeight() {
-    return meta.rarity.getWeight();
+    return meta.rarity.weight();
   }
 
   public void setMeta(GemEffectMeta meta) {
