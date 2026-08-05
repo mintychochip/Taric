@@ -59,10 +59,9 @@ final class ContextProviders {
     PLAYER_SHEAR_ENTITY = handle -> new PlayerShearEntityEntityContext(
         new PlayerShearEntityEventDecorator(handle));
 
-    ENTITY_MOVE = handle -> new EntityMoveContext(
-        new EntityMoveEventDecorator(handle));
+    ENTITY_MOVE = EntityMoveContext::new;
 
-    PLAYER_MOVE = handle -> new PlayerMoveContext(new PlayerMoveEventDecorator(handle));
+    PLAYER_MOVE = PlayerMoveContext::new;
 
     BLOCK_BREAK = handle -> new BlockBreakContext(
         handle, handle instanceof FakeBlockBreakEvent);
