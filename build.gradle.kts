@@ -84,7 +84,6 @@ tasks.named<ProcessResources>("processResources") {
 tasks {
     shadowJar {
         archiveFileName.set("${project.name}-${project.version}.jar")
-        destinationDirectory.set(file("C:\\Users\\justi\\Desktop\\paper\\plugins"))
     }
 }
 
