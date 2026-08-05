@@ -28,6 +28,11 @@ dependencies {
     implementation("com.google.inject:guice:7.0.0")
     implementation("com.zaxxer:HikariCP:5.0.1")
     compileOnly("io.papermc.paper:paper-api:1.21.5-R0.1-SNAPSHOT")
+
+    testImplementation("org.junit.jupiter:junit-jupiter:5.11.4")
+    testRuntimeOnly("org.junit.platform:junit-platform-launcher")
+    testImplementation("org.mockito:mockito-core:5.14.2")
+    testImplementation("org.mockito:mockito-junit-jupiter:5.14.2")
 }
 
 val targetJavaVersion = 21
@@ -48,6 +53,9 @@ tasks {
     }
     javadoc {
         options.encoding = Charsets.UTF_8.name()
+    }
+    test {
+        useJUnitPlatform()
     }
 }
 
