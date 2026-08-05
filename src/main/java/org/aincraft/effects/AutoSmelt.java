@@ -3,6 +3,7 @@ package org.aincraft.effects;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
+import java.util.random.RandomGenerator;
 import org.aincraft.Taric;
 import org.aincraft.api.config.IConfiguration;
 import org.aincraft.api.container.EffectInstanceMeta;
@@ -28,7 +29,7 @@ final class AutoSmelt extends AbstractGemEffect implements IOnBlockDrop {
 
   AutoSmelt(Map<Material, ItemStack> conversions) {
     this.conversions = conversions;
-    this.helper = new AutoSmeltHelperBlockDrop(conversions);
+    this.helper = new AutoSmeltHelperBlockDrop(conversions, this);
   }
 
   public static @NotNull AutoSmelt create(@NotNull IConfiguration gemConfiguration) {
@@ -65,33 +66,45 @@ final class AutoSmelt extends AbstractGemEffect implements IOnBlockDrop {
     return new AutoSmelt(conversions);
   }
 
+  /**
+   * Whether a convertible drop should smelt for the given ranks.
+   * Always smelts at max rank; otherwise succeeds with probability {@code rank / maxRank}.
+   */
+  static boolean shouldConvert(boolean convertible, int rank, int maxRank,
+      RandomGenerator random) {
+    if (!convertible || rank <= 0 || maxRank <= 0) {
+      return false;
+    }
+    if (rank >= maxRank) {
+      return true;
+    }
+    return random.nextInt(maxRank) < rank;
+  }
+
   private static final class AutoSmeltHelperBlockDrop extends BlockDropConversionHelper {
 
     private final Map<Material, ItemStack> conversions;
+    private final AutoSmelt owner;
 
-    private int maxRank;
-
-    AutoSmeltHelperBlockDrop(Map<Material, ItemStack> conversions) {
+    AutoSmeltHelperBlockDrop(Map<Material, ItemStack> conversions, AutoSmelt owner) {
       this.conversions = conversions;
+      this.owner = owner;
     }
 
     @Override
     protected boolean conversionPredicate(IBlockDropContext context, EffectInstanceMeta meta,
         ItemStack stack) {
-      int rank = meta.getRank();
       Material material = stack.getType();
-      return conversions.containsKey(material) && rank >= maxRank
-          || Taric.getRandom().nextInt(rank) != 0;
+      return shouldConvert(
+          conversions.containsKey(material),
+          meta.getRank(),
+          owner.getMaxRank(),
+          Taric.getRandom());
     }
 
     @Override
     protected ItemStack conversion(Material material) {
       return conversions.get(material);
-    }
-
-    //TODO fix later
-    public void setMaxRank(int rank) {
-      this.maxRank = rank;
     }
   }
 
@@ -122,16 +135,8 @@ final class AutoSmelt extends AbstractGemEffect implements IOnBlockDrop {
     );
   }
 
-  //  @Override
-//  protected Map<TriggerType, Set<Material>> buildValidTargets() {
-//    return Map.ofEntries(
-//        Map.entry(TriggerType.BLOCK_DROP, TargetType.TOOL)
-//    );
-//  }
-
   @Override
   public void onBlockDrop(IBlockDropContext context, EffectInstanceMeta meta) {
-    helper.setMaxRank(this.getMaxRank());
     helper.onBlockDrop(context, meta);
   }
 }
