@@ -3,6 +3,7 @@ package org.aincraft.container;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotSame;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
@@ -10,13 +11,15 @@ import static org.mockito.Mockito.when;
 import com.google.gson.JsonObject;
 import org.aincraft.api.container.EffectInstanceMeta;
 import org.aincraft.api.container.ISocketColor;
-import org.aincraft.api.container.gem.ISocketGem;
 import org.aincraft.container.SocketGem.SocketGemContainer;
-import org.aincraft.container.SocketGem.SocketGemFactory;
 import org.aincraft.effects.IGemEffect;
-import org.bukkit.Material;
+import org.bukkit.NamespacedKey;
 import org.junit.jupiter.api.Test;
 
+/**
+ * Exercises shipped merge meta cloning: {@link SocketGemContainer#mergedMeta} and
+ * {@link SocketGemContainer#merge} without constructing Bukkit ItemStacks (no live server).
+ */
 class SocketGemMergeTest {
 
   @Test
@@ -36,42 +39,39 @@ class SocketGemMergeTest {
   }
 
   @Test
-  void merge_usesClonedMetaWithIncrementedRank() {
+  void merge_onContainer_preservesExtraAndIncrementsRank() {
     ISocketColor color = mock(ISocketColor.class);
     IGemEffect effect = mock(IGemEffect.class);
     when(effect.getMaxRank()).thenReturn(5);
     when(effect.getSocketColor()).thenReturn(color);
 
-    SocketGemFactory factory = new SocketGemFactory();
-    ISocketGem primary = factory.create(Material.EMERALD, color);
-    ISocketGem secondary = factory.create(Material.EMERALD, color);
+    NamespacedKey key = new NamespacedKey("taric", "gem");
+    SocketGemContainer primary = new SocketGemContainer(key, color);
+    SocketGemContainer secondary = new SocketGemContainer(key, color);
+
+    // Minimal gem holders so merge can call other.getContainer() / editContainer
+    SocketGem primaryGem = new SocketGem(null, primary);
+    SocketGem secondaryGem = new SocketGem(null, secondary);
 
     EffectInstanceMeta primaryMeta = new EffectInstanceMeta(2);
     primaryMeta.getExtra().addProperty("charge", 3);
     EffectInstanceMeta secondaryMeta = new EffectInstanceMeta(2);
 
-    primary.editContainer(c -> c.applyEffect(effect, primaryMeta, true));
-    secondary.editContainer(c -> c.applyEffect(effect, secondaryMeta, true));
+    primary.applyEffect(effect, primaryMeta, true);
+    secondary.applyEffect(effect, secondaryMeta, true);
 
-    assertTrue(primary.getContainer().canMerge(secondary));
-    primary.editContainer(c -> c.merge(secondary));
+    assertTrue(primary.canMerge(secondaryGem));
+    primary.merge(secondaryGem);
 
-    assertEquals(3, primary.getContainer().getRank());
-    assertEquals(effect, primary.getContainer().getEffect());
-
-    // Same-package access to protected meta field on AbstractGemContainer
-    SocketGemContainer container = (SocketGemContainer) readContainer(primary);
-    JsonObject extra = container.meta.getExtra();
+    assertEquals(3, primary.getRank());
+    assertEquals(effect, primary.getEffect());
+    JsonObject extra = primary.meta.getExtra();
     assertEquals(3, extra.get("charge").getAsInt());
-    // Mutating stored extra must not rewrite the original meta object we built
+
     extra.addProperty("after-merge", true);
     assertFalse(primaryMeta.getExtra().has("after-merge"));
-  }
 
-  /** Reach the concrete container held by the gem (package-private factory types). */
-  private static SocketGemContainer readContainer(ISocketGem gem) {
-    final SocketGemContainer[] box = new SocketGemContainer[1];
-    gem.editContainer(c -> box[0] = (SocketGemContainer) c);
-    return box[0];
+    // Secondary was cleared by merge
+    assertNull(secondary.effect);
   }
 }
