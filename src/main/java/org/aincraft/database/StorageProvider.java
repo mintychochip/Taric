@@ -33,7 +33,7 @@ public final class StorageProvider implements Provider<IDatabase> {
           new SQLDatabase(logger, new H2FlatFileSource(logger, plugin.getDataFolder().toPath()),
               extractor);
       case SQLITE -> new SQLDatabase(logger,
-          new SQLiteFLatFileSource(logger, plugin.getDataFolder().toPath()), extractor);
+          new SQLiteFlatFileSource(logger, plugin.getDataFolder().toPath()), extractor);
       case POSTGRES, MARIA, CASSANDRA -> new SQLDatabase(logger, new HikariConnectionWrapper(type,
           new HikariDataSource(parseConfiguration(dbConfiguration))), extractor);
     };

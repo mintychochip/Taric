@@ -6,9 +6,9 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.logging.Logger;
 
-final class SQLiteFLatFileSource extends FlatFileSource {
+final class SQLiteFlatFileSource extends FlatFileSource {
 
-  public SQLiteFLatFileSource(Logger logger, Path parentDir) {
+  public SQLiteFlatFileSource(Logger logger, Path parentDir) {
     super(logger, parentDir);
   }
 
