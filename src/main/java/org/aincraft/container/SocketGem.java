@@ -1,7 +1,6 @@
 package org.aincraft.container;
 
 import com.google.common.base.Preconditions;
-import com.google.gson.JsonObject;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 import io.papermc.paper.datacomponent.item.ItemLore;
@@ -205,18 +204,26 @@ final class SocketGem extends
       if (!otherEffect.equals(effect) || otherRank != meta.getRank()) {
         throw new IllegalArgumentException("other gem must have the same effect and rank");
       }
-      //TODO: ensure cloning is proper
       int newRank = meta.getRank() + 1;
-      JsonObject extra = meta.getExtra();
-      EffectInstanceMeta instanceMeta = new EffectInstanceMeta(newRank);
       if (newRank > otherEffect.getMaxRank()) {
         throw new IllegalArgumentException(
             "failed to merge gems, the resulting combination would be over the max rank");
       }
+      // Deep-copy rank/extra so merge does not share mutable JsonObject state with either gem.
+      EffectInstanceMeta instanceMeta = mergedMeta(meta);
       this.applyEffect(effect, instanceMeta);
       other.editContainer(container -> {
         container.removeEffect(effect);
       });
+    }
+
+    /**
+     * Builds the meta for a successful same-rank merge: rank + 1 with a deep-copied extra object.
+     */
+    static EffectInstanceMeta mergedMeta(EffectInstanceMeta current) {
+      EffectInstanceMeta copy = current.copy();
+      copy.setRank(current.getRank() + 1);
+      return copy;
     }
 
     @Override
