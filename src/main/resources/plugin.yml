@@ -1,5 +1,5 @@
 name: Taric
-version: '1.1'
+version: '${version}'
 main: org.aincraft.TaricBootstrap
 api-version: '1.21'
 authors: [ mintychochip ]

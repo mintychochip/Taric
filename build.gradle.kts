@@ -8,7 +8,7 @@ plugins {
 
 
 group = "org.aincraft"
-version = "1.1"
+// version comes from gradle.properties
 
 paperweight.reobfArtifactConfiguration =
     io.papermc.paperweight.userdev.ReobfArtifactConfiguration.REOBF_PRODUCTION
@@ -87,3 +87,4 @@ tasks {
         destinationDirectory.set(file("C:\\Users\\justi\\Desktop\\paper\\plugins"))
     }
 }
+
