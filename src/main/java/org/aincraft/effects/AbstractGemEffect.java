@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import org.aincraft.Taric;
+import org.aincraft.api.config.IConfiguration;
 import org.aincraft.api.container.IRarity;
 import org.aincraft.api.container.ISocketColor;
 import org.aincraft.api.trigger.ITriggerType;
@@ -135,6 +136,27 @@ abstract class AbstractGemEffect implements IGemEffect {
 
   public void setMeta(GemEffectMeta meta) {
     this.meta = meta;
+  }
+
+  protected double loadDouble(IConfiguration config, String subPath, double defaultValue) {
+    return GemEffectConfig.loadDouble(this, config, subPath, defaultValue);
+  }
+
+  protected int loadInt(IConfiguration config, String subPath, int defaultValue) {
+    return GemEffectConfig.loadInt(this, config, subPath, defaultValue);
+  }
+
+  protected boolean loadBoolean(IConfiguration config, String subPath, boolean defaultValue) {
+    return GemEffectConfig.loadBoolean(this, config, subPath, defaultValue);
+  }
+
+  protected String loadString(IConfiguration config, String subPath, String defaultValue) {
+    return GemEffectConfig.loadString(this, config, subPath, defaultValue);
+  }
+
+  protected List<String> loadStringList(IConfiguration config, String subPath,
+      List<String> defaultValue) {
+    return GemEffectConfig.loadStringList(this, config, subPath, defaultValue);
   }
 
   protected String buildName() {
