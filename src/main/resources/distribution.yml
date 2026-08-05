@@ -1,4 +1,4 @@
-#TODO: fishing
+# Note: fishing distribution is out of scope for this config.
 
 chest:
   max-amount: 2
